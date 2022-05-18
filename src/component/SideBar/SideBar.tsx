@@ -4,8 +4,9 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {Theme} from "@mui/material/styles";
 import {useTranslation} from "react-i18next";
 import {makeStyles} from "@mui/styles";
-import {alpha, Box, Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar} from "@mui/material";
+import {alpha, Box, Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography} from "@mui/material";
 import clsx from "clsx";
+import logo from '../../logo.svg';
 
 const drawerWidth = 210;
 
@@ -17,13 +18,18 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginTop: "100%"
     },
     menuSelected: {
-        borderLeft: "solid 3px " + theme.palette.primary.main,
+        borderLeft: "solid 0px " + theme.palette.secondary.main,
         backgroundColor: alpha(theme.palette.primary.main, 0.1),
-        color: theme.palette.primary.main,
-        fill: theme.palette.primary.main
     },
     menuNoneSelected: {
-        borderLeft: "solid 3px transparent"
+        borderLeft: "solid 0px transparent",
+        color: "rgb(131 157 170)"
+    },
+    iconSelected: {
+        color: theme.palette.secondary.main
+    },
+    iconNoneSelected:{
+        color: "rgb(131 157 170)"
     },
     menuListItem: {
         paddingLeft: 25,
@@ -43,6 +49,11 @@ const useStyles = makeStyles((theme: Theme) => ({
                 textOverflow: "ellipsis"
             }
         }
+    },
+    goatlabs: {
+        marginLeft: "-10px",
+        marginTop: "2px",
+        fontSize: "21px"
     }
 }));
 
@@ -68,7 +79,10 @@ export default function SideBar(props: SideBarProps) {
 
     const drawer = (
         <div className={classes.root}>
-            <Toolbar style={{marginBottom: 15, marginTop: 15}}>LOGO IS HERE</Toolbar>
+            <Toolbar style={{marginBottom: 15, marginTop: 15}}>
+                <img style={{width: 70, marginLeft: "-15px"}} src={logo}/>
+                <Typography variant={"h6"} className={classes.goatlabs}>GOATLABS</Typography>
+            </Toolbar>
             <List className={classes.menuListContainer}>
                 {menuItems.map((data, index) => (
                     <ListItem
@@ -80,7 +94,12 @@ export default function SideBar(props: SideBarProps) {
                         })}
                         onClick={() => navigate(data.path)}
                     >
-                        <ListItemIcon>{data.icon}</ListItemIcon>
+                        <ListItemIcon
+                            className={clsx({
+                                [classes.iconSelected]: isActivePath(data.path),
+                                [classes.iconNoneSelected]: !isActivePath(data.path)
+                            })}
+                        >{data.icon}</ListItemIcon>
                         <ListItemText className={classes.menuListItemText} primary={data.title}/>
                     </ListItem>
                 ))}
@@ -106,7 +125,6 @@ export default function SideBar(props: SideBarProps) {
                 sx={{width: {sm: drawerWidth}, flexShrink: {sm: 0}}}
                 aria-label="mailbox folders"
             >
-                {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                 <Drawer
                     variant="temporary"
                     open={mobileOpen}
