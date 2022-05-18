@@ -27,7 +27,7 @@ const rawTheme = createTheme({
       light: green[50],
       main: green[500],
       dark: green[700],
-    },
+    }
   },
   typography: {
     fontFamily: "'Work Sans', sans-serif",
@@ -51,7 +51,7 @@ const theme = {
     ...rawTheme.palette,
     background: {
       ...rawTheme.palette.background,
-      default: rawTheme.palette.common.white,
+      default: rawTheme.palette.primary.main,
       placeholder: grey[200],
     },
   },

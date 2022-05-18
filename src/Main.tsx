@@ -1,29 +1,24 @@
 import React, {useEffect} from "react";
-import {Route, Routes, Navigate} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 
-import clsx from "clsx";
-
-import Home from "./pages/Home";
-import CustomDrawer from "./component/Drawer";
+import Dashboard from "./pages/Dashboard";
 import {useTranslation} from "react-i18next";
 import {useAppState} from "./context/AppStateContext";
 
-import {Assignment as ReportIcon, Ballot as TemplateIcon, GroupAdd as ApproversIcon} from "@mui/icons-material";
+import SideBar from "./component/SideBar/SideBar";
+import {Box} from "@mui/material";
+import Stake from "./pages/Stake";
+import Governance from "./pages/Governance";
+import {
+    AccountBalanceRounded as DashboardIcon,
+    HowToVoteRounded as GovernanceIcon,
+    MonetizationOnRounded as StakeIcon
+} from "@mui/icons-material";
 
-import {createStyles, makeStyles} from '@mui/styles';
-import { Theme } from '@mui/material/styles';
-
-const drawerItems = [
-    {key: "report", path: "/report", icon: <ReportIcon/>},
-    {key: "template", path: "/template", icon: <TemplateIcon/>},
-//   { path: "/viewer/:reportId?", exact: true, strict: false },
-    {key: "editor", path: "/editor", icon: <ApproversIcon/>}
-];
-
-const visibleDrawPathList = [
-    "/report",
-    "/template",
-    "/"
+const menuItems = [
+    {key: "dashboard", path: "/", title: "Dashboard", icon: <DashboardIcon/>},
+    {key: "stake", path: "/stake", title: "Stake", icon: <StakeIcon/>},
+    {key: "governance", path: "/governance", title: "Governance", icon: <GovernanceIcon/>}
 ];
 
 function Main() {
@@ -37,12 +32,20 @@ function Main() {
     }, []);
 
     return (
-        <div>
-            <Routes>
-                <Route path="/" element={<Home />}/>
-                <Route path="*" element={<Home />}/>
-            </Routes>
-        </div>
+        <Box sx={{display: 'flex'}}>
+            <SideBar menuItems={menuItems}/>
+            <Box
+                component="main"
+                sx={{flexGrow: 1, p: 5,}}
+            >
+                <Routes>
+                    <Route path="/" element={<Dashboard/>}/>
+                    <Route path="/stake" element={<Stake/>}/>
+                    <Route path="/governance" element={<Governance/>}/>
+                    <Route path="*" element={<Dashboard/>}/>
+                </Routes>
+            </Box>
+        </Box>
     );
 }
 
