@@ -36,7 +36,7 @@ function Main() {
             <SideBar menuItems={menuItems}/>
             <Box
                 component="main"
-                sx={{flexGrow: 1, p: 5,}}
+                sx={{flexGrow: 1, p: 0}}
             >
                 <Routes>
                     <Route path="/" element={<Dashboard/>}/>

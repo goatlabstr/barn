@@ -41,7 +41,7 @@ const rawTheme = createTheme({
 const fontHeader = {
   color: rawTheme.palette.text.primary,
   fontWeight: rawTheme.typography.fontWeightMedium,
-  fontFamily: "'Roboto Condensed', sans-serif",
+  fontFamily: "Poppins, ui-sans-serif, system-ui;",
   textTransform: 'uppercase',
 };
 
@@ -87,32 +87,32 @@ const theme = {
       ...rawTheme.typography.h1,
       ...fontHeader,
       letterSpacing: 0,
-      fontSize: 60,
+      fontSize: 50,
     },
     h2: {
       ...rawTheme.typography.h2,
       ...fontHeader,
-      fontSize: 48,
+      fontSize: 36,
     },
     h3: {
       ...rawTheme.typography.h3,
       ...fontHeader,
-      fontSize: 42,
+      fontSize: 30,
     },
     h4: {
       ...rawTheme.typography.h4,
       ...fontHeader,
-      fontSize: 36,
+      fontSize: 26,
     },
     h5: {
       ...rawTheme.typography.h5,
-      fontSize: 20,
-      fontWeight: rawTheme.typography.fontWeightLight,
+      ...fontHeader,
+      fontSize: 22,
     },
     h6: {
       ...rawTheme.typography.h6,
       ...fontHeader,
-      fontSize: 18,
+      fontSize: 20,
     },
     subtitle1: {
       ...rawTheme.typography.subtitle1,
