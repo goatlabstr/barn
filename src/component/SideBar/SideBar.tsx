@@ -4,7 +4,19 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {Theme} from "@mui/material/styles";
 import {useTranslation} from "react-i18next";
 import {makeStyles} from "@mui/styles";
-import {alpha, Box, Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography} from "@mui/material";
+import {
+    alpha,
+    Box,
+    Drawer,
+    IconButton,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Toolbar,
+    Typography
+} from "@mui/material";
+import MenuIcon from '@mui/icons-material/Menu';
 import clsx from "clsx";
 import logo from '../../logo.svg';
 
@@ -28,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     iconSelected: {
         color: theme.palette.secondary.main
     },
-    iconNoneSelected:{
+    iconNoneSelected: {
         color: "rgb(131 157 170)"
     },
     menuListItem: {
@@ -109,17 +121,15 @@ export default function SideBar(props: SideBarProps) {
 
     return (
         <>
-            {/*<Toolbar>
-                <IconButton
-                    color="inherit"
-                    aria-label="open drawer"
-                    edge="start"
-                    onClick={handleDrawerToggle}
-                    sx={{mr: 2, display: {sm: 'none'}}}
-                >
-                    <MenuIcon/>
-                </IconButton>
-            </Toolbar>*/}
+            <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{mr: 2, display: {sm: 'none'}, position: "absolute", left: 10, size: "large"}}
+            >
+                <MenuIcon fontSize="inherit" />
+            </IconButton>
             <Box
                 component="nav"
                 sx={{width: {sm: drawerWidth}, flexShrink: {sm: 0}}}
