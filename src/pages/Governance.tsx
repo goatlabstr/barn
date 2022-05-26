@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Box, Grid, Tab, Tabs, Typography} from "@mui/material";
-import {styled} from "@mui/styles";
+import {makeStyles, styled} from "@mui/styles";
+import {Theme} from "@mui/material/styles";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -9,7 +10,7 @@ interface TabPanelProps {
 }
 
 function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
+    const {children, value, index, ...other} = props;
 
     return (
         <div
@@ -20,7 +21,7 @@ function TabPanel(props: TabPanelProps) {
             {...other}
         >
             {value === index && (
-                <Box sx={{ p: 3 }}>
+                <Box sx={{p: 3}}>
                     <Typography>{children}</Typography>
                 </Box>
             )}
@@ -37,9 +38,9 @@ interface StyledTabsProps {
 const StyledTabs = styled((props: StyledTabsProps) => (
     <Tabs
         {...props}
-        TabIndicatorProps={{ children: <span className="MuiTabs-indicatorSpan" /> }}
+        TabIndicatorProps={{children: <span className="MuiTabs-indicatorSpan"/>}}
     />
-))(({ theme }) => ({
+))(({theme}) => ({
     '& .MuiTabs-indicator': {
         display: 'flex',
         justifyContent: 'center',
@@ -59,7 +60,7 @@ interface StyledTabProps {
 
 const StyledTab = styled((props: StyledTabProps) => (
     <Tab disableRipple {...props} />
-))(({ theme }) => ({
+))(({theme}) => ({
     textTransform: 'none',
     color: 'rgba(255, 255, 255, 0.7)',
     '&.Mui-selected': {
@@ -71,7 +72,19 @@ const StyledTab = styled((props: StyledTabProps) => (
     },
 }));
 
+const useStyles = makeStyles((theme: Theme) => ({
+    centerBox: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    centerInnerBox: {
+        width: "92%"
+    }
+}));
+
 function Index() {
+    const classes = useStyles();
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -82,30 +95,32 @@ function Index() {
         <React.Fragment>
             <Grid container>
                 <Grid item xs={12}>
-                    <Box  sx={{
+                    <Box sx={{
                         width: "100%",
                         p: 2
-                    }}>
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    }} className={classes.centerBox}>
+                        <Box className={classes.centerInnerBox}>
+                            <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                                 <StyledTabs value={value} onChange={handleChange} aria-label="lab API tabs example">
-                                    <StyledTab label="Active" />
-                                    <StyledTab label="Passed" />
-                                    <StyledTab label="Rejected" />
-                                    <StyledTab label="All" />
+                                    <StyledTab label="Active"/>
+                                    <StyledTab label="Passed"/>
+                                    <StyledTab label="Rejected"/>
+                                    <StyledTab label="All"/>
                                 </StyledTabs>
                             </Box>
-                        <TabPanel value={value} index={0}>
-                            Active Proposals
-                        </TabPanel>
-                        <TabPanel value={value} index={1}>
-                            Passed Proposals
-                        </TabPanel>
-                        <TabPanel value={value} index={2}>
-                            Rejected Proposals
-                        </TabPanel>
-                        <TabPanel value={value} index={3}>
-                            All Proposals
-                        </TabPanel>
+                            <TabPanel value={value} index={0}>
+                                Active Proposals
+                            </TabPanel>
+                            <TabPanel value={value} index={1}>
+                                Passed Proposals
+                            </TabPanel>
+                            <TabPanel value={value} index={2}>
+                                Rejected Proposals
+                            </TabPanel>
+                            <TabPanel value={value} index={3}>
+                                All Proposals
+                            </TabPanel>
+                        </Box>
                     </Box>
                 </Grid>
             </Grid>
