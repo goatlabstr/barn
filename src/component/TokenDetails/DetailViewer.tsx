@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {Grid, Typography} from "@mui/material";
+import {ReactElement} from 'react';
+import {Grid, Stack, Typography} from "@mui/material";
 import {makeStyles} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
 
@@ -18,11 +19,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 type DetailViewerProps = {
     title: String,
     amount: number,
-    prefix?: String
+    prefix?: String,
+    icon?: ReactElement
 }
 
 function Index(props: DetailViewerProps) {
-    const {title, amount, prefix} = props;
+    const {title, amount, prefix, icon} = props;
     const classes = useStyles();
     const amountText = prefix ? prefix + "" + amount : amount;
 
@@ -33,7 +35,13 @@ function Index(props: DetailViewerProps) {
                     <Typography variant={"subtitle2"} className={classes.title}>{title}</Typography>
                 </Grid>
                 <Grid item xs={12}>
-                    <Typography variant={"h2"} className={classes.details}>{amountText}</Typography>
+                    <Stack direction="row" spacing={1} style={{
+                        alignItems: "center",
+                        display: "flex"
+                    }}>
+                        {icon}
+                        <Typography variant={"h2"} className={classes.details}>{amountText}</Typography>
+                    </Stack>
                 </Grid>
             </Grid>
         </React.Fragment>

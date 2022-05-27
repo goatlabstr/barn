@@ -115,7 +115,7 @@ const EnhancedTableToolbar = (props) => {
             }}
         >
             <Grid container>
-                <Grid item xs={11}>
+                <Grid item xs={10}>
                     <Typography
                         sx={{flex: '1 1 100%'}}
                         variant="h6"
@@ -125,7 +125,7 @@ const EnhancedTableToolbar = (props) => {
                         {props.title}
                     </Typography>
                 </Grid>
-                {props.buttonTitle && <Grid item xs={1}>
+                {props.buttonTitle && <Grid item xs={2} style={{display: "flex", justifyContent: "right"}}>
                     <Button variant="outlined"
                             color="secondary"
                             onClick={props.onClickToolbarButton}>{props.buttonTitle}</Button>

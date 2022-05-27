@@ -6,7 +6,7 @@ function Index(props) {
     const {rows} = props;
     return (
         <React.Fragment>
-            <Grid container rowSpacing={1}>
+            <Grid container rowSpacing={2}>
                 <>
                     <Grid item xs={10}>
                         <Typography variant={"subtitle1"}>Juno Staking</Typography>
