@@ -21,7 +21,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import clsx from "clsx";
 import logo from '../../logo.svg';
-import {AccountBalanceWalletRounded} from "@mui/icons-material";
+import {AccountBalanceWalletRounded, Email, Instagram, Telegram, Twitter} from "@mui/icons-material";
 
 const drawerWidth = 220;
 
@@ -66,6 +66,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginLeft: "-10px",
         marginTop: "2px",
         fontSize: "21px"
+    },
+    socialMediaIcon: {
+        color: "rgb(131 157 170)"
     }
 }));
 
@@ -118,7 +121,35 @@ export default function SideBar(props: SideBarProps) {
                         </ListItem>
                     ))}
                 </List>
-                <Button variant="outlined" color="secondary" sx={{width: "75%"}} startIcon={<AccountBalanceWalletRounded />}>Connect</Button>
+                <Stack direction="column">
+                    <Button variant="outlined" color="secondary"
+                            startIcon={<AccountBalanceWalletRounded/>}>Connect</Button>
+                    <Stack direction="row" sx={{justifyContent: "center"}}>
+                        <IconButton className={classes.socialMediaIcon}
+                            //@ts-ignore
+                                    onClick={() => window.open("https://twitter.com/GoatlabsV", '_blank').focus()}
+                                    disableRipple><Twitter/></IconButton>
+                        <IconButton className={classes.socialMediaIcon}
+                            //@ts-ignore
+                                    onClick={() => window.open("https://www.instagram.com/goatlabsv/", '_blank').focus()}
+                                    disableRipple><Instagram/></IconButton>
+                        <IconButton className={classes.socialMediaIcon}
+                            //@ts-ignore
+                                    onClick={() => window.open("mailto:goatlabsteam@gmail.com")}
+                                    disableRipple><Email/></IconButton>
+                        <IconButton className={classes.socialMediaIcon}
+                            //@ts-ignore
+                                    onClick={() => window.open("https://t.me/goatlabs", '_blank').focus()}
+                                    disableRipple><Telegram/></IconButton>
+                    </Stack>
+                    <Button variant="text"
+                            sx={{textTransform: "none", color: "rgb(131 157 170)"}}
+                        //@ts-ignore
+                            onClick={() => window.open("https://www.coingecko.com/", '_blank').focus()}
+
+                    >
+                        Price Data by Coingecko</Button>
+                </Stack>
             </Stack>
         </div>
     );

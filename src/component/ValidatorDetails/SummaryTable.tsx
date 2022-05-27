@@ -98,6 +98,14 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             onRequestSort(event, property);
         };
 
+    const getHeaderStyle = (index) => {
+        if (index === 0)
+            return {borderTopLeftRadius: "1rem"}
+        else if (index === headCells.length - 1)
+            return {borderTopRightRadius: "1rem"}
+        return {}
+    }
+
     return (
         <TableHead>
             <TableRow className={classes.tableHead}>
@@ -107,6 +115,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                         align={(headCell.numeric || index == headCells.length - 1) ? 'center' : 'left'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
+                        style={getHeaderStyle(index)}
                     >
                         <TableSortLabel
                             active={orderBy === headCell.id}
@@ -196,7 +205,7 @@ export default function SummaryTable(props: TableProps) {
                                             </Stack>
                                         </TableCell>
                                         <TableCell align="center"
-                                                   className={classes.tableCell}>{formatCount(row.stakeAmount)}</TableCell>
+                                                   className={classes.tableActiveCell}>{formatCount(row.stakeAmount)}</TableCell>
                                         <TableCell align="center"
                                                    className={classes.tableCell}>{formatCount(row.pendingRewards)}</TableCell>
                                         <TableCell align="center"
