@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Box, Grid, Tab, Tabs, Typography} from "@mui/material";
 import {makeStyles, styled} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
+import {GeneralConstants} from "../constants/general";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -79,7 +80,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         justifyContent: "center"
     },
     centerInnerBox: {
-        width: "92%"
+        width: GeneralConstants.mainContent.width
     }
 }));
 

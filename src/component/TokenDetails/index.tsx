@@ -10,7 +10,7 @@ function Index() {
                     <Typography variant={"h6"}>JUNO BALANCES</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                    <Button variant="outlined" color="secondary" size="small">Claim Reward : 0 Juno</Button>
+                    <Button variant="outlined" color="secondary" size="small">Claim Reward : 97.9 Juno</Button>
                 </Grid>
                 <Grid item xs={2}>
                     <DetailViewer title={"Total Balances"} amount={10} prefix={"$"} />
