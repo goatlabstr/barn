@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Avatar, Box, Button, Chip, Grid, Stack, Typography} from "@mui/material";
 import TokenDetails from '../component/TokenDetails/index';
-import {makeStyles} from "@mui/styles";
+import {makeStyles, useTheme} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
 import {GeneralConstants} from "../constants/general";
 import {Done as ActiveIcon} from "@mui/icons-material";
@@ -51,6 +51,7 @@ const activeRows = [
 function Index() {
     const classes = useStyles();
     let navigate = useNavigate();
+    const theme = useTheme();
 
     return (
         <React.Fragment>
@@ -59,7 +60,8 @@ function Index() {
                     <Box sx={{
                         width: "100%",
                         height: 200,
-                        backgroundColor: '#003661',
+                        //@ts-ignore
+                        backgroundColor: theme.palette.background.dark,
                         p: 3
                     }} className={classes.centerBox}>
                         <Box className={classes.centerInnerBox}>

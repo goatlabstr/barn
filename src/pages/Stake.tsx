@@ -98,7 +98,6 @@ function Index() {
                 {activeRows.length > 0 && <Grid item xs={12}>
                     <Box sx={{
                         width: "100%",
-                        height: 550,
                         //@ts-ignore
                         backgroundColor: theme.palette.background.paper,
                         p: 3
