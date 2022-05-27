@@ -3,17 +3,7 @@ import { green, grey, red } from '@mui/material/colors';
 
 const rawTheme = createTheme({
   palette: {
-    mode: 'dark',
-    primary: {
-      light: '#69696a',
-      main: '#28282a',
-      dark: '#1e1e1f',
-    },
-    secondary: {
-      light: '#fff5f8',
-      main: '#ff3366',
-      dark: '#e62958',
-    }
+    mode: 'dark'
   },
   typography: {
     fontFamily: "Inter,ui-sans-serif,system-ui",
@@ -40,17 +30,17 @@ const theme = {
       default: "#035CA3",
       placeholder: grey[200],
       paper: "#024376",
-      dark: "#003661"
+      dark: "#024072"
     },
     primary: {
-      light: '#fff5f8',
-      main: '#28282a',
-      dark: '#1e1e1f',
+      light: '#4b9fea',
+      main: '#1e88e5',
+      dark: '#155fa0',
     },
     secondary: {
-      light: '#ffd700',
+      light: '#dabf33',
       main: '#D1B000',
-      dark: '#A38A00',
+      dark: '#927b00',
     }
   },
   typography: {

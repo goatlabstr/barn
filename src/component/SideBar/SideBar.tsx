@@ -7,27 +7,27 @@ import {makeStyles} from "@mui/styles";
 import {
     alpha,
     Box,
+    Button,
     Drawer,
     IconButton,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
+    Stack,
     Toolbar,
     Typography
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import clsx from "clsx";
 import logo from '../../logo.svg';
+import {AccountBalanceWalletRounded} from "@mui/icons-material";
 
-const drawerWidth = 210;
+const drawerWidth = 220;
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
         height: "100%"
-    },
-    menuListContainer: {
-        marginTop: "100%"
     },
     menuSelected: {
         borderLeft: "solid 0px " + theme.palette.secondary.main,
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: "rgb(131 157 170)"
     },
     menuListItem: {
-        paddingLeft: 25,
+        paddingLeft: 18,
         flexWrap: "wrap"
     },
     menuListItemText: {
@@ -91,31 +91,35 @@ export default function SideBar(props: SideBarProps) {
 
     const drawer = (
         <div className={classes.root}>
-            <Toolbar style={{marginBottom: 15, marginTop: 15}}>
-                <img style={{width: 70, marginLeft: "-15px"}} src={logo}/>
-                <Typography variant={"h6"} className={classes.goatlabs}>GOATLABS</Typography>
-            </Toolbar>
-            <List className={classes.menuListContainer}>
-                {menuItems.map((data, index) => (
-                    <ListItem
-                        button
-                        key={data.key}
-                        className={clsx(classes.menuListItem, {
-                            [classes.menuSelected]: isActivePath(data.path),
-                            [classes.menuNoneSelected]: !isActivePath(data.path)
-                        })}
-                        onClick={() => navigate(data.path)}
-                    >
-                        <ListItemIcon
-                            className={clsx({
-                                [classes.iconSelected]: isActivePath(data.path),
-                                [classes.iconNoneSelected]: !isActivePath(data.path)
+            <Stack direction="column" justifyContent={"space-between"} alignItems={"center"} spacing={1}
+                   sx={{height: "95%"}}>
+                <Toolbar style={{marginTop: 15}}>
+                    <img style={{width: 70, marginLeft: "-15px"}} src={logo}/>
+                    <Typography variant={"h6"} className={classes.goatlabs}>GOATLABS</Typography>
+                </Toolbar>
+                <List>
+                    {menuItems.map((data, index) => (
+                        <ListItem
+                            button
+                            key={data.key}
+                            className={clsx(classes.menuListItem, {
+                                [classes.menuSelected]: isActivePath(data.path),
+                                [classes.menuNoneSelected]: !isActivePath(data.path)
                             })}
-                        >{data.icon}</ListItemIcon>
-                        <ListItemText className={classes.menuListItemText} primary={data.title}/>
-                    </ListItem>
-                ))}
-            </List>
+                            onClick={() => navigate(data.path)}
+                        >
+                            <ListItemIcon
+                                className={clsx({
+                                    [classes.iconSelected]: isActivePath(data.path),
+                                    [classes.iconNoneSelected]: !isActivePath(data.path)
+                                })}
+                            >{data.icon}</ListItemIcon>
+                            <ListItemText className={classes.menuListItemText} primary={data.title}/>
+                        </ListItem>
+                    ))}
+                </List>
+                <Button variant="outlined" color="secondary" sx={{width: "75%"}} startIcon={<AccountBalanceWalletRounded />}>Connect</Button>
+            </Stack>
         </div>
     );
 
@@ -128,7 +132,7 @@ export default function SideBar(props: SideBarProps) {
                 onClick={handleDrawerToggle}
                 sx={{mr: 2, display: {sm: 'none'}, position: "absolute", left: 10, size: "large"}}
             >
-                <MenuIcon fontSize="inherit" />
+                <MenuIcon fontSize="inherit"/>
             </IconButton>
             <Box
                 component="nav"
