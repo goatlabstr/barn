@@ -5,6 +5,15 @@ const rawTheme = createTheme({
     palette: {
         mode: 'dark'
     },
+    breakpoints: {
+        values: {
+            xs: 0,
+            sm: 600,
+            md: 900,
+            lg: 1200,
+            xl: 1770,
+        },
+    },
     typography: {
         fontFamily: "Inter,ui-sans-serif,system-ui",
         fontSize: 14,

@@ -16,6 +16,7 @@ import TableHead from "@mui/material/TableHead";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import {visuallyHidden} from "@mui/utils";
 import SearchTextField from "./SearchTextField";
+import {useTranslation} from "react-i18next";
 
 const useStyles = makeStyles((theme: Theme) => ({
     tableHead: {
@@ -160,6 +161,7 @@ const EnhancedTableToolbar = (props) => {
 
 export function EnhancedTableHead(props: EnhancedTableProps) {
     const classes = useStyles();
+    const {t} = useTranslation();
     const {order, orderBy, onRequestSort} =
         props;
     const createSortHandler =
@@ -224,6 +226,7 @@ export default function EnhancedTable(props: TableProps) {
     const [orderBy, setOrderBy] = React.useState<keyof Data>('validator');
     const [filterValue, setFilterValue] = useState<string>("");
     const [data, setData] = useState(props.rows);
+    const {t} = useTranslation();
 
     useEffect(() => {
         if (!filterValue || /^\s*$/.test(filterValue))
@@ -235,7 +238,7 @@ export default function EnhancedTable(props: TableProps) {
     const handleStakeAmount = (value) => {
         if (value > 0)
             return formatCount(value);
-        return <Typography variant={"body2"}>no tokens</Typography>;
+        return <Typography variant={"body2"}>{t("table.noTokens")}</Typography>;
     }
 
     const handleRequestSort = (

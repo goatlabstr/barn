@@ -2,7 +2,35 @@
   "apply": "Apply",
   "cancel": "Cancel",
   "menu": {
-      "trial": "Trial"
-  } 
-
+    "trial": "Trial"
+  },
+  "claimReward": "Claim Reward: {{value}} {{name}}",
+  "dashboard": {
+    "viewAll": "View All",
+    "activeProposal": "Active Proposal",
+    "networkBalances": "{{name}} Balances",
+    "totalBalances": "Total Balances",
+    "availableAmount": "Available Amount",
+    "stakedAmount": "Staked Amount",
+    "rewards": "Rewards",
+    "unstakedAmount": "Unstaked Amount",
+    "stakedValidators": "Staked Validators"
+  },
+  "governance": {
+    "yes": "Yes ({{value}}%)",
+    "votingEndTime": "Voting End Time",
+    "mostVotedOn": "Most voted on",
+    "active": "Active",
+    "passed": "Passed",
+    "rejected": "Rejected",
+    "all": "All"
+  },
+  "staking": {
+    "allValidators": "All Validators",
+    "totalStaked": "Total Staked: {{value}}",
+    "name": "{{name}} Staking"
+  },
+  "table": {
+    "noTokens": "no tokens"
+  }
 }

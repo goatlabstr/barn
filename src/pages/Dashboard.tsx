@@ -8,6 +8,7 @@ import {Done as ActiveIcon} from "@mui/icons-material";
 import EnhancedTable from "../component/ValidatorDetails/EnhancedTable";
 import {useNavigate} from "react-router-dom";
 import SummaryProposalList from "../component/GovernanceDetails/ActiveProposalList";
+import {useTranslation} from "react-i18next";
 
 const useStyles = makeStyles((theme: Theme) => ({
     centerBox: {
@@ -49,6 +50,7 @@ const activeRows = [
 ];
 
 function Index() {
+    const {t} = useTranslation();
     const classes = useStyles();
     let navigate = useNavigate();
     const theme = useTheme();
@@ -69,15 +71,15 @@ function Index() {
                         </Box>
                     </Box>
                 </Grid>
-                <Grid item md={12} xl={9}>
+                <Grid item md={12} xl={8}>
                     <Box sx={{
                         width: "100%",
                         p: 3
                     }} className={classes.centerBox}>
                         <Box className={classes.centerInnerBox}>
                             <EnhancedTable rows={activeRows}
-                                           title="Staked Validators"
-                                           buttonTitle="View All"
+                                           title={t("dashboard.stakedValidators")}
+                                           buttonTitle={t("dashboard.viewAll")}
                                            onClickToolbarButton={() => {
                                                navigate("/stake")
                                            }}
@@ -86,17 +88,17 @@ function Index() {
                         </Box>
                     </Box>
                 </Grid>
-                <Grid item md={12} xl={3}>
+                <Grid item md={12} xl={4}>
                     <Box sx={{
                         width: "100%",
                         p: 3
                     }} className={classes.centerBox}>
                         <Box className={classes.centerInnerBox}>
                             <Stack direction="row" justifyContent={"space-between"} spacing={1}>
-                                <Typography variant={"subtitle1"}>Active Proposal</Typography>
+                                <Typography variant={"subtitle1"}>{t("dashboard.activeProposal")}</Typography>
                                 <Button variant="outlined"
                                         color="secondary"
-                                        onClick={() => navigate("/governance")}>View All</Button>
+                                        onClick={() => navigate("/governance")}>{t("dashboard.viewAll")}</Button>
                             </Stack>
                             <SummaryProposalList/>
                         </Box>

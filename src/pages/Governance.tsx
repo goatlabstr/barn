@@ -3,6 +3,7 @@ import {Box, Grid, Tab, Tabs, Typography} from "@mui/material";
 import {makeStyles, styled} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
 import {GeneralConstants} from "../constants/general";
+import {useTranslation} from "react-i18next";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -86,6 +87,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Index() {
     const classes = useStyles();
+    const {t} = useTranslation();
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -103,10 +105,10 @@ function Index() {
                         <Box className={classes.centerInnerBox}>
                             <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                                 <StyledTabs value={value} onChange={handleChange} aria-label="lab API tabs example">
-                                    <StyledTab label="Active"/>
-                                    <StyledTab label="Passed"/>
-                                    <StyledTab label="Rejected"/>
-                                    <StyledTab label="All"/>
+                                    <StyledTab label={t("governance.active")}/>
+                                    <StyledTab label={t("governance.passed")}/>
+                                    <StyledTab label={t("governance.rejected")}/>
+                                    <StyledTab label={t("governance.all")}/>
                                 </StyledTabs>
                             </Box>
                             <TabPanel value={value} index={0}>

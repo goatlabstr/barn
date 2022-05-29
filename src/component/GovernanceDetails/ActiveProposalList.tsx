@@ -9,9 +9,12 @@ import Typography from '@mui/material/Typography';
 import {ListItemButton, Stack} from "@mui/material";
 import {useTheme} from "@mui/styles";
 import CircleIcon from '@mui/icons-material/Circle';
+import {useTranslation} from "react-i18next";
 
 export default function SummaryProposalList() {
     const theme = useTheme();
+    const {t} = useTranslation();
+
     return (
         <List sx={{width: '100%'}}>
             <ListItem alignItems="flex-start">
@@ -43,9 +46,9 @@ export default function SummaryProposalList() {
                                     pr: 1,
                                     //@ts-ignore
                                     color: theme.palette.secondary.main
-                                }}>Most Voted on</Typography>
+                                }}>{t("governance.mostVotedOn")}</Typography>
                                 <Typography sx={{fontSize: 10}}><CircleIcon sx={{fontSize: 10}}
-                                                                            color="success"/> Yes(85%)</Typography>
+                                                                            color="success"/>{t("governance.yes", {"value": 85})}</Typography>
                             </Stack>
                             <Stack direction={"column"}>
                                 <Typography variant={"body2"}
@@ -53,7 +56,7 @@ export default function SummaryProposalList() {
                                                 fontSize: 10, pr: 1,
                                                 //@ts-ignore
                                                 color: theme.palette.secondary.main
-                                            }}>Voting End Time</Typography>
+                                            }}>{t("governance.votingEndTime")}</Typography>
                                 <Typography variant={"body2"}
                                             sx={{
                                                 fontSize: 10,
@@ -95,9 +98,9 @@ export default function SummaryProposalList() {
                                     pr: 1,
                                     //@ts-ignore
                                     color: theme.palette.secondary.main
-                                }}>Most Voted on</Typography>
+                                }}>{t("governance.mostVotedOn")}</Typography>
                                 <Typography sx={{fontSize: 10}}><CircleIcon sx={{fontSize: 10}}
-                                                                            color="success"/> Yes(97%)</Typography>
+                                                                            color="success"/>{t("governance.yes", {"value": 97})}</Typography>
                             </Stack>
                             <Stack direction={"column"}>
                                 <Typography variant={"body2"}
@@ -105,7 +108,7 @@ export default function SummaryProposalList() {
                                                 fontSize: 10, pr: 1,
                                                 //@ts-ignore
                                                 color: theme.palette.secondary.main
-                                            }}>Voting End Time</Typography>
+                                            }}>{t("governance.votingEndTime")}</Typography>
                                 <Typography variant={"body2"}
                                             sx={{
                                                 fontSize: 10,

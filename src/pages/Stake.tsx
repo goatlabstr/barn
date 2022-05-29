@@ -6,6 +6,7 @@ import StakingDetails from '../component/ValidatorDetails/StakingDetails';
 import {GeneralConstants} from "../constants/general";
 import EnhancedTable from '../component/ValidatorDetails/EnhancedTable';
 import {Done as ActiveIcon} from "@mui/icons-material";
+import {useTranslation} from "react-i18next";
 
 const useStyles = makeStyles((theme: Theme) => ({
     centerBox: {
@@ -92,6 +93,8 @@ const activeRows = [
 function Index() {
     const classes = useStyles();
     const theme = useTheme();
+    const {t} = useTranslation();
+
     return (
         <React.Fragment>
             <Grid container>
@@ -113,7 +116,7 @@ function Index() {
                         p: 3
                     }} className={classes.centerBox}>
                         <Box className={classes.centerInnerBox}>
-                            <EnhancedTable rows={rows} search title={"All Validators"}/>
+                            <EnhancedTable rows={rows} search title={t("staking.allValidators")}/>
                         </Box>
                     </Box>
                 </Grid>
