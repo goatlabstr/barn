@@ -13,7 +13,7 @@ function Index(props) {
             <Grid container rowSpacing={0.5}>
                 <>
                     <Grid item xs={10}>
-                        <Typography variant={"subtitle1"}>{t("staking.name",{"name": config.NETWORK_NAME})}</Typography>
+                        <Typography variant={"h6"}>{t("staking.name",{"name": config.NETWORK_NAME})}</Typography>
                         <Typography variant={"body1"} style={{color: "rgb(131 157 170)"}}>{t("staking.totalStaked", {
                             "value": "200.013K"
                         })}</Typography>

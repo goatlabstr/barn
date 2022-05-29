@@ -28,7 +28,7 @@
   "staking": {
     "allValidators": "All Validators",
     "totalStaked": "Total Staked: {{value}}",
-    "name": "{{name}} Staking"
+    "name": "My {{name}} Validators"
   },
   "table": {
     "noTokens": "no tokens"

@@ -260,7 +260,7 @@ export default function EnhancedTable(props: TableProps) {
             />}
             <TableContainer>
                 <Table
-                    sx={{minWidth: 450}}
+                    sx={{minWidth: 650}}
                     aria-labelledby="tableTitle"
                 >
                     <EnhancedTableHead

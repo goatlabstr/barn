@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexWrap: "wrap"
     },
     menuListItemText: {
-        [theme.breakpoints.down("sm")]: {
+        [theme.breakpoints.down("lg")]: {
             "& .MuiTypography-body1": {
                 width: 80,
                 fontSize: "0.7rem",
@@ -161,13 +161,13 @@ export default function SideBar(props: SideBarProps) {
                 aria-label="open drawer"
                 edge="start"
                 onClick={handleDrawerToggle}
-                sx={{mr: 2, display: {sm: 'none'}, position: "absolute", left: 10, size: "large"}}
+                sx={{mr: 2, display: {lg: 'none'}, position: "absolute", left: 10, size: "large"}}
             >
-                <MenuIcon fontSize="inherit"/>
+                <MenuIcon fontSize="large"/>
             </IconButton>
             <Box
                 component="nav"
-                sx={{width: {sm: drawerWidth}, flexShrink: {sm: 0}}}
+                sx={{width: {lg: drawerWidth}, flexShrink: {lg: 0}}}
                 aria-label="mailbox folders"
             >
                 <Drawer
@@ -178,7 +178,7 @@ export default function SideBar(props: SideBarProps) {
                         keepMounted: true, // Better open performance on mobile.
                     }}
                     sx={{
-                        display: {xs: 'block', sm: 'none'},
+                        display: {xs: 'block', lg: 'none'},
                         '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth},
                     }}
                 >
@@ -187,7 +187,7 @@ export default function SideBar(props: SideBarProps) {
                 <Drawer
                     variant="permanent"
                     sx={{
-                        display: {xs: 'none', sm: 'block'},
+                        display: {xs: 'none', lg: 'block'},
                         '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth},
                     }}
                     open
