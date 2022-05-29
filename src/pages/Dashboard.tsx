@@ -81,6 +81,7 @@ function Index() {
                                            onClickToolbarButton={() => {
                                                navigate("/stake")
                                            }}
+                                           search
                             />
                         </Box>
                     </Box>

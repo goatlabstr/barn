@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     tableSortLabel: {
         color: "rgb(131 157 170)"
+    },
+    emptyCell: {
+        color: "rgb(131 157 170)"
     }
 }));
 
@@ -215,7 +218,8 @@ export default function SummaryTable(props: TableProps) {
                             })}
                         {rows.length <= 0 && (
                             <TableRow>
-                                <TableCell colSpan={6}/>
+                                <TableCell colSpan={4} align="center"
+                                           className={classes.emptyCell}>No Data Found</TableCell>
                             </TableRow>
                         )}
                     </TableBody>

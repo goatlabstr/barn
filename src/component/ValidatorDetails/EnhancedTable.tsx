@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -14,6 +15,7 @@ import {formatCount, getComparator, Order, stableSort} from './CommonTable';
 import TableHead from "@mui/material/TableHead";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import {visuallyHidden} from "@mui/utils";
+import SearchTextField from "./SearchTextField";
 
 const useStyles = makeStyles((theme: Theme) => ({
     tableHead: {
@@ -32,6 +34,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: "rgb(131 157 170)"
     },
     tableSortLabel: {
+        color: "rgb(131 157 170)"
+    },
+    tableSearch: {
+        marginRight: theme.spacing(2)
+    },
+    emptyCell: {
         color: "rgb(131 157 170)"
     }
 }));
@@ -52,6 +60,7 @@ interface TableProps {
     title?: String;
     buttonTitle?: String;
     onClickToolbarButton?: Function;
+    search?: Boolean;
 }
 
 interface HeadCell {
@@ -107,6 +116,16 @@ const headCells: readonly HeadCell[] = [
 ];
 
 const EnhancedTableToolbar = (props) => {
+    const {onChangeSearchValue, searchActive} = props;
+    const classes = useStyles();
+    const [value, setValue] = useState("");
+
+    const handleValueChange = (event) => {
+        if (onChangeSearchValue && typeof onChangeSearchValue === 'function')
+            onChangeSearchValue(event.target.value);
+        setValue(event.target.value);
+    }
+
     return (
         <Toolbar
             sx={{
@@ -114,8 +133,8 @@ const EnhancedTableToolbar = (props) => {
                 pr: {xs: 1, sm: 1}
             }}
         >
-            <Grid container>
-                <Grid item xs={10}>
+            <Grid container justifyContent={"space-between"}>
+                <Grid item>
                     <Typography
                         sx={{flex: '1 1 100%'}}
                         variant="h6"
@@ -125,11 +144,15 @@ const EnhancedTableToolbar = (props) => {
                         {props.title}
                     </Typography>
                 </Grid>
-                {props.buttonTitle && <Grid item xs={2} style={{display: "flex", justifyContent: "right"}}>
-                    <Button variant="outlined"
-                            color="secondary"
-                            onClick={props.onClickToolbarButton}>{props.buttonTitle}</Button>
-                </Grid>}
+                <Grid item>
+                    <Stack direction={"row"} alignItems={"center"} justifyContent={"center"}>
+                        {searchActive && <SearchTextField value={value} onChange={handleValueChange}
+                                                          className={classes.tableSearch}/>}
+                        {props.buttonTitle && <Button variant="outlined"
+                                                      color="secondary"
+                                                      onClick={props.onClickToolbarButton}>{props.buttonTitle}</Button>}
+                    </Stack>
+                </Grid>
             </Grid>
         </Toolbar>
     );
@@ -195,10 +218,19 @@ const delegationButtonGroup = (stakeAmount) => {
 }
 
 export default function EnhancedTable(props: TableProps) {
-    const {rows, title, buttonTitle, onClickToolbarButton} = props;
+    const {title, buttonTitle, onClickToolbarButton, search} = props;
     const classes = useStyles();
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<keyof Data>('validator');
+    const [filterValue, setFilterValue] = useState<string>("");
+    const [data, setData] = useState(props.rows);
+
+    useEffect(() => {
+        if (!filterValue || /^\s*$/.test(filterValue))
+            setData(props.rows);
+        else
+            setData(props.rows.filter(x => x.validator.toLowerCase().includes(filterValue.toLowerCase())))
+    }, [filterValue]);
 
     const handleStakeAmount = (value) => {
         if (value > 0)
@@ -219,7 +251,10 @@ export default function EnhancedTable(props: TableProps) {
     return (
         <Box sx={{width: '100%'}}>
             {title && <EnhancedTableToolbar title={title} buttonTitle={buttonTitle}
-                                            onClickToolbarButton={onClickToolbarButton}/>}
+                                            onClickToolbarButton={onClickToolbarButton}
+                                            onChangeSearchValue={setFilterValue}
+                                            searchActive={search}
+            />}
             <TableContainer>
                 <Table
                     sx={{minWidth: 450}}
@@ -231,7 +266,7 @@ export default function EnhancedTable(props: TableProps) {
                         onRequestSort={handleRequestSort}
                     />
                     <TableBody>
-                        {stableSort(rows, getComparator(order, orderBy))
+                        {stableSort(data, getComparator(order, orderBy))
                             .map((row, index) => {
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -271,9 +306,10 @@ export default function EnhancedTable(props: TableProps) {
                                     </TableRow>
                                 );
                             })}
-                        {rows.length <= 0 && (
+                        {data.length <= 0 && (
                             <TableRow>
-                                <TableCell colSpan={6}/>
+                                <TableCell colSpan={6} align="center"
+                                           className={classes.emptyCell}>No Data Found</TableCell>
                             </TableRow>
                         )}
                     </TableBody>

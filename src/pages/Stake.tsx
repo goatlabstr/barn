@@ -113,7 +113,7 @@ function Index() {
                         p: 3
                     }} className={classes.centerBox}>
                         <Box className={classes.centerInnerBox}>
-                            <EnhancedTable rows={rows} title={"All Validators"}/>
+                            <EnhancedTable rows={rows} search title={"All Validators"}/>
                         </Box>
                     </Box>
                 </Grid>
