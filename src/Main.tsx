@@ -33,7 +33,7 @@ function Main() {
 
     return (
         <Box sx={{display: 'flex'}}>
-            <SideBar menuItems={menuItems}/>
+            <SideBar menuItems={menuItems(i18n.t)}/>
             <Box
                 component="main"
                 sx={{flexGrow: 1, p: 0}}

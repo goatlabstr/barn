@@ -28,7 +28,7 @@ import {decode, encode} from 'js-base64';
 import allActions from "../../action";
 import {useSnackbar} from "notistack";
 import {useAppDispatch, useAppSelector} from '../../customHooks/hook';
-// import config from '../../constants/networkConfig';
+//import config from '../../constants/networkConfig';
 
 const drawerWidth = 220;
 
@@ -130,7 +130,6 @@ export default function SideBar(props: SideBarProps) {
                             if (isActivePath("/") && val.status !== 2) {
                                 return null;
                             }
-
                             //@ts-ignore
                             array.push(val.id);
                         }
