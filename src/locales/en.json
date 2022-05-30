@@ -2,7 +2,10 @@
   "apply": "Apply",
   "cancel": "Cancel",
   "menu": {
-    "trial": "Trial"
+    "connect": "Connect",
+    "dashboard": "Dashboard",
+    "stake": "Stake",
+    "governance": "Governance"
   },
   "claimReward": "Claim Reward: {{value}} {{name}}",
   "dashboard": {

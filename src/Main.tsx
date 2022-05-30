@@ -15,10 +15,10 @@ import {
     MonetizationOnRounded as StakeIcon
 } from "@mui/icons-material";
 
-const menuItems = [
-    {key: "dashboard", path: "/", title: "Dashboard", icon: <DashboardIcon/>},
-    {key: "stake", path: "/stake", title: "Stake", icon: <StakeIcon/>},
-    {key: "governance", path: "/governance", title: "Governance", icon: <GovernanceIcon/>}
+const menuItems = (t) => [
+    {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
+    {key: "stake", path: "/stake", title: t("menu.stake"), icon: <StakeIcon/>},
+    {key: "governance", path: "/governance", title: t("menu.governance"), icon: <GovernanceIcon/>}
 ];
 
 function Main() {
