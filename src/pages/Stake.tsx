@@ -7,6 +7,7 @@ import {GeneralConstants} from "../constants/general";
 import EnhancedTable from '../component/ValidatorDetails/EnhancedTable';
 import {Done as ActiveIcon} from "@mui/icons-material";
 import {useTranslation} from "react-i18next";
+import {useAppSelector} from "../customHooks/hook";
 
 const useStyles = makeStyles((theme: Theme) => ({
     centerBox: {
@@ -19,86 +20,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-
-function createData(
-    validator: string,
-    status: any,
-    votingPower: number,
-    commission: number,
-    stakeAmount: number,
-    action: any,
-    avatar: any
-) {
-    return {
-        validator,
-        status,
-        votingPower,
-        commission,
-        stakeAmount,
-        action,
-        avatar
-    };
-}
-
-const rows = [
-    createData('Cupcake', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 3.7, 67, 4.3,
-        <Typography>Action</Typography>,<Avatar>C</Avatar>),
-    createData('Donut', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 251234, 51, 200000,
-        <Typography>Action</Typography>,<Avatar>D</Avatar>),
-    createData('Eclair', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 16000000, 24, 0,
-        <Typography>Action</Typography>,<Avatar>E</Avatar>),
-    createData('Frozen yoghurt', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 61234567989, 24, 0,
-        <Typography>Action</Typography>,<Avatar>F</Avatar>),
-    createData('Gingerbread', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 16.0, 49, 0,
-        <Typography>Action</Typography>,<Avatar>G</Avatar>),
-    createData('Honeycomb', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 3200000, 87, 0,
-        <Typography>Action</Typography>,<Avatar>H</Avatar>),
-    createData('Ice cream sandwich', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 9.0, 37, 0,
-        <Typography>Action</Typography>,<Avatar>I</Avatar>),
-    createData('Jelly Bean', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 0.0, 94, 0,
-        <Typography>Action</Typography>,<Avatar>J</Avatar>),
-    createData('KitKat', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 26.0, 65, 7.0,
-        <Typography>Action</Typography>,<Avatar>K</Avatar>),
-    createData('Lollipop', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 0.2, 98, 0,
-        <Typography>Action</Typography>,<Avatar>L</Avatar>),
-    createData('Marshmallow', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 0, 81, 0,
-        <Typography>Action</Typography>,<Avatar>M</Avatar>),
-    createData('Nougat', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 19.0, 9, 37.0,
-        <Typography>Action</Typography>,<Avatar>N</Avatar>),
-    createData('Oreo', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 18.0, 63, 0,
-        <Typography>Action</Typography>,<Avatar>O</Avatar>),
-];
-
-function createActiveData(
-    validator: string,
-    stakeAmount: number,
-    pendingRewards: number,
-    avatar: any
-) {
-    return {
-        validator,
-        stakeAmount,
-        pendingRewards,
-        avatar
-    };
-}
-
-
-const activeRows = [
-    createActiveData('Cupcake', 3.7, 0.02, <Avatar>C</Avatar>),
-    createActiveData('Donut',200000, 89, <Avatar>D</Avatar>),
-    createActiveData('Nougat', 9, 8.88, <Avatar>N</Avatar>),
-];
-
 function Index() {
     const classes = useStyles();
     const theme = useTheme();
     const {t} = useTranslation();
 
+    const validatorList = useAppSelector(state => state.stake.validators.list);
+    const delegatedValidatorList = useAppSelector(state => state.stake.delegatedValidators.list);
+    const validatorImages = useAppSelector(state => state.stake.validators.images);
+
     return (
         <React.Fragment>
             <Grid container>
-                {activeRows.length > 0 && <Grid item xs={12}>
+                {delegatedValidatorList.length > 0 && <Grid item xs={12}>
                     <Box sx={{
                         width: "100%",
                         //@ts-ignore
@@ -106,7 +40,7 @@ function Index() {
                         p: 3
                     }} className={classes.centerBox}>
                         <Box className={classes.centerInnerBox}>
-                            <StakingDetails rows={activeRows}/>
+                            <StakingDetails rows={delegatedValidatorList} images={validatorImages}/>
                         </Box>
                     </Box>
                 </Grid>}
@@ -116,7 +50,7 @@ function Index() {
                         p: 3
                     }} className={classes.centerBox}>
                         <Box className={classes.centerInnerBox}>
-                            <EnhancedTable rows={rows} search title={t("staking.allValidators")}/>
+                            <EnhancedTable rows={validatorList} images={validatorImages} search title={t("staking.allValidators")}/>
                         </Box>
                     </Box>
                 </Grid>

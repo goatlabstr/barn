@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 
 import {useLocation, useNavigate} from "react-router-dom";
 import {Theme} from "@mui/material/styles";
@@ -21,7 +21,15 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import clsx from "clsx";
 import logo from '../../logo.svg';
-import {AccountBalanceWalletRounded, Email, Instagram, Telegram, Twitter} from "@mui/icons-material";
+import {AccountBalanceWalletRounded, Email, Instagram, LogoutRounded, Telegram, Twitter} from "@mui/icons-material";
+import {useGlobalPreloader} from "../../context/GlobalPreloaderProvider";
+import {initializeChain} from "../../services/cosmos";
+import {decode, encode} from 'js-base64';
+import allActions from "../../action";
+import {useSnackbar} from "notistack";
+import {useAppDispatch, useAppSelector} from '../../customHooks/hook';
+import {config} from "../../constants/networkConfig";
+//import config from '../../constants/networkConfig';
 
 const drawerWidth = 220;
 
@@ -83,6 +91,11 @@ export default function SideBar(props: SideBarProps) {
     const {t} = useTranslation();
     const navigate = useNavigate();
     const [mobileOpen, setMobileOpen] = React.useState(false);
+    const {activate, passivate} = useGlobalPreloader();
+    const dispatch = useAppDispatch();
+    const {enqueueSnackbar} = useSnackbar();
+
+    const address = useAppSelector(state => state.accounts.address.value);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -90,6 +103,39 @@ export default function SideBar(props: SideBarProps) {
 
     const isActivePath = (pathname) => {
         return location.pathname === pathname;
+    }
+
+    const handleDisconnectButtonClick = () => {
+        localStorage.removeItem('of_co_address');
+        dispatch(allActions.disconnectSet());
+    }
+
+    const handleConnectButtonClick = () => {
+        activate();
+        initializeChain((error, addressList) => {
+            passivate();
+            if (error) {
+                localStorage.removeItem('of_co_address');
+                enqueueSnackbar(error, {variant: "error"});
+                return;
+            }
+
+            dispatch(allActions.setAccountAddress(addressList[0]?.address));
+
+            if (!isActivePath("/governance") && !isActivePath("/stake")) {
+                dispatch(allActions.getUnBondingDelegations(addressList[0] && addressList[0].address));
+                dispatch(allActions.fetchRewards(addressList[0] && addressList[0].address));
+            }
+            if (!isActivePath("/governance")) {
+                dispatch(allActions.getDelegations(addressList[0] && addressList[0].address));
+            }
+            dispatch(allActions.getBalance(addressList[0] && addressList[0].address));
+            dispatch(allActions.fetchVestingBalance(addressList[0] && addressList[0].address));
+            if (!isActivePath("/governance")) {
+                dispatch(allActions.getDelegatedValidatorsDetails(addressList[0] && addressList[0].address));
+            }
+            localStorage.setItem('of_co_address', encode(addressList[0] && addressList[0].address));
+        });
     }
 
     const drawer = (
@@ -122,8 +168,15 @@ export default function SideBar(props: SideBarProps) {
                     ))}
                 </List>
                 <Stack direction="column">
-                    <Button variant="outlined" color="secondary"
-                            startIcon={<AccountBalanceWalletRounded/>}>Connect</Button>
+                    {localStorage.getItem('of_co_address') || address ?
+                        <Button variant="outlined" sx={{"color": "rgb(131 157 170)", "borderColor": "rgb(131 157 170)"}}
+                                startIcon={<LogoutRounded/>}
+                                onClick={handleDisconnectButtonClick}
+                        >{t("menu.disconnect")}</Button> :
+                        <Button variant="outlined" color="secondary"
+                                startIcon={<AccountBalanceWalletRounded/>}
+                                onClick={handleConnectButtonClick}
+                        >{t("menu.connect")}</Button>}
                     <Stack direction="row" sx={{justifyContent: "center"}}>
                         <IconButton className={classes.socialMediaIcon}
                             //@ts-ignore
@@ -148,7 +201,7 @@ export default function SideBar(props: SideBarProps) {
                             onClick={() => window.open("https://www.coingecko.com/", '_blank').focus()}
 
                     >
-                        Price Data by Coingecko</Button>
+                        {t("menu.coingecko")}</Button>
                 </Stack>
             </Stack>
         </div>
