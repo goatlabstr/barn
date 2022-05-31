@@ -1,11 +1,17 @@
 {
   "apply": "Apply",
   "cancel": "Cancel",
+  "inactive": "Inactive",
+  "active": "Active",
+  "unbounding": "Unbounding",
+  "jailed": "Jailed",
   "menu": {
     "connect": "Connect",
+    "disconnect": "Disconnect",
     "dashboard": "Dashboard",
     "stake": "Stake",
-    "governance": "Governance"
+    "governance": "Governance",
+    "coingecko": "Price Data by Coingecko"
   },
   "claimReward": "Claim Reward: {{value}} {{name}}",
   "dashboard": {

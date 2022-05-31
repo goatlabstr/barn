@@ -5,7 +5,7 @@ import {useTranslation} from "react-i18next";
 import {config} from "../../constants/networkConfig";
 
 function Index(props) {
-    const {rows} = props;
+    const {rows, images} = props;
     const {t} = useTranslation();
 
     return (
@@ -25,7 +25,7 @@ function Index(props) {
                         })}</Button>
                     </Grid>
                     <Grid item xs={12}>
-                        <SummaryTable rows={rows}/>
+                        <SummaryTable rows={rows} images={images}/>
                     </Grid>
                 </>
             </Grid>

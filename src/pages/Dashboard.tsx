@@ -1,14 +1,14 @@
 import * as React from 'react';
-import {Avatar, Box, Button, Chip, Grid, Stack, Typography} from "@mui/material";
+import {Box, Button, Grid, Stack, Typography} from "@mui/material";
 import TokenDetails from '../component/TokenDetails/index';
 import {makeStyles, useTheme} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
 import {GeneralConstants} from "../constants/general";
-import {Done as ActiveIcon} from "@mui/icons-material";
 import EnhancedTable from "../component/ValidatorDetails/EnhancedTable";
 import {useNavigate} from "react-router-dom";
 import SummaryProposalList from "../component/GovernanceDetails/ActiveProposalList";
 import {useTranslation} from "react-i18next";
+import {useAppSelector} from "../customHooks/hook";
 
 const useStyles = makeStyles((theme: Theme) => ({
     centerBox: {
@@ -20,40 +20,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-function createData(
-    validator: string,
-    status: any,
-    votingPower: number,
-    commission: number,
-    stakeAmount: number,
-    action: any,
-    avatar: any
-) {
-    return {
-        validator,
-        status,
-        votingPower,
-        commission,
-        stakeAmount,
-        action,
-        avatar
-    };
-}
-
-const activeRows = [
-    createData('Cupcake', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 3.7, 67, 4.3,
-        <Typography>Action</Typography>, <Avatar>C</Avatar>),
-    createData('Donut', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 251234, 51, 200000,
-        <Typography>Action</Typography>, <Avatar>D</Avatar>),
-    createData('Nougat', <Chip label="Active" variant="filled" icon={<ActiveIcon/>}/>, 19.0, 9, 37.0,
-        <Typography>Action</Typography>, <Avatar>N</Avatar>),
-];
 
 function Index() {
     const {t} = useTranslation();
     const classes = useStyles();
     let navigate = useNavigate();
     const theme = useTheme();
+
+    const delegatedValidatorList = useAppSelector(state => state.stake.delegatedValidators.list);
+    const validatorImages = useAppSelector(state => state.stake.validators.images);
 
     return (
         <React.Fragment>
@@ -77,7 +52,8 @@ function Index() {
                         p: 3
                     }} className={classes.centerBox}>
                         <Box className={classes.centerInnerBox}>
-                            <EnhancedTable rows={activeRows}
+                            <EnhancedTable rows={delegatedValidatorList}
+                                           images={validatorImages}
                                            title={t("dashboard.stakedValidators")}
                                            buttonTitle={t("dashboard.viewAll")}
                                            onClickToolbarButton={() => {

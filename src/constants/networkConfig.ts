@@ -1,6 +1,6 @@
 export const config = {
-    RPC_URL: 'https://rpc-juno-ia.notional.ventures/',
-    REST_URL: 'https://api-juno-ia.notional.ventures/',
+    RPC_URL: 'https://rpc-juno-ia.notional.ventures',
+    REST_URL: 'https://api-juno-ia.notional.ventures',
     EXPLORER_URL: 'https://www.mintscan.io/juno',
     STAKING_URL: 'https://juno.goatlabs.zone/stake',
     NETWORK_NAME: 'Juno',

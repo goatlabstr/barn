@@ -7,7 +7,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Grid from '@mui/material/Grid';
-import {Button, ButtonGroup, Stack, Toolbar, Typography} from "@mui/material";
+import {Avatar, Button, ButtonGroup, Chip, Stack, Toolbar, Typography} from "@mui/material";
 import {makeStyles} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
 import clsx from "clsx";
@@ -15,8 +15,14 @@ import {formatCount, getComparator, Order, stableSort} from './CommonTable';
 import TableHead from "@mui/material/TableHead";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import {visuallyHidden} from "@mui/utils";
+import {Done as ActiveIcon,
+    HourglassEmpty as UnboundingIcon,
+    Block as JailedIcon,
+    AccessAlarms as InactiveIcon} from '@mui/icons-material';
 import SearchTextField from "./SearchTextField";
 import {useTranslation} from "react-i18next";
+import {config} from "../../constants/networkConfig";
+import {useAppSelector} from "../../customHooks/hook";
 
 const useStyles = makeStyles((theme: Theme) => ({
     tableHead: {
@@ -45,19 +51,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-
-interface Data {
-    avatar: any;
-    validator: string;
-    status: any;
-    votingPower: number;
-    commission: number;
-    stakeAmount: number;
-    action: any;
-}
-
 interface TableProps {
-    rows: Array<Data>;
+    rows: Array<any>;
+    images: Array<any>;
     title?: String;
     buttonTitle?: String;
     onClickToolbarButton?: Function;
@@ -66,13 +62,13 @@ interface TableProps {
 
 interface HeadCell {
     disablePadding: boolean;
-    id: keyof Data;
+    id: any;
     label: string;
     numeric: boolean;
 }
 
 export interface EnhancedTableProps {
-    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
+    onRequestSort: (event: React.MouseEvent<unknown>, property: any) => void;
     order: Order;
     orderBy: string;
 }
@@ -165,7 +161,7 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
     const {order, orderBy, onRequestSort} =
         props;
     const createSortHandler =
-        (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+        (property: any) => (event: React.MouseEvent<unknown>) => {
             onRequestSort(event, property);
         };
 
@@ -209,7 +205,7 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
 }
 
 const delegationButtonGroup = (stakeAmount) => {
-    if (stakeAmount <= 0)
+    if (typeof stakeAmount !== "number" || stakeAmount <= 0)
         return <><ButtonGroup variant="text" size="small"><Button color="success">Delegate</Button></ButtonGroup></>
     else
         return <><ButtonGroup variant="text" size="small">
@@ -220,35 +216,75 @@ const delegationButtonGroup = (stakeAmount) => {
 }
 
 export default function EnhancedTable(props: TableProps) {
-    const {title, buttonTitle, onClickToolbarButton, search} = props;
+    const {images, rows, title, buttonTitle, onClickToolbarButton, search} = props;
     const classes = useStyles();
     const [order, setOrder] = React.useState<Order>('asc');
-    const [orderBy, setOrderBy] = React.useState<keyof Data>('validator');
+    const [orderBy, setOrderBy] = React.useState<any>('validator');
     const [filterValue, setFilterValue] = useState<string>("");
-    const [data, setData] = useState(props.rows);
+    const [data, setData] = useState<any>([]);
     const {t} = useTranslation();
 
-    useEffect(() => {
-        if (!filterValue || /^\s*$/.test(filterValue))
-            setData(props.rows);
-        else
-            setData(props.rows.filter(x => x.validator.toLowerCase().includes(filterValue.toLowerCase())))
-    }, [filterValue]);
+    const delegations = useAppSelector(state => state.accounts.delegations.result);
 
-    const handleStakeAmount = (value) => {
-        if (value > 0)
-            return formatCount(value);
+    const getImage = (id) => {
+        const image = images.filter((value) => value._id === id?.toString());
+        //@ts-ignore
+        return <Avatar src={image[0]?.them[0]?.pictures?.primary?.url}></Avatar>
+    }
+
+    const handleStakeAmount = (row) => {
+        let value = delegations.find((val) =>
+            (val.delegation && val.delegation.validator_address) === row.operator_address);
+        let val = value ? value.balance && value.balance.amount && value.balance.amount / 10 ** config.COIN_DECIMALS : 0;
+        if (val > 0)
+            return formatCount(val);
         return <Typography variant={"body2"}>{t("table.noTokens")}</Typography>;
     }
 
+    useEffect(() => {
+        if (!filterValue || /^\s*$/.test(filterValue))
+            setData(rows);
+        else
+            //@ts-ignore
+            setData(rows.filter(x => x?.description?.moniker?.toLowerCase().includes(filterValue.toLowerCase())))
+    }, [filterValue]);
+
+    useEffect(() => {
+        setData(rows)
+    }, [rows]);
+
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,
-        property: keyof Data,
+        property: any,
     ) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
+
+    const getStatus = (val) => {
+        let label: string;
+        let icon: JSX.Element;
+        switch (val) {
+            case 1:
+                label = t("inactive");
+                icon = <InactiveIcon />
+                break;
+            case 2:
+                label = t("unbounding");
+                icon = <UnboundingIcon />
+                break;
+            case 3:
+                label = t("active");
+                icon = <ActiveIcon />
+                break;
+            default:
+                label = t("jailed");
+                icon = <JailedIcon />
+                break;
+        }
+        return <Chip label={label} variant="filled" icon={icon}/>;
+    }
 
 
     return (
@@ -277,7 +313,8 @@ export default function EnhancedTable(props: TableProps) {
                                     <TableRow
                                         hover
                                         tabIndex={-1}
-                                        key={row.validator}
+                                        //@ts-ignore
+                                        key={row.description.moniker}
                                     >
                                         <TableCell
                                             id={labelId}
@@ -286,26 +323,41 @@ export default function EnhancedTable(props: TableProps) {
                                             className={classes.tableCell}
                                         >
                                             <Stack direction="row" spacing={1}>
-                                                {row.avatar}
+                                                {   //@ts-ignore
+                                                    getImage(row?.description?.identity)
+                                                }
                                                 <Typography style={{
                                                     justifyContent: "center",
                                                     alignItems: "center",
                                                     display: "flex"
-                                                }}
-                                                            variant={"body2"}>{row.validator}</Typography>
+                                                }}          //@ts-ignore
+                                                            variant={"body2"}>{row?.description?.moniker}</Typography>
                                             </Stack>
                                         </TableCell>
-                                        <TableCell className={classes.tableCell}>{row.status}</TableCell>
+                                        <TableCell
+                                            className={classes.tableCell}>
+                                            {getStatus(row.status)}
+                                        </TableCell>
                                         <TableCell align="center"
-                                                   className={classes.tableCell}>{formatCount(row.votingPower)}</TableCell>
+                                                   className={classes.tableCell}>
+                                            {
+                                                formatCount(parseFloat((Number(row.tokens) / (10 ** config.COIN_DECIMALS)).toFixed(1)))
+                                            }
+                                        </TableCell>
                                         <TableCell align="center"
-                                                   className={classes.tableCell}>{row.commission}%</TableCell>
+                                            //@ts-ignore
+                                                   className={classes.tableCell}>
+                                            {
+                                                //@ts-ignore
+                                                parseFloat((Number(row?.commission?.commission_rates?.rate) * 100).toFixed(2))
+                                            }%
+                                        </TableCell>
                                         <TableCell align="center" className={clsx(classes.tableCell, {
                                             [classes.tableActiveCell]: row.stakeAmount > 0,
                                             [classes.tablePassiveCell]: row.stakeAmount <= 0
-                                        })}>{handleStakeAmount(row.stakeAmount)}</TableCell>
+                                        })}>{handleStakeAmount(row)}</TableCell>
                                         <TableCell align="center"
-                                                   className={classes.tableCell}>{delegationButtonGroup(row.stakeAmount)}</TableCell>
+                                                   className={classes.tableCell}>{delegationButtonGroup(handleStakeAmount(row))}</TableCell>
                                     </TableRow>
                                 );
                             })}
