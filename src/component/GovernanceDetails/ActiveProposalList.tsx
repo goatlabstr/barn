@@ -1,125 +1,37 @@
 import * as React from 'react';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import {ListItemButton, Stack} from "@mui/material";
+import {Box, Grid} from "@mui/material";
 import {useTheme} from "@mui/styles";
-import CircleIcon from '@mui/icons-material/Circle';
 import {useTranslation} from "react-i18next";
+import ProposalCard from "../ProposalCard/ProposalCard";
 
 export default function SummaryProposalList() {
     const theme = useTheme();
     const {t} = useTranslation();
 
     return (
-        <List sx={{width: '100%'}}>
-            <ListItem alignItems="flex-start">
-                <ListItemButton>
-                    <ListItemAvatar>
-                        <Avatar alt="23" src="/static/images/avatar/1.jpg"/>
-                    </ListItemAvatar>
-                    <Stack direction={"column"}>
-                        <ListItemText
-                            primary="#23 Community Spend Proposal for Creation of Terra Developer Fund"
-                            secondary={
-                                <React.Fragment>
-                                    <Typography
-                                        sx={{display: 'inline'}}
-                                        component="span"
-                                        variant="body2"
-                                        color="text.primary"
-                                    >
-                                        Ali Connors
-                                    </Typography>
-                                    {" — # Community Spend Proposal for Creation of Terra Developer Fund..."}
-                                </React.Fragment>
-                            }
-                        />
-                        <Stack direction="row" sx={{justifyContent: "space-between"}}>
-                            <Stack direction="column">
-                                <Typography sx={{
-                                    fontSize: 10,
-                                    pr: 1,
-                                    //@ts-ignore
-                                    color: theme.palette.secondary.main
-                                }}>{t("governance.mostVotedOn")}</Typography>
-                                <Typography sx={{fontSize: 10}}><CircleIcon sx={{fontSize: 10}}
-                                                                            color="success"/>{t("governance.yes", {"value": 85})}</Typography>
-                            </Stack>
-                            <Stack direction={"column"}>
-                                <Typography variant={"body2"}
-                                            sx={{
-                                                fontSize: 10, pr: 1,
-                                                //@ts-ignore
-                                                color: theme.palette.secondary.main
-                                            }}>{t("governance.votingEndTime")}</Typography>
-                                <Typography variant={"body2"}
-                                            sx={{
-                                                fontSize: 10,
-                                                //@ts-ignore
-                                                color: theme.palette.primary.main
-                                            }}>2022-05-19 17:03 UTC</Typography>
-                            </Stack>
-                        </Stack>
-                    </Stack>
-                </ListItemButton>
-            </ListItem>
-            <Divider variant="inset" component="li"/>
-            <ListItem alignItems="flex-start">
-                <ListItemButton>
-                    <ListItemAvatar>
-                        <Avatar alt="22" src="/static/images/avatar/2.jpg"/>
-                    </ListItemAvatar>
-                    <Stack direction={"column"}>
-                        <ListItemText
-                            primary="#22 Increase Validator Set to 135"
-                            secondary={
-                                <React.Fragment>
-                                    <Typography
-                                        sx={{display: 'inline'}}
-                                        component="span"
-                                        variant="body2"
-                                        color="text.primary"
-                                    >
-                                        to Scott, Alex, Jennifer
-                                    </Typography>
-                                    {" — With Juno Network growing day-to-day, it would be nice to give new va…"}
-                                </React.Fragment>
-                            }
-                        />
-                        <Stack direction="row" sx={{justifyContent: "space-between"}}>
-                            <Stack direction="column">
-                                <Typography sx={{
-                                    fontSize: 10,
-                                    pr: 1,
-                                    //@ts-ignore
-                                    color: theme.palette.secondary.main
-                                }}>{t("governance.mostVotedOn")}</Typography>
-                                <Typography sx={{fontSize: 10}}><CircleIcon sx={{fontSize: 10}}
-                                                                            color="success"/>{t("governance.yes", {"value": 97})}</Typography>
-                            </Stack>
-                            <Stack direction={"column"}>
-                                <Typography variant={"body2"}
-                                            sx={{
-                                                fontSize: 10, pr: 1,
-                                                //@ts-ignore
-                                                color: theme.palette.secondary.main
-                                            }}>{t("governance.votingEndTime")}</Typography>
-                                <Typography variant={"body2"}
-                                            sx={{
-                                                fontSize: 10,
-                                                //@ts-ignore
-                                                color: theme.palette.primary.main
-                                            }}>2022-05-19 17:03 UTC</Typography>
-                            </Stack>
-                        </Stack>
-                    </Stack>
-                </ListItemButton>
-            </ListItem>
-        </List>
+        <Grid container spacing={{ xs: 2, md: 3 }}  sx={{ flexGrow: 1 }} >
+            {/*{Array.from(Array(6)).map((_, index) => (*/}
+            <Grid item xs={12} md={6} xl={12} key={1}>
+                <ProposalCard
+                    id={23}
+                    title={"Community Spend Proposal for Creation of Terra Developer Fund"}
+                    proposer={"Ali Connors"}
+                    description={" — # Community Spend Proposal for Creation of Terra Developer Fund..."}
+                    endingTime={"2022-05-19 17:03 UTC"}
+                    mostVotedOnPercent={85}
+                />
+            </Grid>
+            <Grid item xs={12} md={6} xl={12} key={2}>
+                <ProposalCard
+                    id={22}
+                    title={"Increase Validator Set to 135"}
+                    proposer={"to Scott, Alex, Jennifer"}
+                    description={" — With Juno Network growing day-to-day, it would be nice to give new va…"}
+                    endingTime={"2022-05-19 17:03 UTC"}
+                    mostVotedOnPercent={97}
+                />
+            </Grid>
+            {/*))}*/}
+        </Grid>
     );
 }
