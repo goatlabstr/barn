@@ -11,9 +11,13 @@ import {
 import {useTranslation} from "react-i18next";
 import {config} from '../../constants/networkConfig';
 import {useAppSelector} from "../../customHooks/hook";
+import {useAppState} from "../../context/AppStateContext";
 
 function Index() {
     const {t} = useTranslation();
+    const {
+        appState: {currentPrice}
+    } = useAppState();
 
     const rewards = useAppSelector(state => state.accounts.rewards.result);
     const balance = useAppSelector(state => state.accounts.balance.result);
@@ -52,6 +56,13 @@ function Index() {
         return unStaked / (10 ** config.COIN_DECIMALS);
     }
 
+    const handleTotalBalance = () => {
+        if (currentPrice)
+            return (currentPrice * (handleBalance() + handleRewards() +
+                handleStakedAmount() + handleUnstakedAmount())).toFixed(2);
+        return 0;
+    }
+
     return (
         <React.Fragment>
             <Grid container rowSpacing={3}>
@@ -66,7 +77,7 @@ function Index() {
                     })}</Button>
                 </Grid>
                 <Grid item xs={2}>
-                    <DetailViewer title={t("dashboard.totalBalances")} amount={0} prefix={"$"}
+                    <DetailViewer title={t("dashboard.totalBalances")} amount={handleTotalBalance()} prefix={"$"}
                                   icon={<AccountBalanceWalletRounded color={"secondary"}/>}/>
                 </Grid>
                 <Grid item xs={3}>

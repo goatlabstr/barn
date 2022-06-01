@@ -3,22 +3,19 @@ import React, {Dispatch, FunctionComponent, useCallback} from "react";
 
 type AppState = {
     language: string,
-    drawerOpen: boolean,
-    user: {} | null
+    currentPrice: number
 };
 
 const initialState: AppState = {
     language: localStorage.getItem("lang")?.split("_")[0] || "en",
-    drawerOpen: false,
-    user: null
+    currentPrice: 0
 };
 
 export const AppStateContext = React.createContext<{
     appState: AppState;
     dispatch: Dispatch<any>;
     setLanguage: (data: string) => void;
-    setDrawerOpenStatus: (open: boolean) => void;
-    setUser: (data: {}) => void;
+    setCurrentPrice: (data: number) => void;
 }>({
     appState: initialState,
     dispatch: () => {
@@ -27,10 +24,7 @@ export const AppStateContext = React.createContext<{
     setLanguage: (lang: string) => {
         console.log("not implemented");
     },
-    setDrawerOpenStatus: (open: boolean) => {
-        console.log("not implemented");
-    },
-    setUser: (user: {}) => {
+    setCurrentPrice: (data: number) => {
         console.log("not implemented");
     }
 });
@@ -42,15 +36,10 @@ const reducer = (appState: AppState, action: any) => {
                 ...appState,
                 language: action.payload,
             };
-        case "HANDLE_DRAWER_OPEN":
+        case "HANDLE_CURRENT_PRICE":
             return {
                 ...appState,
-                drawerOpen: action.payload,
-            };
-        case "SET_USER":
-            return {
-                ...appState,
-                user: action.payload,
+                currentPrice: action.payload,
             };
         default:
             return appState;
@@ -64,12 +53,8 @@ const AppStateProvider: FunctionComponent = ({children}) => {
         dispatch({type: "SET_LANGUAGE", payload: lang || "en"});
     }, [appState]);
 
-    const setDrawerOpenStatus = useCallback((open: boolean) => {
-        dispatch({type: "HANDLE_DRAWER_OPEN", payload: open || false});
-    }, [appState]);
-
-    const setUser = useCallback((user: {}) => {
-        dispatch({type: "SET_USER", payload: user || null});
+    const setCurrentPrice = useCallback((data: number) => {
+        dispatch({type: "HANDLE_CURRENT_PRICE", payload: data || 0});
     }, [appState]);
 
 
@@ -79,8 +64,7 @@ const AppStateProvider: FunctionComponent = ({children}) => {
                 appState,
                 dispatch,
                 setLanguage,
-                setDrawerOpenStatus,
-                setUser
+                setCurrentPrice
             }}
         >
             {children}

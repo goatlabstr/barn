@@ -29,6 +29,7 @@ import allActions from "../../action";
 import {useSnackbar} from "notistack";
 import {useAppDispatch, useAppSelector} from '../../customHooks/hook';
 import {config} from "../../constants/networkConfig";
+import {useAppState} from "../../context/AppStateContext";
 //import config from '../../constants/networkConfig';
 
 const drawerWidth = 220;
@@ -94,6 +95,9 @@ export default function SideBar(props: SideBarProps) {
     const {activate, passivate} = useGlobalPreloader();
     const dispatch = useAppDispatch();
     const {enqueueSnackbar} = useSnackbar();
+    const {
+        appState: {currentPrice}
+    } = useAppState();
 
     const address = useAppSelector(state => state.accounts.address.value);
 
@@ -106,7 +110,7 @@ export default function SideBar(props: SideBarProps) {
     }
 
     const handleDisconnectButtonClick = () => {
-        localStorage.removeItem('of_co_address');
+        localStorage.removeItem('goat_wl_addr');
         dispatch(allActions.disconnectSet());
     }
 
@@ -115,7 +119,7 @@ export default function SideBar(props: SideBarProps) {
         initializeChain((error, addressList) => {
             passivate();
             if (error) {
-                localStorage.removeItem('of_co_address');
+                localStorage.removeItem('goat_wl_addr');
                 enqueueSnackbar(error, {variant: "error"});
                 return;
             }
@@ -134,7 +138,7 @@ export default function SideBar(props: SideBarProps) {
             if (!isActivePath("/governance")) {
                 dispatch(allActions.getDelegatedValidatorsDetails(addressList[0] && addressList[0].address));
             }
-            localStorage.setItem('of_co_address', encode(addressList[0] && addressList[0].address));
+            localStorage.setItem('goat_wl_addr', encode(addressList[0] && addressList[0].address));
         });
     }
 
@@ -168,7 +172,11 @@ export default function SideBar(props: SideBarProps) {
                     ))}
                 </List>
                 <Stack direction="column">
-                    {localStorage.getItem('of_co_address') || address ?
+                    <Stack direction="row" justifyContent="space-between" mb={1.5}>
+                        <Typography variant={"body2"}>{config.NETWORK_NAME.toUpperCase()}</Typography>
+                        <Typography variant={"body2"} color={"secondary"}>${currentPrice}</Typography>
+                    </Stack>
+                    {localStorage.getItem('goat_wl_addr') || address ?
                         <Button variant="outlined" sx={{"color": "rgb(131 157 170)", "borderColor": "rgb(131 157 170)"}}
                                 startIcon={<LogoutRounded/>}
                                 onClick={handleDisconnectButtonClick}

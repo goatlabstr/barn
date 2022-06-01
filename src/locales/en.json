@@ -27,12 +27,22 @@
   },
   "governance": {
     "yes": "Yes ({{value}}%)",
+    "no": "No ({{value}}%)",
+    "no_with_veto": "No With Veto ({{value}}%)",
+    "abstain": "Abstain ({{value}}%)",
+    "votingStartTime": "Voting Start Time",
     "votingEndTime": "Voting End Time",
     "mostVotedOn": "Most voted on",
     "active": "Active",
     "passed": "Passed",
     "rejected": "Rejected",
-    "all": "All"
+    "all": "All",
+    "noActiveProposal": "No Active Proposal",
+    "votingMessage": "Proposal in Voting Period",
+    "passedMessage": "Proposal Passed",
+    "rejectedMessage": "Proposal Rejected",
+    "unknownMessage": "Proposal status is Unknown",
+    "proposer": "Proposer/"
   },
   "staking": {
     "allValidators": "All Validators",

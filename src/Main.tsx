@@ -21,6 +21,7 @@ import allActions from "./action";
 import {initializeChain} from "./services/cosmos";
 import {decode, encode} from "js-base64";
 import {config} from "./constants/networkConfig";
+import CoinGecko from "./services/coingecko";
 
 const menuItems = (t) => [
     {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
@@ -35,11 +36,15 @@ function Main() {
     const dispatch = useAppDispatch();
     const {enqueueSnackbar} = useSnackbar();
     const {
-        appState: {drawerOpen}
+        appState: {},
+        setCurrentPrice
     } = useAppState();
 
     useEffect(() => {
         i18n.changeLanguage(localStorage.getItem("lang") || "en");
+        CoinGecko.getPrice(config.COINGECKO_ID).then((res) => {
+            setCurrentPrice(res.data[config.COINGECKO_ID]["usd"])
+        })
     }, []);
 
 
@@ -64,7 +69,7 @@ function Main() {
     const voteDetailsInProgress = useAppSelector(state => state.governance.voteDetails.inProgress);
 
     useEffect(() => {
-        if (localStorage.getItem('of_co_address'))
+        if (localStorage.getItem('goat_wl_addr'))
             initKeplr();
 
         if (proposals && !proposals.length &&
@@ -106,7 +111,7 @@ function Main() {
         }
 
         window.addEventListener('keplr_keystorechange', () => {
-            if (localStorage.getItem('of_co_address') || address !== '') {
+            if (localStorage.getItem('goat_wl_addr') || address !== '') {
                 handleChain(false);
             }
         });
@@ -128,18 +133,18 @@ function Main() {
             passivate();
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});
-                localStorage.removeItem('of_co_address');
+                localStorage.removeItem('goat_wl_addr');
                 return;
             }
 
-            const previousAddress = decode(localStorage.getItem('of_co_address') || "");
+            const previousAddress = decode(localStorage.getItem('goat_wl_addr') || "");
 
             dispatch(allActions.setAccountAddress(addressList[0]?.address));
             if (fetch) {
                 handleFetchDetails(addressList[0]?.address);
             }
             if (previousAddress !== addressList[0]?.address) {
-                localStorage.setItem('of_co_address', encode(addressList[0]?.address));
+                localStorage.setItem('goat_wl_addr', encode(addressList[0]?.address));
             }
         });
     }

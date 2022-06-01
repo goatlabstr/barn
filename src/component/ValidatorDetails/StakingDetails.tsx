@@ -3,10 +3,19 @@ import {Button, Grid, Typography} from "@mui/material";
 import SummaryTable from "./SummaryTable";
 import {useTranslation} from "react-i18next";
 import {config} from "../../constants/networkConfig";
+import {useAppSelector} from "../../customHooks/hook";
 
 function Index(props) {
     const {rows, images} = props;
     const {t} = useTranslation();
+
+    const rewards = useAppSelector(state => state.accounts.rewards.result);
+
+    const handleRewards = () => {
+        return rewards && rewards.total && rewards.total.length &&
+        rewards.total[0] && rewards.total[0].amount
+            ? rewards.total[0].amount / 10 ** config.COIN_DECIMALS : 0;
+    }
 
     return (
         <React.Fragment>
@@ -20,7 +29,7 @@ function Index(props) {
                     </Grid>
                     <Grid item xs={2}>
                         <Button variant="outlined" color="secondary" size="small">{t("claimReward", {
-                            "value": 97.9,
+                            "value": handleRewards(),
                             "name": config.NETWORK_NAME
                         })}</Button>
                     </Grid>

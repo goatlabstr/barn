@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useEffect, useState} from 'react';
 import {Box, Button, Grid, Stack, Typography} from "@mui/material";
 import TokenDetails from '../component/TokenDetails/index';
 import {makeStyles, useTheme} from "@mui/styles";
@@ -6,7 +7,7 @@ import {Theme} from "@mui/material/styles";
 import {GeneralConstants} from "../constants/general";
 import EnhancedTable from "../component/ValidatorDetails/EnhancedTable";
 import {useNavigate} from "react-router-dom";
-import SummaryProposalList from "../component/GovernanceDetails/ActiveProposalList";
+import ProposalList from "../component/GovernanceDetails/ProposalList";
 import {useTranslation} from "react-i18next";
 import {useAppSelector} from "../customHooks/hook";
 
@@ -26,9 +27,17 @@ function Index() {
     const classes = useStyles();
     let navigate = useNavigate();
     const theme = useTheme();
+    const [activeProposals, setActiveProposals] = useState<typeof proposals>([]);
 
     const delegatedValidatorList = useAppSelector(state => state.stake.delegatedValidators.list);
     const validatorImages = useAppSelector(state => state.stake.validators.images);
+    const proposals = useAppSelector(state => state.governance._.list);
+    const proposalDetails = useAppSelector(state => state.governance.proposalDetails.value);
+
+    useEffect(() => {
+        if (proposals)
+            setActiveProposals(proposals.filter((proposal) => proposal.status === 2));
+    }, [proposals]);
 
     return (
         <React.Fragment>
@@ -70,13 +79,13 @@ function Index() {
                         p: 3
                     }} className={classes.centerBox}>
                         <Box className={classes.centerInnerBox}>
-                            <Stack direction="row" justifyContent={"space-between"} spacing={1}>
+                            <Stack direction="row" justifyContent={"space-between"} spacing={1} mb={1.5}>
                                 <Typography variant={"subtitle1"}>{t("dashboard.activeProposal")}</Typography>
                                 <Button variant="outlined"
                                         color="secondary"
                                         onClick={() => navigate("/governance")}>{t("dashboard.viewAll")}</Button>
                             </Stack>
-                            <SummaryProposalList/>
+                            <ProposalList data={activeProposals} details={proposalDetails}/>
                         </Box>
                     </Box>
                 </Grid>
