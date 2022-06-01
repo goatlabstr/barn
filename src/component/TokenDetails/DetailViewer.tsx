@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 type DetailViewerProps = {
     title: String,
-    amount: number,
+    amount: number | String,
     prefix?: String,
     icon?: ReactElement
 }
