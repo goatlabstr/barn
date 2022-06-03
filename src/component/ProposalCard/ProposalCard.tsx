@@ -2,22 +2,31 @@ import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import {Card, CardActionArea, CardContent, Stack, Tooltip} from "@mui/material";
-import {useTheme} from "@mui/styles";
+import {makeStyles, useTheme} from "@mui/styles";
 import CircleIcon from '@mui/icons-material/Circle';
 import {useTranslation} from "react-i18next";
 import {useAppSelector} from "../../customHooks/hook";
 import {
-    Timer as WaitingStatusIcon,
     Cancel as RejectedStatusIcon,
     CheckCircle as ApprovedStatusIcon,
     Help as UnknownStatusIcon,
-    Person
+    Timer as WaitingStatusIcon
 } from "@mui/icons-material/";
+import {Theme} from "@mui/material/styles";
+
+const useStyles = makeStyles((theme: Theme) => ({
+    typo: {
+        fontSize: 10,
+        [theme.breakpoints.down('xl')]: {
+            fontSize: 10,
+        }
+    }
+}));
 
 type ProposalCardType = {
     id: number,
     title: string,
-    proposer: string,
+    proposer?: string,
     description: string,
     startTime: string,
     endingTime: string,
@@ -37,6 +46,7 @@ export default function ProposalCard(props: ProposalCardType) {
     const {id, title, proposer, description, startTime, endingTime, proposal} = props;
     const theme = useTheme();
     const {t} = useTranslation();
+    const classes = useStyles();
 
     const tallyDetails = useAppSelector(state => state.governance.voteDetails.value);
 
@@ -60,20 +70,20 @@ export default function ProposalCard(props: ProposalCardType) {
     const getVoteTypo = (vote, proposal) => {
         switch (vote) {
             case 'yes':
-                return <Typography sx={{fontSize: 10}}><CircleIcon sx={{fontSize: 10}}
+                return <Typography className={classes.typo}><CircleIcon className={classes.typo}
                                                                    color="success"/>{t("governance.yes", {"value": voteCalculation(proposal, vote)})}
                 </Typography>
             case 'no':
-                return <Typography sx={{fontSize: 10}}><CircleIcon sx={{fontSize: 10}}
+                return <Typography className={classes.typo}><CircleIcon className={classes.typo}
                                                                    color="disabled"/>{t("governance.no", {"value": voteCalculation(proposal, vote)})}
                 </Typography>
             case 'no_with_veto':
-                return <Typography sx={{fontSize: 10}}><CircleIcon sx={{fontSize: 10}}
+                return <Typography className={classes.typo}><CircleIcon className={classes.typo}
                                                                    color="error"/>{t("governance.no_with_veto", {"value": voteCalculation(proposal, vote)})}
                 </Typography>
             case 'abstain':
             default:
-                return <Typography sx={{fontSize: 10}}><CircleIcon sx={{fontSize: 10}}
+                return <Typography className={classes.typo}><CircleIcon className={classes.typo}
                                                                    color="warning"/>{t("governance.abstain", {"value": voteCalculation(proposal, vote)})}
                 </Typography>
         }
@@ -122,7 +132,7 @@ export default function ProposalCard(props: ProposalCardType) {
                                 {description.length >= 200 ? description.slice(0, 200) + "..." : description}
                             </Typography>
                         </p>
-                        <Stack direction="row" spacing={1} mb={1}>
+                        {proposer !== undefined && <Stack direction="row" spacing={1} mb={1}>
                             <Typography
                                 sx={{display: 'inline', fontSize: 12}}
                                 color="secondary"
@@ -135,7 +145,7 @@ export default function ProposalCard(props: ProposalCardType) {
                             >
                                 {proposer}
                             </Typography>
-                        </Stack>
+                        </Stack>}
                         <Stack direction="row" sx={{justifyContent: "space-between"}}>
                             <Stack direction="column">
                                 {getVoteTypo('yes', proposal)}
@@ -147,28 +157,30 @@ export default function ProposalCard(props: ProposalCardType) {
                             </Stack>
                             <Stack direction={"column"}>
                                 <Typography variant={"body2"}
+                                            className={classes.typo}
                                             sx={{
-                                                fontSize: 10, pr: 1,
+                                               pr: 1,
                                                 //@ts-ignore
                                                 color: theme.palette.secondary.main
                                             }}>{t("governance.votingStartTime")}</Typography>
                                 <Typography variant={"body2"}
+                                            className={classes.typo}
                                             sx={{
-                                                fontSize: 10,
                                                 //@ts-ignore
                                                 color: theme.palette.primary.main
                                             }}>{new Date(startTime).toLocaleString()}</Typography>
                             </Stack>
                             <Stack direction={"column"}>
                                 <Typography variant={"body2"}
+                                            className={classes.typo}
                                             sx={{
-                                                fontSize: 10, pr: 1,
+                                                pr: 1,
                                                 //@ts-ignore
                                                 color: theme.palette.secondary.main
                                             }}>{t("governance.votingEndTime")}</Typography>
                                 <Typography variant={"body2"}
+                                            className={classes.typo}
                                             sx={{
-                                                fontSize: 10,
                                                 //@ts-ignore
                                                 color: theme.palette.primary.main
                                             }}>{new Date(endingTime).toLocaleString()}</Typography>

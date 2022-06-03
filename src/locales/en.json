@@ -5,6 +5,12 @@
   "active": "Active",
   "unbounding": "Unbounding",
   "jailed": "Jailed",
+  "delegateTitle": "Delegate {{moniker}}",
+  "undelegateTitle": "Undelegate {{moniker}}",
+  "redelegateTitle": "Redelegate {{moniker}}",
+  "delegate": "Delegate",
+  "undelegate": "Undelegate",
+  "redelegate": "Redelegate",
   "menu": {
     "connect": "Connect",
     "disconnect": "Disconnect",

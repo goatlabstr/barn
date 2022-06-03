@@ -117,17 +117,17 @@ function Index() {
     }
 
     const getActiveProposalContent = (proposals) => {
-        const data = proposals.filter(proposal => proposal.status === 2);
+        const data = proposals.filter(proposal => proposal.status === 2).reverse();
         return getContent(data);
     }
 
     const getPassedProposalContent = (proposals) => {
-        const data = proposals.filter(proposal => proposal.status === 3);
+        const data = proposals.filter(proposal => proposal.status === 3).reverse();
         return getContent(data);
     }
 
     const getRejectedProposalContent = (proposals) => {
-        const data = proposals.filter(proposal => proposal.status === 4);
+        const data = proposals.filter(proposal => proposal.status === 4).reverse();
         return getContent(data);
     }
 
@@ -194,7 +194,7 @@ function Index() {
                             <TabPanel value={value} index={3}>
                                 <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
                                     {
-                                        getContent(proposals)
+                                        getContent([...proposals].reverse())
                                     }
                                 </Grid>
                             </TabPanel>

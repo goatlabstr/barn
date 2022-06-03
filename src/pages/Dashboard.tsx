@@ -36,16 +36,16 @@ function Index() {
 
     useEffect(() => {
         if (proposals)
-            setActiveProposals(proposals.filter((proposal) => proposal.status === 2));
+            setActiveProposals(proposals.filter((proposal) => proposal.status === 2).reverse());
     }, [proposals]);
 
     return (
         <React.Fragment>
             <Grid container>
-                <Grid item md={12} xl={12}>
+                <Grid item xs={12} lg={12}>
                     <Box sx={{
                         width: "100%",
-                        height: 200,
+                        height: "auto",
                         //@ts-ignore
                         backgroundColor: theme.palette.background.dark,
                         p: 3
@@ -55,7 +55,7 @@ function Index() {
                         </Box>
                     </Box>
                 </Grid>
-                <Grid item md={12} xl={8}>
+                <Grid item xs={12} lg={8}>
                     <Box sx={{
                         width: "100%",
                         p: 3
@@ -73,7 +73,7 @@ function Index() {
                         </Box>
                     </Box>
                 </Grid>
-                <Grid item md={12} xl={4}>
+                <Grid item xs={12} lg={4}>
                     <Box sx={{
                         width: "100%",
                         p: 3

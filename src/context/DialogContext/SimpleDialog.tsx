@@ -15,7 +15,7 @@ const SimpleDialog: FunctionComponent<DialogPropTypes> = (props) => {
         <Dialog
             aria-labelledby="simple-dialog-title"
             fullWidth
-            maxWidth={"md"}
+            maxWidth={"sm"}
             open={open}
             onClose={handleClose}
         >
