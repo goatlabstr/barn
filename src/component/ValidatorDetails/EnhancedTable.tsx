@@ -15,14 +15,20 @@ import {formatCount, getComparator, Order, stableSort} from './CommonTable';
 import TableHead from "@mui/material/TableHead";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import {visuallyHidden} from "@mui/utils";
-import {Done as ActiveIcon,
-    HourglassEmpty as UnboundingIcon,
+import {
+    AccessAlarms as InactiveIcon,
     Block as JailedIcon,
-    AccessAlarms as InactiveIcon} from '@mui/icons-material';
+    Done as ActiveIcon,
+    HourglassEmpty as UnboundingIcon
+} from '@mui/icons-material';
 import SearchTextField from "./SearchTextField";
 import {useTranslation} from "react-i18next";
 import {config} from "../../constants/networkConfig";
 import {useAppSelector} from "../../customHooks/hook";
+import {useDialog} from "../../context/DialogContext/DialogContext";
+import DelegateDialog from "./Delegation/DelegateDialog";
+import RedelegateDialog from "./Delegation/RedelegateDialog";
+import UndelegateDialog from "./Delegation/UndelegateDialog";
 
 const useStyles = makeStyles((theme: Theme) => ({
     tableHead: {
@@ -204,14 +210,21 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
     );
 }
 
-const delegationButtonGroup = (stakeAmount) => {
+const DelegationButtonGroup = ({stakeAmount, moniker}) => {
+    const {openDialog, closeDialog} = useDialog();
+    const {t} = useTranslation();
+
     if (typeof stakeAmount !== "number" || stakeAmount <= 0)
-        return <><ButtonGroup variant="text" size="small"><Button color="success">Delegate</Button></ButtonGroup></>
+        return <><ButtonGroup variant="text" size="small"><Button color="success" onClick={() => openDialog(
+            <DelegateDialog/>, t("delegateTitle", {moniker: moniker}))}>Delegate</Button></ButtonGroup></>
     else
         return <><ButtonGroup variant="text" size="small">
-            <Button color="warning">Redelegate</Button>
-            <Button color="success">Delegate</Button>
-            <Button color="error">Undelegate</Button>
+            <Button color="warning" onClick={() => openDialog(
+                <RedelegateDialog/>, t("redelegateTitle", {moniker: moniker}))}>Redelegate</Button>
+            <Button color="success" onClick={() => openDialog(
+                <DelegateDialog/>, t("delegateTitle", {moniker: moniker}))}>Delegate</Button>
+            <Button color="error" onClick={() => openDialog(
+                <UndelegateDialog/>, t("undelegateTitle", {moniker: moniker}))}>Undelegate</Button>
         </ButtonGroup></>
 }
 
@@ -232,10 +245,14 @@ export default function EnhancedTable(props: TableProps) {
         return <Avatar src={image[0]?.them[0]?.pictures?.primary?.url}></Avatar>
     }
 
-    const handleStakeAmount = (row) => {
+    const getStakeAmount = (row) => {
         let value = delegations.find((val) =>
             (val.delegation && val.delegation.validator_address) === row.operator_address);
-        let val = value ? value.balance && value.balance.amount && value.balance.amount / 10 ** config.COIN_DECIMALS : 0;
+        return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** config.COIN_DECIMALS : 0;
+    }
+
+    const handleStakeAmount = (row) => {
+        const val = getStakeAmount(row)
         if (val > 0)
             return formatCount(val);
         return <Typography variant={"body2"}>{t("table.noTokens")}</Typography>;
@@ -268,19 +285,19 @@ export default function EnhancedTable(props: TableProps) {
         switch (val) {
             case 1:
                 label = t("inactive");
-                icon = <InactiveIcon />
+                icon = <InactiveIcon/>
                 break;
             case 2:
                 label = t("unbounding");
-                icon = <UnboundingIcon />
+                icon = <UnboundingIcon/>
                 break;
             case 3:
                 label = t("active");
-                icon = <ActiveIcon />
+                icon = <ActiveIcon/>
                 break;
             default:
                 label = t("jailed");
-                icon = <JailedIcon />
+                icon = <JailedIcon/>
                 break;
         }
         return <Chip label={label} variant="filled" icon={icon}/>;
@@ -296,7 +313,6 @@ export default function EnhancedTable(props: TableProps) {
             />}
             <TableContainer>
                 <Table
-                    sx={{minWidth: 650}}
                     aria-labelledby="tableTitle"
                 >
                     <EnhancedTableHead
@@ -314,7 +330,7 @@ export default function EnhancedTable(props: TableProps) {
                                         hover
                                         tabIndex={-1}
                                         //@ts-ignore
-                                        key={row.description.moniker}
+                                        key={row?.description?.moniker}
                                     >
                                         <TableCell
                                             id={labelId}
@@ -357,7 +373,10 @@ export default function EnhancedTable(props: TableProps) {
                                             [classes.tablePassiveCell]: row.stakeAmount <= 0
                                         })}>{handleStakeAmount(row)}</TableCell>
                                         <TableCell align="center"
-                                                   className={classes.tableCell}>{delegationButtonGroup(handleStakeAmount(row))}</TableCell>
+                                                   className={classes.tableCell}>{<DelegationButtonGroup
+                                            stakeAmount={getStakeAmount(row)}
+                                            //@ts-ignore
+                                            moniker={row.description.moniker}/>}</TableCell>
                                     </TableRow>
                                 );
                             })}

@@ -66,7 +66,7 @@ const theme = {
             [rawTheme.breakpoints.down('lg')]: {
                 fontSize: 35,
             },
-            [rawTheme.breakpoints.down('md')]: {
+            [rawTheme.breakpoints.down('sm')]: {
                 fontSize: 25,
             },
         },
@@ -80,7 +80,7 @@ const theme = {
             [rawTheme.breakpoints.down('lg')]: {
                 fontSize: 25,
             },
-            [rawTheme.breakpoints.down('md')]: {
+            [rawTheme.breakpoints.down('sm')]: {
                 fontSize: 16,
             },
         },
@@ -94,7 +94,7 @@ const theme = {
             [rawTheme.breakpoints.down('lg')]: {
                 fontSize: 20,
             },
-            [rawTheme.breakpoints.down('md')]: {
+            [rawTheme.breakpoints.down('sm')]: {
                 fontSize: 11,
             },
         },
@@ -121,7 +121,7 @@ const theme = {
             [rawTheme.breakpoints.down('xl')]: {
                 fontSize: 18,
             },
-            [rawTheme.breakpoints.down('md')]: {
+            [rawTheme.breakpoints.down('sm')]: {
                 fontSize: 15,
             }
         },
@@ -146,7 +146,7 @@ const theme = {
             [rawTheme.breakpoints.down('xl')]: {
                 fontSize: 14,
             },
-            [rawTheme.breakpoints.down('md')]: {
+            [rawTheme.breakpoints.down('sm')]: {
                 fontSize: 12,
             }
         },
@@ -156,7 +156,7 @@ const theme = {
             [rawTheme.breakpoints.down('xl')]: {
                 fontSize: 12,
             },
-            [rawTheme.breakpoints.down('md')]: {
+            [rawTheme.breakpoints.down('sm')]: {
                 fontSize: 10,
             }
         },

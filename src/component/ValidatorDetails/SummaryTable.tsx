@@ -15,6 +15,10 @@ import {Theme} from "@mui/material/styles";
 import {config} from "../../constants/networkConfig";
 import {useAppSelector} from "../../customHooks/hook";
 import {useTranslation} from "react-i18next";
+import {useDialog} from "../../context/DialogContext/DialogContext";
+import DelegateDialog from "./Delegation/DelegateDialog";
+import RedelegateDialog from "./Delegation/RedelegateDialog";
+import UndelegateDialog from "./Delegation/UndelegateDialog";
 
 const useStyles = makeStyles((theme: Theme) => ({
     tableHead: {
@@ -135,14 +139,21 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     );
 }
 
-const delegationButtonGroup = (stakeAmount) => {
-    if (stakeAmount <= 0)
-        return <><ButtonGroup variant="text" size="small"><Button color="success">Delegate</Button></ButtonGroup></>
+const DelegationButtonGroup = ({stakeAmount, moniker}) => {
+    const {openDialog, closeDialog} = useDialog();
+    const {t} = useTranslation();
+
+    if (typeof stakeAmount !== "number" || stakeAmount <= 0)
+        return <><ButtonGroup variant="text" size="small"><Button color="success" onClick={() => openDialog(
+            <DelegateDialog/>, t("delegateTitle", {moniker: moniker}))}>Delegate</Button></ButtonGroup></>
     else
         return <><ButtonGroup variant="text" size="small">
-            <Button color="warning">Redelegate</Button>
-            <Button color="success">Delegate</Button>
-            <Button color="error">Undelegate</Button>
+            <Button color="warning" onClick={() => openDialog(
+                <RedelegateDialog/>, t("redelegateTitle", {moniker: moniker}))}>Redelegate</Button>
+            <Button color="success" onClick={() => openDialog(
+                <DelegateDialog/>, t("delegateTitle", {moniker: moniker}))}>Delegate</Button>
+            <Button color="error" onClick={() => openDialog(
+                <UndelegateDialog/>, t("undelegateTitle", {moniker: moniker}))}>Undelegate</Button>
         </ButtonGroup></>
 }
 
@@ -171,12 +182,16 @@ export default function SummaryTable(props: TableProps) {
         return <Avatar src={image[0]?.them[0]?.pictures?.primary?.url}></Avatar>
     }
 
-    const handleStakeAmount = (row) => {
+    const getStakeAmount = (row) => {
         let value = delegations.find((val) =>
             (val.delegation && val.delegation.validator_address) === row.operator_address);
-        value = value ? value.balance && value.balance.amount && value.balance.amount / 10 ** config.COIN_DECIMALS : 0;
-        if (value > 0)
-            return formatCount(value);
+        return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** config.COIN_DECIMALS : 0;
+    }
+
+    const handleStakeAmount = (row) => {
+        const val = getStakeAmount(row)
+        if (val > 0)
+            return formatCount(val);
         return <Typography variant={"body2"}>{t("table.noTokens")}</Typography>;
     }
 
@@ -235,7 +250,10 @@ export default function SummaryTable(props: TableProps) {
                                         <TableCell align="center"
                                                    className={classes.tableCell}>{handlePendingRewards(row)}</TableCell>
                                         <TableCell align="center"
-                                                   className={classes.tableCell}>{delegationButtonGroup(handleStakeAmount(row))}</TableCell>
+                                                   className={classes.tableCell}>{<DelegationButtonGroup
+                                            stakeAmount={getStakeAmount(row)}
+                                            //@ts-ignore
+                                            moniker={row.description.moniker}/>}</TableCell>
                                     </TableRow>
                                 );
                             })}
