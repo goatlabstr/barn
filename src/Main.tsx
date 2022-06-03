@@ -72,8 +72,7 @@ function Main() {
         if (localStorage.getItem('goat_wl_addr'))
             initKeplr();
 
-        if (proposals && !proposals.length &&
-            !governanceInProgress && !isActivePath("/stake")) {
+        if (proposals && !proposals.length && !governanceInProgress) {
             dispatch(allActions.getProposals((result) => {
                 if (result && result.length) {
                     const array = [];
@@ -97,7 +96,7 @@ function Main() {
             handleFetchDetails(address);
         }
 
-        if (!validatorList.length && !validatorListInProgress && !isActivePath("/governance")) {
+        if (!validatorList.length && !validatorListInProgress) {
             dispatch(allActions.getValidators((data) => {
                 if (data && data.length && validatorImages && validatorImages.length === 0) {
                     const array = data.filter((val) => val && val.description && val.description.identity);

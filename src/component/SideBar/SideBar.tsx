@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexWrap: "wrap"
     },
     menuListItemText: {
-        [theme.breakpoints.down("lg")]: {
+        [theme.breakpoints.down("md")]: {
             "& .MuiTypography-body1": {
                 width: 80,
                 fontSize: "0.7rem",
@@ -221,13 +221,13 @@ export default function SideBar(props: SideBarProps) {
                 aria-label="open drawer"
                 edge="start"
                 onClick={handleDrawerToggle}
-                sx={{mr: 2, display: {lg: 'none'}, position: "absolute", left: 10, size: "large"}}
+                sx={{mr: 2, display: {md: 'none'}, position: "absolute", left: 10, size: "large"}}
             >
                 <MenuIcon fontSize="large"/>
             </IconButton>
             <Box
                 component="nav"
-                sx={{width: {lg: drawerWidth}, flexShrink: {xs: 0}}}
+                sx={{width: {md: drawerWidth}, flexShrink: {xs: 0}}}
                 aria-label="goatlabs-menu"
             >
                 <Drawer
@@ -238,7 +238,7 @@ export default function SideBar(props: SideBarProps) {
                         keepMounted: true, // Better open performance on mobile.
                     }}
                     sx={{
-                        display: {xs: 'block', lg: 'none'},
+                        display: {xs: 'block', md: 'none'},
                         '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth}
                     }}
                 >
@@ -247,7 +247,7 @@ export default function SideBar(props: SideBarProps) {
                 <Drawer
                     variant="permanent"
                     sx={{
-                        display: {xs: 'none', lg: 'block'},
+                        display: {xs: 'none', md: 'block'},
                         '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth},
                     }}
                     open

@@ -10,7 +10,7 @@ const rawTheme = createTheme({
             xs: 0,
             sm: 600,
             md: 900,
-            lg: 1370,
+            lg: 1450,
             xl: 1770,
         },
     },
