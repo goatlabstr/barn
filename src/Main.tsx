@@ -72,8 +72,8 @@ function Main() {
         if (localStorage.getItem('goat_wl_addr'))
             initKeplr();
 
-        if (proposals && !proposals.length &&
-            !governanceInProgress && !isActivePath("/stake")) {
+        if (proposals && !proposals.length && !governanceInProgress) {
+            activate();
             dispatch(allActions.getProposals((result) => {
                 if (result && result.length) {
                     const array = [];
@@ -97,7 +97,7 @@ function Main() {
             handleFetchDetails(address);
         }
 
-        if (!validatorList.length && !validatorListInProgress && !isActivePath("/governance")) {
+        if (!validatorList.length && !validatorListInProgress) {
             dispatch(allActions.getValidators((data) => {
                 if (data && data.length && validatorImages && validatorImages.length === 0) {
                     const array = data.filter((val) => val && val.description && val.description.identity);
@@ -111,13 +111,15 @@ function Main() {
                 handleChain(false);
             }
         });
-
+        passivate();
         return window.removeEventListener('keplr_keystorechange', handleChain);
     }, [])
 
     useEffect(() => {
         if (address) {
+            activate();
             handleFetchDetails(address);
+            passivate();
         }
     },[location])
 
@@ -130,9 +132,7 @@ function Main() {
     }
 
     const handleChain = (fetch) => {
-        activate();
         initializeChain((error, addressList) => {
-            passivate();
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});
                 localStorage.removeItem('goat_wl_addr');
@@ -153,9 +153,7 @@ function Main() {
 
     const getProposalDetails = (data) => {
         if (data && data.length && data[0]) {
-            activate();
             dispatch(allActions.fetchProposalDetails(data[0], (res) => {
-                passivate();
                 if (data[1]) {
                     data.splice(0, 1);
                     getProposalDetails(data);
@@ -165,7 +163,6 @@ function Main() {
     }
 
     const handleFetchDetails = (address) => {
-        activate();
         if (balance && !balance.length &&
             !balanceInProgress) {
             dispatch(allActions.getBalance(address));
@@ -189,7 +186,6 @@ function Main() {
             !delegatedValidatorListInProgress) {
             dispatch(allActions.getDelegatedValidatorsDetails(address));
         }
-        passivate();
     }
 
     const getValidatorImage = (index, data) => {
