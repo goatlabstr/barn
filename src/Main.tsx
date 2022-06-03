@@ -73,6 +73,7 @@ function Main() {
             initKeplr();
 
         if (proposals && !proposals.length && !governanceInProgress) {
+            activate();
             dispatch(allActions.getProposals((result) => {
                 if (result && result.length) {
                     const array = [];
@@ -110,13 +111,15 @@ function Main() {
                 handleChain(false);
             }
         });
-
+        passivate();
         return window.removeEventListener('keplr_keystorechange', handleChain);
     }, [])
 
     useEffect(() => {
         if (address) {
+            activate();
             handleFetchDetails(address);
+            passivate();
         }
     },[location])
 
@@ -129,9 +132,7 @@ function Main() {
     }
 
     const handleChain = (fetch) => {
-        activate();
         initializeChain((error, addressList) => {
-            passivate();
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});
                 localStorage.removeItem('goat_wl_addr');
@@ -152,9 +153,7 @@ function Main() {
 
     const getProposalDetails = (data) => {
         if (data && data.length && data[0]) {
-            activate();
             dispatch(allActions.fetchProposalDetails(data[0], (res) => {
-                passivate();
                 if (data[1]) {
                     data.splice(0, 1);
                     getProposalDetails(data);
@@ -164,7 +163,6 @@ function Main() {
     }
 
     const handleFetchDetails = (address) => {
-        activate();
         if (balance && !balance.length &&
             !balanceInProgress) {
             dispatch(allActions.getBalance(address));
@@ -188,7 +186,6 @@ function Main() {
             !delegatedValidatorListInProgress) {
             dispatch(allActions.getDelegatedValidatorsDetails(address));
         }
-        passivate();
     }
 
     const getValidatorImage = (index, data) => {
