@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 
 import {useLocation, useNavigate} from "react-router-dom";
 import {Theme} from "@mui/material/styles";
@@ -14,6 +14,7 @@ import {
     ListItem,
     ListItemIcon,
     ListItemText,
+    Paper,
     Stack,
     Toolbar,
     Typography
@@ -24,7 +25,7 @@ import logo from '../../logo.svg';
 import {AccountBalanceWalletRounded, Email, Instagram, LogoutRounded, Telegram, Twitter} from "@mui/icons-material";
 import {useGlobalPreloader} from "../../context/GlobalPreloaderProvider";
 import {initializeChain} from "../../services/cosmos";
-import {decode, encode} from 'js-base64';
+import {encode} from 'js-base64';
 import allActions from "../../action";
 import {useSnackbar} from "notistack";
 import {useAppDispatch, useAppSelector} from '../../customHooks/hook';
@@ -35,9 +36,6 @@ import {useAppState} from "../../context/AppStateContext";
 const drawerWidth = 220;
 
 const useStyles = makeStyles((theme: Theme) => ({
-    root: {
-        height: "100%"
-    },
     menuSelected: {
         borderLeft: "solid 0px " + theme.palette.secondary.main,
         backgroundColor: alpha(theme.palette.primary.main, 0.1),
@@ -143,7 +141,7 @@ export default function SideBar(props: SideBarProps) {
     }
 
     const drawer = (
-        <div className={classes.root}>
+        <Paper sx={{height: "100%"}}>
             <Stack direction="column" justifyContent={"space-between"} alignItems={"center"} spacing={1}
                    sx={{height: "95%"}}>
                 <Toolbar style={{marginTop: 15}}>
@@ -177,7 +175,8 @@ export default function SideBar(props: SideBarProps) {
                         <Typography variant={"body2"} color={"secondary"}>${currentPrice}</Typography>
                     </Stack>
                     {localStorage.getItem('goat_wl_addr') || address ?
-                        <Button variant="outlined" sx={{"color": "rgb(131 157 170)", "borderColor": "rgb(131 157 170)"}}
+                        <Button variant="outlined"
+                                sx={{"color": "rgb(131 157 170)", "borderColor": "rgb(131 157 170)"}}
                                 startIcon={<LogoutRounded/>}
                                 onClick={handleDisconnectButtonClick}
                         >{t("menu.disconnect")}</Button> :
@@ -212,11 +211,11 @@ export default function SideBar(props: SideBarProps) {
                         {t("menu.coingecko")}</Button>
                 </Stack>
             </Stack>
-        </div>
+        </Paper>
     );
 
     return (
-        <>
+        <div>
             <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -228,8 +227,8 @@ export default function SideBar(props: SideBarProps) {
             </IconButton>
             <Box
                 component="nav"
-                sx={{width: {lg: drawerWidth}, flexShrink: {lg: 0}}}
-                aria-label="mailbox folders"
+                sx={{width: {lg: drawerWidth}, flexShrink: {xs: 0}}}
+                aria-label="goatlabs-menu"
             >
                 <Drawer
                     variant="temporary"
@@ -240,7 +239,7 @@ export default function SideBar(props: SideBarProps) {
                     }}
                     sx={{
                         display: {xs: 'block', lg: 'none'},
-                        '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth},
+                        '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth}
                     }}
                 >
                     {drawer}
@@ -256,7 +255,7 @@ export default function SideBar(props: SideBarProps) {
                     {drawer}
                 </Drawer>
             </Box>
-        </>
+        </div>
     );
 
 }

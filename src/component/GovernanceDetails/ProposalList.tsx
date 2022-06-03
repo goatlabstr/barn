@@ -34,7 +34,7 @@ export default function ProposalList(props: ProposalProps) {
         if (data.length > 0)
             return <>
                 {data.map((proposal) =>
-                    <Grid item xs={12} md={6} xl={12} key={proposal?.id}>
+                    <Grid item xs={12} md={6} lg={12} key={proposal?.id}>
                         <ProposalCard
                             id={proposal?.id}
                             title={proposal?.content?.value?.title}
@@ -47,7 +47,7 @@ export default function ProposalList(props: ProposalProps) {
                     </Grid>)}
             </>
         else
-            return <Grid item xs={12} md={6} xl={12} >
+            return <Grid item xs={12} md={6} lg={12} >
                 <Box textAlign={"center"} sx={{color: "rgb(131 157 170)"}}>{t("governance.noActiveProposal")}</Box>
             </Grid>
     }

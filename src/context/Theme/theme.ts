@@ -10,7 +10,7 @@ const rawTheme = createTheme({
             xs: 0,
             sm: 600,
             md: 900,
-            lg: 1270,
+            lg: 1370,
             xl: 1770,
         },
     },
@@ -60,13 +60,22 @@ const theme = {
             ...fontHeader,
             letterSpacing: 0,
             fontSize: 50,
+            [rawTheme.breakpoints.down('xl')]: {
+                fontSize: 40,
+            },
+            [rawTheme.breakpoints.down('lg')]: {
+                fontSize: 35,
+            },
+            [rawTheme.breakpoints.down('md')]: {
+                fontSize: 25,
+            },
         },
         h2: {
             ...rawTheme.typography.h2,
             ...fontHeader,
             fontSize: 35,
             [rawTheme.breakpoints.down('xl')]: {
-                fontSize: 25,
+                fontSize: 30,
             },
             [rawTheme.breakpoints.down('lg')]: {
                 fontSize: 25,
@@ -79,38 +88,77 @@ const theme = {
             ...rawTheme.typography.h3,
             ...fontHeader,
             fontSize: 30,
+            [rawTheme.breakpoints.down('xl')]: {
+                fontSize: 25,
+            },
+            [rawTheme.breakpoints.down('lg')]: {
+                fontSize: 20,
+            },
+            [rawTheme.breakpoints.down('md')]: {
+                fontSize: 11,
+            },
         },
         h4: {
             ...rawTheme.typography.h4,
             ...fontHeader,
             fontSize: 26,
+            [rawTheme.breakpoints.down('xl')]: {
+                fontSize: 21,
+            }
         },
         h5: {
             ...rawTheme.typography.h5,
             ...fontHeader,
             fontSize: 22,
+            [rawTheme.breakpoints.down('xl')]: {
+                fontSize: 17,
+            }
         },
         h6: {
             ...rawTheme.typography.h6,
             ...fontHeader,
             fontSize: 20,
+            [rawTheme.breakpoints.down('xl')]: {
+                fontSize: 18,
+            },
+            [rawTheme.breakpoints.down('md')]: {
+                fontSize: 15,
+            }
         },
         subtitle1: {
             ...rawTheme.typography.subtitle1,
             fontSize: "1.25rem",
+            [rawTheme.breakpoints.down('xl')]: {
+                fontSize: "1.05rem",
+            },
         },
         subtitle2: {
             ...rawTheme.typography.subtitle2,
             fontSize: "0.975rem",
+            [rawTheme.breakpoints.down('xl')]: {
+                fontSize: "0.825rem",
+            },
         },
         body1: {
             ...rawTheme.typography.body2,
             fontWeight: rawTheme.typography.fontWeightRegular,
             fontSize: 16,
+            [rawTheme.breakpoints.down('xl')]: {
+                fontSize: 14,
+            },
+            [rawTheme.breakpoints.down('md')]: {
+                fontSize: 12,
+            }
         },
         body2: {
             ...rawTheme.typography.body1,
             fontSize: 14,
+            [rawTheme.breakpoints.down('xl')]: {
+                fontSize: 12,
+            },
+            [rawTheme.breakpoints.down('md')]: {
+                fontSize: 10,
+            }
         },
     },
 };

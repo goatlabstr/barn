@@ -12,9 +12,20 @@ import {useTranslation} from "react-i18next";
 import {config} from '../../constants/networkConfig';
 import {useAppSelector} from "../../customHooks/hook";
 import {useAppState} from "../../context/AppStateContext";
+import {makeStyles} from "@mui/styles";
+import {Theme} from "@mui/material/styles";
+
+const useStyles = makeStyles((theme: Theme) => ({
+    icon: {
+        [theme.breakpoints.down('md')]: {
+            fontSize: "large",
+        }
+    }
+}));
 
 function Index() {
     const {t} = useTranslation();
+    const classes = useStyles();
     const {
         appState: {currentPrice}
     } = useAppState();
@@ -66,35 +77,35 @@ function Index() {
     return (
         <React.Fragment>
             <Grid container rowSpacing={3}>
-                <Grid item xs={10}>
+                <Grid item xs={10} lg={10}>
                     <Typography
                         variant={"h6"}>{t("dashboard.networkBalances", {"name": config.NETWORK_NAME})}</Typography>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={2} lg={2}>
                     <Button variant="outlined" color="secondary" size="small">{t("claimReward", {
                         "value": handleRewards(),
                         "name": config.NETWORK_NAME
                     })}</Button>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item lg={2}>
                     <DetailViewer title={t("dashboard.totalBalances")} amount={handleTotalBalance()} prefix={"$"}
-                                  icon={<AccountBalanceWalletRounded color={"secondary"}/>}/>
+                                  icon={<AccountBalanceWalletRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item lg={3}>
                     <DetailViewer title={t("dashboard.availableAmount")} amount={handleBalance()}
-                                  icon={<CurrencyExchangeRounded color={"secondary"}/>}/>
+                                  icon={<CurrencyExchangeRounded className={classes.icon}  color={"secondary"}/>}/>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item lg={3}>
                     <DetailViewer title={t("dashboard.stakedAmount")} amount={handleStakedAmount()}
-                                  icon={<AssuredWorkloadRounded color={"secondary"}/>}/>
+                                  icon={<AssuredWorkloadRounded className={classes.icon}  color={"secondary"}/>}/>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item lg={2}>
                     <DetailViewer title={t("dashboard.rewards")} amount={handleRewards()}
-                                  icon={<StarsRounded color={"secondary"}/>}/>
+                                  icon={<StarsRounded className={classes.icon}  color={"secondary"}/>}/>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item lg={2}>
                     <DetailViewer title={t("dashboard.unstakedAmount")} amount={handleUnstakedAmount()}
-                                  icon={<HourglassTopRounded color={"secondary"}/>}/>
+                                  icon={<HourglassTopRounded className={classes.icon}  color={"secondary"}/>}/>
                 </Grid>
             </Grid>
         </React.Fragment>
