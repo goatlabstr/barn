@@ -18,13 +18,13 @@ const PreloaderContext = React.createContext<{
 
 interface GlobalPreloaderProps extends PropsWithChildren<any> {
     size?: number,
-    color?: "inherit" | "primary" | "secondary",
+    color?: "inherit" | "primary" | "secondary" | "error" | "info" | "success" | "warning" | undefined,
     opacity?: number,
     thickness?: number,
     type?: "circular" | "linear"
 }
 
-const GlobalPreloaderProvider: FunctionComponent = ({children, size = 41, color = "primary", opacity = 0.1, thickness = 2.5, type = "linear"}: GlobalPreloaderProps) => {
+const GlobalPreloaderProvider: FunctionComponent = ({children, size = 41, color = 'warning', opacity = 0.1, thickness = 2.5, type = "linear"}: GlobalPreloaderProps) => {
     const [loading, setLoading] = useState<boolean>(false);
 
     const activate = useCallback(() => {

@@ -65,6 +65,15 @@ const theme = {
             ...rawTheme.typography.h2,
             ...fontHeader,
             fontSize: 35,
+            [rawTheme.breakpoints.down('xl')]: {
+                fontSize: 25,
+            },
+            [rawTheme.breakpoints.down('lg')]: {
+                fontSize: 25,
+            },
+            [rawTheme.breakpoints.down('md')]: {
+                fontSize: 16,
+            },
         },
         h3: {
             ...rawTheme.typography.h3,
