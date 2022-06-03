@@ -17,7 +17,7 @@ import {
 type ProposalCardType = {
     id: number,
     title: string,
-    proposer: string,
+    proposer?: string,
     description: string,
     startTime: string,
     endingTime: string,
@@ -122,7 +122,7 @@ export default function ProposalCard(props: ProposalCardType) {
                                 {description.length >= 200 ? description.slice(0, 200) + "..." : description}
                             </Typography>
                         </p>
-                        <Stack direction="row" spacing={1} mb={1}>
+                        {proposer!== undefined && <Stack direction="row" spacing={1} mb={1}>
                             <Typography
                                 sx={{display: 'inline', fontSize: 12}}
                                 color="secondary"
@@ -135,7 +135,7 @@ export default function ProposalCard(props: ProposalCardType) {
                             >
                                 {proposer}
                             </Typography>
-                        </Stack>
+                        </Stack>}
                         <Stack direction="row" sx={{justifyContent: "space-between"}}>
                             <Stack direction="column">
                                 {getVoteTypo('yes', proposal)}

@@ -78,15 +78,11 @@ function Main() {
                 if (result && result.length) {
                     const array = [];
                     result.map((val) => {
-                        const filter = proposalDetails && Object.keys(proposalDetails).length &&
-                            Object.keys(proposalDetails).find((key) => key === val.id);
-                        if (!filter) {
-                            if (isActivePath("/") && val.status !== 2) {
-                                return null;
-                            }
-                            //@ts-ignore
-                            array.push(val.id);
+                        if (isActivePath("/") && val.status !== 2) {
+                            return null;
                         }
+                        //@ts-ignore
+                        array.push(val.id);
                         if (val.status === 2) {
                             dispatch(allActions.fetchProposalTally(val.id));
                         }
@@ -118,6 +114,12 @@ function Main() {
 
         return window.removeEventListener('keplr_keystorechange', handleChain);
     }, [])
+
+    useEffect(() => {
+        if (address) {
+            handleFetchDetails(address);
+        }
+    },[location])
 
     const isActivePath = (pathname) => {
         return location.pathname === pathname;
@@ -151,7 +153,9 @@ function Main() {
 
     const getProposalDetails = (data) => {
         if (data && data.length && data[0]) {
+            activate();
             dispatch(allActions.fetchProposalDetails(data[0], (res) => {
+                passivate();
                 if (data[1]) {
                     data.splice(0, 1);
                     getProposalDetails(data);
@@ -161,6 +165,7 @@ function Main() {
     }
 
     const handleFetchDetails = (address) => {
+        activate();
         if (balance && !balance.length &&
             !balanceInProgress) {
             dispatch(allActions.getBalance(address));
@@ -180,10 +185,11 @@ function Main() {
             !delegationsInProgress) {
             dispatch(allActions.getDelegations(address));
         }
-        if (delegatedValidatorList && !delegatedValidatorList.length &&
+        if (delegatedValidatorList && !delegatedValidatorList.length     &&
             !delegatedValidatorListInProgress) {
             dispatch(allActions.getDelegatedValidatorsDetails(address));
         }
+        passivate();
     }
 
     const getValidatorImage = (index, data) => {

@@ -36,7 +36,7 @@ function Index() {
 
     useEffect(() => {
         if (proposals)
-            setActiveProposals(proposals.filter((proposal) => proposal.status === 2));
+            setActiveProposals(proposals.filter((proposal) => proposal.status === 2).reverse());
     }, [proposals]);
 
     return (
