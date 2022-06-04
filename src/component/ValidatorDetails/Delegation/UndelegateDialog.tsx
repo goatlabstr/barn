@@ -13,6 +13,8 @@ import {useSnackbar} from "notistack";
 import {useTranslation} from "react-i18next";
 import {makeStyles} from "@mui/styles";
 import {useDialog} from "../../../context/DialogContext/DialogContext";
+import SelectValidator from "./SelectValidator";
+import {useAppSelector} from "../../../customHooks/hook";
 
 const useStyles = makeStyles((theme: Theme) => ({
     button:{
@@ -26,12 +28,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-export default function UndelegateDialog() {
+export default function UndelegateDialog({initialValidator}) {
     const classes = useStyles();
     const { closeDialog } = useDialog();
     // const { enqueueSnackbar } = useSnackbar();
     const {t} = useTranslation();
 
+    const delegatedValidatorList = useAppSelector(state => state.stake.delegatedValidators.list);
+    const validatorImages = useAppSelector(state => state.stake.validators.images);
 
     const handleApplyButton = () => {
         closeDialog();
@@ -41,7 +45,7 @@ export default function UndelegateDialog() {
         <>
             <Divider/>
             <DialogContent className={classes.content}>
-                {`Undelegation content will be here!`}
+                <SelectValidator title={t("undelegateSelectValidator")} validators={delegatedValidatorList} images={validatorImages} initialValue={initialValidator}/>
             </DialogContent>
             <Divider/>
             <DialogActions>
