@@ -14,6 +14,8 @@
   "delegateSelectValidator": "To Delegate Validator",
   "redelegateSelectValidator": "To Redelegate Validator",
   "undelegateSelectValidator": "To Undelegate Validator",
+  "enterDelegateTokens": "Enter Delegate Amount",
+  "maxAvailableToken": "Max Available Tokens:",
   "menu": {
     "connect": "Connect",
     "disconnect": "Disconnect",

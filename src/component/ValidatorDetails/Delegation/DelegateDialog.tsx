@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 
 import { Theme } from "@mui/material/styles";
 
@@ -6,7 +6,7 @@ import {
     Button,
     Divider,
     DialogContent,
-    DialogActions
+    DialogActions, TextField, Stack, Typography
 }
     from "@mui/material";
 import {useSnackbar} from "notistack";
@@ -15,6 +15,7 @@ import {makeStyles} from "@mui/styles";
 import {useDialog} from "../../../context/DialogContext/DialogContext";
 import SelectValidator from "./SelectValidator";
 import {useAppSelector} from "../../../customHooks/hook";
+import {config} from "../../../constants/networkConfig";
 
 const useStyles = makeStyles((theme: Theme) => ({
     button:{
@@ -36,17 +37,46 @@ export default function DelegateDialog({initialValidator}) {
 
     const validatorList = useAppSelector(state => state.stake.validators.list);
     const validatorImages = useAppSelector(state => state.stake.validators.images);
+    const balance = useAppSelector(state => state.accounts.balance.result);
 
+
+    const handleBalance = () => {
+        const bal = balance && balance.length && balance.find((val) => val.denom === config.COIN_MINIMAL_DENOM);
+        return bal?.amount / (10 ** config.COIN_DECIMALS) || 0;
+    }
 
     const handleApplyButton = () => {
         closeDialog();
     };
 
+    const [delegateAmount, setDelegateAmount] = useState<number | null>();
+
     return (
         <>
             <Divider/>
             <DialogContent className={classes.content}>
-                <SelectValidator title={t("delegateSelectValidator")} validators={validatorList} images={validatorImages} initialValue={initialValidator}/>
+                <Stack direction="column">
+                    <SelectValidator title={t("delegateSelectValidator")} validators={validatorList} images={validatorImages} initialValue={initialValidator}/>
+                    <TextField
+                        id="outlined-number"
+                        label={t("enterDelegateTokens")}
+                        type="number"
+                        value={delegateAmount}
+                        onChange={(e) =>
+                            setDelegateAmount(parseInt(e.target.value))}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        sx={{marginTop: 2}}
+                    />
+                    <Stack direction="row" justifyContent="left" alignItems="center" spacing={1}>
+                        <p style={{fontSize: 11, color: "rgb(131 157 170)"}}>{t("maxAvailableToken")}</p>
+                        <Typography variant="body2"
+                                    color="secondary"
+                                    onClick={() => setDelegateAmount(handleBalance())}
+                                    sx={{fontSize: 11, cursor: "pointer"}}>{handleBalance()}</Typography>
+                    </Stack>
+                </Stack>
             </DialogContent>
             <Divider/>
             <DialogActions>
