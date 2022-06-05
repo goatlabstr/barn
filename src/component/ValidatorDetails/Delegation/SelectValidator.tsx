@@ -14,8 +14,8 @@ type SelectValidatorProps = {
     onChange?: Function;
 }
 
-export default function SelectValidator({title, validators, images, initialValue='', onChange}: SelectValidatorProps) {
-    const [value, setValue] = React.useState<string | null>(initialValue);
+export default function SelectValidator({title, validators, images, initialValue, onChange}: SelectValidatorProps) {
+    const [value, setValue] = React.useState<string | null>(initialValue || null);
 
     const getImage = (id) => {
         const image = images.filter((value) => value._id === id?.toString());

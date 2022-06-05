@@ -121,21 +121,13 @@ export default function SideBar(props: SideBarProps) {
                 enqueueSnackbar(error, {variant: "error"});
                 return;
             }
-
             dispatch(allActions.setAccountAddress(addressList[0]?.address));
-
-            if (!isActivePath("/governance") && !isActivePath("/stake")) {
-                dispatch(allActions.getUnBondingDelegations(addressList[0] && addressList[0].address));
-                dispatch(allActions.fetchRewards(addressList[0] && addressList[0].address));
-            }
-            if (!isActivePath("/governance")) {
-                dispatch(allActions.getDelegations(addressList[0] && addressList[0].address));
-            }
+            dispatch(allActions.getUnBondingDelegations(addressList[0] && addressList[0].address));
+            dispatch(allActions.fetchRewards(addressList[0] && addressList[0].address));
+            dispatch(allActions.getDelegations(addressList[0] && addressList[0].address));
             dispatch(allActions.getBalance(addressList[0] && addressList[0].address));
             dispatch(allActions.fetchVestingBalance(addressList[0] && addressList[0].address));
-            if (!isActivePath("/governance")) {
-                dispatch(allActions.getDelegatedValidatorsDetails(addressList[0] && addressList[0].address));
-            }
+            dispatch(allActions.getDelegatedValidatorsDetails(addressList[0] && addressList[0].address));
             localStorage.setItem('goat_wl_addr', encode(addressList[0] && addressList[0].address));
         });
     }
