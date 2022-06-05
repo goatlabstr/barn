@@ -175,7 +175,7 @@ function Main() {
         dispatch(allActions.fetchRewards(address));
 
         if (unBondingDelegations && !unBondingDelegations.length &&
-            !unBondingDelegationsInProgress && isActivePath("/")) {
+            !unBondingDelegationsInProgress) {
             dispatch(allActions.getUnBondingDelegations(address));
         }
         if (delegations && !delegations.length &&

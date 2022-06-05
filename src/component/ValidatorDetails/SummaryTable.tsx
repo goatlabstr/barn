@@ -139,21 +139,21 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     );
 }
 
-const DelegationButtonGroup = ({stakeAmount, moniker}) => {
+const DelegationButtonGroup = ({stakeAmount, rowData}) => {
     const {openDialog, closeDialog} = useDialog();
     const {t} = useTranslation();
 
     if (typeof stakeAmount !== "number" || stakeAmount <= 0)
         return <><ButtonGroup variant="text" size="small"><Button color="success" onClick={() => openDialog(
-            <DelegateDialog/>, t("delegateTitle", {moniker: moniker}))}>Delegate</Button></ButtonGroup></>
+            <DelegateDialog initialValidator={rowData}/>, t("delegateTitle"))}>Delegate</Button></ButtonGroup></>
     else
         return <><ButtonGroup variant="text" size="small">
             <Button color="warning" onClick={() => openDialog(
-                <RedelegateDialog/>, t("redelegateTitle", {moniker: moniker}))}>Redelegate</Button>
+                <RedelegateDialog initialValidator={rowData}/>, t("redelegateTitle"))}>Redelegate</Button>
             <Button color="success" onClick={() => openDialog(
-                <DelegateDialog/>, t("delegateTitle", {moniker: moniker}))}>Delegate</Button>
+                <DelegateDialog initialValidator={rowData}/>, t("delegateTitle"))}>Delegate</Button>
             <Button color="error" onClick={() => openDialog(
-                <UndelegateDialog/>, t("undelegateTitle", {moniker: moniker}))}>Undelegate</Button>
+                <UndelegateDialog initialValidator={rowData}/>, t("undelegateTitle"))}>Undelegate</Button>
         </ButtonGroup></>
 }
 
@@ -252,8 +252,7 @@ export default function SummaryTable(props: TableProps) {
                                         <TableCell align="center"
                                                    className={classes.tableCell}>{<DelegationButtonGroup
                                             stakeAmount={getStakeAmount(row)}
-                                            //@ts-ignore
-                                            moniker={row.description.moniker}/>}</TableCell>
+                                            rowData={row}/>}</TableCell>
                                     </TableRow>
                                 );
                             })}
