@@ -22,6 +22,7 @@ import {initializeChain} from "./services/cosmos";
 import {decode, encode} from "js-base64";
 import {config} from "./constants/networkConfig";
 import CoinGecko from "./services/coingecko";
+import VotingDetails from "./component/GovernanceDetails/VotingDetails";
 
 const menuItems = (t) => [
     {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
@@ -56,7 +57,6 @@ function Main() {
     const delegatedValidatorList = useAppSelector(state => state.stake.delegatedValidators.list);
     const delegatedValidatorListInProgress = useAppSelector(state => state.stake.delegatedValidators.inProgress);
     const proposals = useAppSelector(state => state.governance._.list);
-    const proposalDetails = useAppSelector(state => state.governance.proposalDetails.value);
     const governanceInProgress = useAppSelector(state => state.governance._.inProgress);
     const unBondingDelegations = useAppSelector(state => state.accounts.unBondingDelegations.result);
     const unBondingDelegationsInProgress = useAppSelector(state => state.accounts.unBondingDelegations.inProgress);
@@ -228,6 +228,7 @@ function Main() {
                     <Route path="/" element={<Dashboard/>}/>
                     <Route path="/stake" element={<Stake/>}/>
                     <Route path="/governance" element={<Governance/>}/>
+                    <Route path="/governance/:id" element={<VotingDetails/>}/>
                     <Route path="*" element={<Dashboard/>}/>
                 </Routes>
             </Box>

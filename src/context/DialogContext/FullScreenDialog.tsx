@@ -10,6 +10,7 @@ type DialogPropTypes = {
   open: boolean;
   title: string;
   content: JSX.Element;
+  action?: JSX.Element;
   handleClose: () => void;
 };
 
@@ -24,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const FullScreenDialog: FunctionComponent<DialogPropTypes> = (props) => {
-  const { open, title, content, handleClose } = props;
+  const { open, title, content, handleClose, action } = props;
   const classes = useStyles();
 
   return (
@@ -49,6 +50,7 @@ const FullScreenDialog: FunctionComponent<DialogPropTypes> = (props) => {
           <Typography variant="h6" className={classes.title}>
             {title}
           </Typography>
+          {action}
         </Toolbar>
       </AppBar>
       {content}

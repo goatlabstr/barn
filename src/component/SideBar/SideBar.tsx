@@ -31,54 +31,54 @@ import {useSnackbar} from "notistack";
 import {useAppDispatch, useAppSelector} from '../../customHooks/hook';
 import {config} from "../../constants/networkConfig";
 import {useAppState} from "../../context/AppStateContext";
-//import config from '../../constants/networkConfig';
+import {CopyAddressButton} from "./CopyAddressButton";
 
 const drawerWidth = 220;
 
 const useStyles = makeStyles((theme: Theme) => ({
-    menuSelected: {
-        borderLeft: "solid 0px " + theme.palette.secondary.main,
-        backgroundColor: alpha(theme.palette.primary.main, 0.1),
-    },
-    menuNoneSelected: {
-        borderLeft: "solid 0px transparent",
-        color: "rgb(131 157 170)"
-    },
-    iconSelected: {
-        color: theme.palette.secondary.main
-    },
-    iconNoneSelected: {
-        color: "rgb(131 157 170)"
-    },
-    menuListItem: {
-        paddingLeft: 18,
-        flexWrap: "wrap"
-    },
-    menuListItemText: {
-        [theme.breakpoints.down("md")]: {
-            "& .MuiTypography-body1": {
-                width: 80,
-                fontSize: "0.7rem",
-                display: "inline-block",
-                maxHeight: "1.4rem",
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                fontWeight: 400,
-                lineHeight: "1.4rem",
-                textOverflow: "ellipsis"
+        menuSelected: {
+            borderLeft: "solid 0px " + theme.palette.secondary.main,
+            backgroundColor: alpha(theme.palette.primary.main, 0.1),
+        },
+        menuNoneSelected: {
+            borderLeft: "solid 0px transparent",
+            color: "rgb(131 157 170)"
+        },
+        iconSelected: {
+            color: theme.palette.secondary.main
+        },
+        iconNoneSelected: {
+            color: "rgb(131 157 170)"
+        },
+        menuListItem: {
+            paddingLeft: 18,
+            flexWrap: "wrap"
+        },
+        menuListItemText: {
+            [theme.breakpoints.down("md")]: {
+                "& .MuiTypography-body1": {
+                    width: 80,
+                    fontSize: "0.7rem",
+                    display: "inline-block",
+                    maxHeight: "1.4rem",
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                    fontWeight: 400,
+                    lineHeight: "1.4rem",
+                    textOverflow: "ellipsis"
+                }
             }
+        },
+        goatlabs: {
+            marginLeft: "-10px",
+            marginTop: "2px",
+            fontSize: "24px",
+            filter: "drop-shadow(2px 3px 2px rgb(0 0 0 / 0.4))"
+        },
+        socialMediaIcon: {
+            color: "rgb(131 157 170)"
         }
-    },
-    goatlabs: {
-        marginLeft: "-10px",
-        marginTop: "2px",
-        fontSize: "24px",
-        filter: "drop-shadow(2px 3px 2px rgb(0 0 0 / 0.4))"
-    },
-    socialMediaIcon: {
-        color: "rgb(131 157 170)"
-    }
-}));
+    }));
 
 type SideBarProps = {
     menuItems: any
@@ -172,6 +172,7 @@ export default function SideBar(props: SideBarProps) {
                         <Typography variant={"body2"}>{config.NETWORK_NAME.toUpperCase()}</Typography>
                         <Typography variant={"body2"} color={"secondary"}>${currentPrice}</Typography>
                     </Stack>
+                    <CopyAddressButton address={address} />
                     {localStorage.getItem('goat_wl_addr') || address ?
                         <Button variant="outlined"
                                 sx={{"color": "rgb(131 157 170)", "borderColor": "rgb(131 157 170)"}}
