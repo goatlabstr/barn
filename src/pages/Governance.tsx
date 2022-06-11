@@ -1,11 +1,14 @@
 import * as React from 'react';
-import {Box, Grid, Tab, Tabs, Typography} from "@mui/material";
+import {Box, Button, Grid, Tab, Tabs, Typography} from "@mui/material";
 import {makeStyles, styled} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
 import {GeneralConstants} from "../constants/general";
 import {useTranslation} from "react-i18next";
 import ProposalCard from "../component/ProposalCard/ProposalCard";
 import {useAppSelector} from "../customHooks/hook";
+import VotingDialog from "../component/GovernanceDetails/VotingDetails";
+import {useDialog} from "../context/DialogContext/DialogContext";
+import {useNavigate} from "react-router-dom";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -90,7 +93,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 function Index() {
     const classes = useStyles();
     const {t} = useTranslation();
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = React.useState(3);
 
 
     const proposals = useAppSelector(state => state.governance._.list);
@@ -116,22 +119,23 @@ function Index() {
         return proposer;
     }
 
-    const getActiveProposalContent = (proposals) => {
+    const ActiveProposalContent = ({proposals}) => {
         const data = proposals.filter(proposal => proposal.status === 2).reverse();
-        return getContent(data);
+        return <Content data={data} />;
     }
 
-    const getPassedProposalContent = (proposals) => {
+    const PassedProposalContent = ({proposals}) => {
         const data = proposals.filter(proposal => proposal.status === 3).reverse();
-        return getContent(data);
+        return <Content data={data} />;
     }
 
-    const getRejectedProposalContent = (proposals) => {
+    const RejectedProposalContent = ({proposals}) => {
         const data = proposals.filter(proposal => proposal.status === 4).reverse();
-        return getContent(data);
+        return <Content data={data} />;
     }
 
-    const getContent = (data) => {
+    const Content = ({data}) => {
+        const navigate = useNavigate();
         if (data.length > 0)
             return <>
                 {data.map((proposal) =>
@@ -144,11 +148,12 @@ function Index() {
                             startTime={proposal?.voting_start_time}
                             endingTime={proposal?.voting_end_time}
                             proposal={proposal}
+                            onClick={() => navigate("/governance/" + proposal?.id)}
                         />
                     </Grid>)}
             </>
         else
-            return <Grid item xs={12} md={6} xl={12} >
+            return <Grid item xs={12}>
                 <Box textAlign={"center"} sx={{color: "rgb(131 157 170)"}}>{t("governance.noActiveProposal")}</Box>
             </Grid>
     }
@@ -172,30 +177,22 @@ function Index() {
                             </Box>
                             <TabPanel value={value} index={0}>
                                 <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
-                                    {
-                                        getActiveProposalContent(proposals)
-                                    }
+                                    <ActiveProposalContent proposals={proposals} />
                                 </Grid>
                             </TabPanel>
                             <TabPanel value={value} index={1}>
                                 <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
-                                    {
-                                        getPassedProposalContent(proposals)
-                                    }
+                                    <PassedProposalContent proposals={proposals} />
                                 </Grid>
                             </TabPanel>
                             <TabPanel value={value} index={2}>
                                 <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
-                                    {
-                                        getRejectedProposalContent(proposals)
-                                    }
+                                    <RejectedProposalContent proposals={proposals} />
                                 </Grid>
                             </TabPanel>
                             <TabPanel value={value} index={3}>
                                 <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
-                                    {
-                                        getContent([...proposals].reverse())
-                                    }
+                                    <Content data={([...proposals].reverse())} />
                                 </Grid>
                             </TabPanel>
                         </Box>

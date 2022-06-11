@@ -1,8 +1,11 @@
 import * as React from 'react';
-import {Box, Grid} from "@mui/material";
+import {Box, Button, Grid} from "@mui/material";
 import {useTheme} from "@mui/styles";
 import {useTranslation} from "react-i18next";
 import ProposalCard from "../ProposalCard/ProposalCard";
+import VotingDialog from "./VotingDetails";
+import {useDialog} from "../../context/DialogContext/DialogContext";
+import {useNavigate} from "react-router-dom";
 
 type ProposalProps = {
     data: any;
@@ -30,7 +33,9 @@ export default function ProposalList(props: ProposalProps) {
         return proposer;
     }
 
-    const getProposalContent = (data) => {
+    const ProposalContent = ({data}) => {
+        const navigate = useNavigate();
+
         if (data.length > 0)
             return <>
                 {data.map((proposal) =>
@@ -43,20 +48,19 @@ export default function ProposalList(props: ProposalProps) {
                             startTime={proposal?.voting_start_time}
                             endingTime={proposal?.voting_end_time}
                             proposal={proposal}
+                            onClick={() => navigate("/governance/" + proposal?.id)}
                         />
                     </Grid>)}
             </>
         else
-            return <Grid item xs={12} md={6} lg={12} >
+            return <Grid item xs={12}>
                 <Box textAlign={"center"} sx={{color: "rgb(131 157 170)"}}>{t("governance.noActiveProposal")}</Box>
             </Grid>
     }
 
     return (
         <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
-            {
-                getProposalContent(data)
-            }
+            <ProposalContent data={data} />
         </Grid>
     );
 }

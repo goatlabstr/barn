@@ -167,19 +167,19 @@ export default function Index() {
                                   icon={<AccountBalanceWalletRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
                 <Grid item lg={3}>
-                    <DetailViewer title={t("dashboard.availableAmount")} amount={handleBalance()}
+                    <DetailViewer title={t("dashboard.availableAmount")} amount={handleBalance().toFixed(3)}
                                   icon={<CurrencyExchangeRounded className={classes.icon}  color={"secondary"}/>}/>
                 </Grid>
                 <Grid item lg={3}>
-                    <DetailViewer title={t("dashboard.stakedAmount")} amount={handleStakedAmount()}
+                    <DetailViewer title={t("dashboard.stakedAmount")} amount={handleStakedAmount().toFixed(3)}
                                   icon={<AssuredWorkloadRounded className={classes.icon}  color={"secondary"}/>}/>
                 </Grid>
                 <Grid item lg={2}>
-                    <DetailViewer title={t("dashboard.rewards")} amount={handleRewards()}
+                    <DetailViewer title={t("dashboard.rewards")} amount={handleRewards().toFixed(3)}
                                   icon={<StarsRounded className={classes.icon}  color={"secondary"}/>}/>
                 </Grid>
                 <Grid item lg={2}>
-                    <DetailViewer title={t("dashboard.unstakedAmount")} amount={handleUnstakedAmount()}
+                    <DetailViewer title={t("dashboard.unstakedAmount")} amount={handleUnstakedAmount().toFixed(3)}
                                   icon={<HourglassTopRounded className={classes.icon}  color={"secondary"}/>}/>
                 </Grid>
             </Grid>

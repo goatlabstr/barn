@@ -30,7 +30,8 @@ type ProposalCardType = {
     description: string,
     startTime: string,
     endingTime: string,
-    proposal: any
+    proposal: any,
+    onClick?: any
 }
 
 export const tally = (value, sum) => {
@@ -43,7 +44,7 @@ export const tally = (value, sum) => {
 };
 
 export default function ProposalCard(props: ProposalCardType) {
-    const {id, title, proposer, description, startTime, endingTime, proposal} = props;
+    const {id, title, proposer, description, startTime, endingTime, proposal, onClick} = props;
     const theme = useTheme();
     const {t} = useTranslation();
     const classes = useStyles();
@@ -104,7 +105,7 @@ export default function ProposalCard(props: ProposalCardType) {
 
     return (
         <Card>
-            <CardActionArea>
+            <CardActionArea onClick={onClick}>
                 <CardContent>
                     <Stack direction={"column"}>
                         <Stack direction={"row"} spacing={2} sx={{alignItems: "center"}}

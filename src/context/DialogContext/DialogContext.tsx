@@ -4,13 +4,14 @@ import FullScreenDialog from "./FullScreenDialog";
 
 const DialogContext = React.createContext({
   closeDialog: () => {},
-  openDialog: (content: JSX.Element, title?: string, fullscreen?: boolean) => {},
+  openDialog: (content: JSX.Element, title?: string, fullscreen?: boolean, action?: JSX.Element) => {},
   changeDialogContent: (content: JSX.Element) => {},
   changeDialogTitle: (title: string) => {}
 });
 
 const DialogProvider: FunctionComponent = (props) => {
   const [content, setContent] = useState(<React.Fragment />);
+  const [action, setAction] = useState(<React.Fragment />);
   const [open, setOpen] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [title, setTitle] = useState("");
@@ -20,8 +21,9 @@ const DialogProvider: FunctionComponent = (props) => {
     setContent(<React.Fragment />);
   }, [setContent]);
 
-  const openDialog = (content: JSX.Element, title?: string, fullscreen?: boolean) => {
+  const openDialog = (content: JSX.Element, title?: string, fullscreen?: boolean, action?: JSX.Element) => {
     setContent(content || <React.Fragment />);
+    setAction(action || <React.Fragment />);
     setTitle(title || "");
     setOpen(true);
     setFullscreen(!!fullscreen);
@@ -57,6 +59,7 @@ const DialogProvider: FunctionComponent = (props) => {
             open={open}
             title={title}
             handleClose={closeDialog}
+            action={action}
           />
         ) : (
           <SimpleDialog
