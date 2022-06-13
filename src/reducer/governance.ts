@@ -3,8 +3,6 @@ import {
     PROPOSAL_DETAILS_FETCH_ERROR,
     PROPOSAL_DETAILS_FETCH_IN_PROGRESS,
     PROPOSAL_DETAILS_FETCH_SUCCESS,
-    PROPOSAL_DIALOG_HIDE,
-    PROPOSAL_DIALOG_SHOW,
     PROPOSAL_TALLY_FETCH_ERROR,
     PROPOSAL_TALLY_FETCH_IN_PROGRESS,
     PROPOSAL_TALLY_FETCH_SUCCESS,
@@ -19,33 +17,6 @@ import {
     VOTE_DETAILS_FETCH_SUCCESS,
 } from '../action/types/governance';
 import { DISCONNECT_SET } from '../action/types/account';
-import { DELEGATE_SUCCESS_DIALOG_HIDE } from '../action/types/stake';
-
-const dialog = (state = {
-    open: false,
-    value: {},
-}, action) => {
-    switch (action.type) {
-        case PROPOSAL_DIALOG_SHOW:
-            return {
-                open: true,
-                value: action.value,
-            };
-        case PROPOSAL_DIALOG_HIDE:
-            return {
-                ...state,
-                open: false,
-            };
-        case DISCONNECT_SET:
-        case DELEGATE_SUCCESS_DIALOG_HIDE:
-            return {
-                open: false,
-                value: {},
-            };
-        default:
-            return state;
-    }
-};
 
 const _ = (state = {
     inProgress: false,
@@ -204,7 +175,6 @@ const proposalDetails = (state = {
 };
 
 export default combineReducers({
-    dialog,
     _,
     votes,
     voteDetails,

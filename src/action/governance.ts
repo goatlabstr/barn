@@ -2,8 +2,6 @@ import {
     PROPOSAL_DETAILS_FETCH_ERROR,
     PROPOSAL_DETAILS_FETCH_IN_PROGRESS,
     PROPOSAL_DETAILS_FETCH_SUCCESS,
-    PROPOSAL_DIALOG_HIDE,
-    PROPOSAL_DIALOG_SHOW,
     PROPOSAL_TALLY_FETCH_ERROR,
     PROPOSAL_TALLY_FETCH_IN_PROGRESS,
     PROPOSAL_TALLY_FETCH_SUCCESS,
@@ -113,19 +111,6 @@ export const getProposalVotes = (id) => (dispatch) => {
                     : 'Failed!',
             ));
         });
-};
-
-export const showProposalDialog = (value) => {
-    return {
-        type: PROPOSAL_DIALOG_SHOW,
-        value,
-    };
-};
-
-export const hideProposalDialog = () => {
-    return {
-        type: PROPOSAL_DIALOG_HIDE,
-    };
 };
 
 const fetchVoteDetailsInProgress = () => {

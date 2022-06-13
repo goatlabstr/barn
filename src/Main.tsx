@@ -65,8 +65,6 @@ function Main() {
     const validatorListInProgress = useAppSelector(state => state.stake.validators.inProgress);
     const vestingBalance = useAppSelector(state => state.accounts.vestingBalance.result);
     const vestingBalanceInProgress = useAppSelector(state => state.accounts.vestingBalance.inProgress);
-    const voteDetails = useAppSelector(state => state.governance.voteDetails.value);
-    const voteDetailsInProgress = useAppSelector(state => state.governance.voteDetails.inProgress);
 
     useEffect(() => {
         if (localStorage.getItem('goat_wl_addr'))
@@ -153,7 +151,7 @@ function Main() {
 
     const getProposalDetails = (data) => {
         if (data && data.length && data[0]) {
-            dispatch(allActions.fetchProposalDetails(data[0], (res) => {
+            dispatch(allActions.fetchProposalDetails(data[0], () => {
                 if (data[1]) {
                     data.splice(0, 1);
                     getProposalDetails(data);

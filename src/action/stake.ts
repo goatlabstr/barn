@@ -1,20 +1,8 @@
 import {
-    CLAIM_REWARDS_DIALOG_HIDE,
-    CLAIM_REWARDS_DIALOG_SHOW,
     CLAIM_REWARDS_VALIDATOR_SET,
-    DELEGATE_DIALOG_HIDE,
-    DELEGATE_DIALOG_SHOW,
-    DELEGATE_FAILED_DIALOG_HIDE,
-    DELEGATE_FAILED_DIALOG_SHOW,
-    DELEGATE_PROCESSING_DIALOG_HIDE,
-    DELEGATE_PROCESSING_DIALOG_SHOW,
-    DELEGATE_SUCCESS_DIALOG_HIDE,
-    DELEGATE_SUCCESS_DIALOG_SHOW,
     DELEGATED_VALIDATORS_FETCH_ERROR,
     DELEGATED_VALIDATORS_FETCH_IN_PROGRESS,
     DELEGATED_VALIDATORS_FETCH_SUCCESS,
-    SEARCH_LIST_SET,
-    TO_VALIDATOR_SET,
     TOKENS_SET,
     VALIDATOR_FETCH_ERROR,
     VALIDATOR_FETCH_IN_PROGRESS,
@@ -22,7 +10,6 @@ import {
     VALIDATOR_IMAGE_FETCH_ERROR,
     VALIDATOR_IMAGE_FETCH_IN_PROGRESS,
     VALIDATOR_IMAGE_FETCH_SUCCESS,
-    VALIDATOR_SET,
     VALIDATORS_FETCH_ERROR,
     VALIDATORS_FETCH_IN_PROGRESS,
     VALIDATORS_FETCH_SUCCESS,
@@ -73,78 +60,6 @@ export const getValidators = (cb) => (dispatch) => {
             ));
             cb(null);
         });
-};
-
-export const setSearch = (value) => {
-    return {
-        type: SEARCH_LIST_SET,
-        value,
-    };
-};
-
-export const showDelegateDialog = (name, address) => {
-    return {
-        type: DELEGATE_DIALOG_SHOW,
-        name,
-        address,
-    };
-};
-
-export const hideDelegateDialog = () => {
-    return {
-        type: DELEGATE_DIALOG_HIDE,
-    };
-};
-
-export const showDelegateSuccessDialog = (value) => {
-    return {
-        type: DELEGATE_SUCCESS_DIALOG_SHOW,
-        value,
-    };
-};
-
-export const hideDelegateSuccessDialog = () => {
-    return {
-        type: DELEGATE_SUCCESS_DIALOG_HIDE,
-    };
-};
-
-export const showDelegateProcessingDialog = () => {
-    return {
-        type: DELEGATE_PROCESSING_DIALOG_SHOW,
-    };
-};
-
-export const hideDelegateProcessingDialog = () => {
-    return {
-        type: DELEGATE_PROCESSING_DIALOG_HIDE,
-    };
-};
-
-export const showDelegateFailedDialog = () => {
-    return {
-        type: DELEGATE_FAILED_DIALOG_SHOW,
-    };
-};
-
-export const hideDelegateFailedDialog = () => {
-    return {
-        type: DELEGATE_FAILED_DIALOG_HIDE,
-    };
-};
-
-export const setValidator = (value) => {
-    return {
-        type: VALIDATOR_SET,
-        value,
-    };
-};
-
-export const setToValidator = (value) => {
-    return {
-        type: TO_VALIDATOR_SET,
-        value,
-    };
 };
 
 export const setTokens = (value) => {
@@ -240,18 +155,6 @@ export const getDelegatedValidatorsDetails = (address) => (dispatch) => {
                     : 'Failed!',
             ));
         });
-};
-
-export const showClaimRewardsDialog = () => {
-    return {
-        type: CLAIM_REWARDS_DIALOG_SHOW,
-    };
-};
-
-export const hideClaimRewardsDialog = () => {
-    return {
-        type: CLAIM_REWARDS_DIALOG_HIDE,
-    };
 };
 
 export const setClaimRewardsValidator = (value) => {
