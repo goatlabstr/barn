@@ -1,40 +1,19 @@
 import { combineReducers } from 'redux';
 import {
-    CLAIM_REWARDS_DIALOG_HIDE,
-    CLAIM_REWARDS_DIALOG_SHOW,
     CLAIM_REWARDS_VALIDATOR_SET,
-    DELEGATE_DIALOG_HIDE,
-    DELEGATE_DIALOG_SHOW,
-    DELEGATE_FAILED_DIALOG_HIDE,
-    DELEGATE_FAILED_DIALOG_SHOW,
-    DELEGATE_PROCESSING_DIALOG_HIDE,
-    DELEGATE_PROCESSING_DIALOG_SHOW,
-    DELEGATE_SUCCESS_DIALOG_HIDE,
-    DELEGATE_SUCCESS_DIALOG_SHOW,
     DELEGATED_VALIDATORS_FETCH_ERROR,
     DELEGATED_VALIDATORS_FETCH_IN_PROGRESS,
     DELEGATED_VALIDATORS_FETCH_SUCCESS,
-    SEARCH_LIST_SET,
-    TO_VALIDATOR_SET,
     TOKENS_SET,
     VALIDATOR_FETCH_ERROR,
     VALIDATOR_FETCH_IN_PROGRESS,
     VALIDATOR_FETCH_SUCCESS,
     VALIDATOR_IMAGE_FETCH_SUCCESS,
-    VALIDATOR_SET,
     VALIDATORS_FETCH_ERROR,
     VALIDATORS_FETCH_IN_PROGRESS,
     VALIDATORS_FETCH_SUCCESS,
 } from '../action/types/stake';
 import { DISCONNECT_SET } from '../action/types/account';
-
-const search = (state = '', action) => {
-    if (action.type === SEARCH_LIST_SET) {
-        return action.value;
-    }
-
-    return state;
-};
 
 const validators = (state = {
     inProgress: false,
@@ -76,131 +55,8 @@ const validators = (state = {
     }
 };
 
-const delegateDialog = (state = {
-    open: false,
-    name: '',
-}, action) => {
-    switch (action.type) {
-        case DELEGATE_DIALOG_SHOW:
-            return {
-                open: true,
-                name: action.name,
-            };
-        case DELEGATE_DIALOG_HIDE:
-        case DELEGATE_SUCCESS_DIALOG_HIDE:
-        case DELEGATE_FAILED_DIALOG_HIDE:
-        case DELEGATE_PROCESSING_DIALOG_HIDE:
-            return {
-                ...state,
-                open: false,
-                name: '',
-                address: '',
-            };
-        default:
-            return state;
-    }
-};
-
-const successDialog = (state = {
-    open: false,
-    hash: '',
-}, action) => {
-    switch (action.type) {
-        case DELEGATE_SUCCESS_DIALOG_SHOW:
-            return {
-                open: true,
-                hash: action.value,
-            };
-        case DELEGATE_SUCCESS_DIALOG_HIDE:
-            return {
-                open: false,
-                hash: '',
-            };
-        default:
-            return state;
-    }
-};
-
-const processingDialog = (state = false, action) => {
-    switch (action.type) {
-        case DELEGATE_PROCESSING_DIALOG_SHOW:
-            return true;
-        case DELEGATE_PROCESSING_DIALOG_HIDE:
-            return false;
-        default:
-            return state;
-    }
-};
-
-const failedDialog = (state = false, action) => {
-    switch (action.type) {
-        case DELEGATE_FAILED_DIALOG_SHOW:
-            return true;
-        case DELEGATE_FAILED_DIALOG_HIDE:
-            return false;
-        default:
-            return state;
-    }
-};
-
-const validator = (state = {
-    options: [],
-    value: '',
-}, action) => {
-    switch (action.type) {
-        case DELEGATE_SUCCESS_DIALOG_HIDE:
-        case DELEGATE_FAILED_DIALOG_HIDE:
-        case DELEGATE_DIALOG_HIDE: {
-            return {
-                options: [],
-                value: '',
-            };
-        }
-        case VALIDATOR_SET:
-            return {
-                ...state,
-                value: action.value,
-            };
-        case DELEGATE_DIALOG_SHOW:
-            return {
-                ...state,
-                value: action.address ? action.address : '',
-            };
-        default:
-            return state;
-    }
-};
-
-const toValidator = (state = {
-    options: [],
-    value: '',
-}, action) => {
-    switch (action.type) {
-        case DELEGATE_SUCCESS_DIALOG_HIDE:
-        case DELEGATE_FAILED_DIALOG_HIDE:
-        case DELEGATE_DIALOG_HIDE: {
-            return {
-                options: [],
-                value: '',
-            };
-        }
-        case TO_VALIDATOR_SET:
-            return {
-                ...state,
-                value: action.value,
-            };
-        default:
-            return state;
-    }
-};
-
 const tokens = (state = null, action) => {
     switch (action.type) {
-        case DELEGATE_SUCCESS_DIALOG_HIDE:
-        case DELEGATE_FAILED_DIALOG_HIDE:
-        case DELEGATE_DIALOG_HIDE: {
-            return null;
-        }
         case TOKENS_SET:
             return action.value;
         default:
@@ -268,24 +124,6 @@ const claimDialog = (state = {
     validator: 'none',
 }, action) => {
     switch (action.type) {
-        case CLAIM_REWARDS_DIALOG_SHOW:
-            return {
-                ...state,
-                open: true,
-            };
-        case CLAIM_REWARDS_DIALOG_HIDE:
-            return {
-                ...state,
-                open: false,
-                validator: 'none',
-            };
-        case DELEGATE_SUCCESS_DIALOG_HIDE:
-        case DELEGATE_FAILED_DIALOG_HIDE:
-            return {
-                ...state,
-                open: false,
-                validator: 'none',
-            };
         case CLAIM_REWARDS_VALIDATOR_SET:
             return {
                 ...state,
@@ -297,13 +135,6 @@ const claimDialog = (state = {
 };
 
 export default combineReducers({
-    search,
-    delegateDialog,
-    successDialog,
-    processingDialog,
-    failedDialog,
-    validator,
-    toValidator,
     tokens,
     validators,
     validatorDetails,

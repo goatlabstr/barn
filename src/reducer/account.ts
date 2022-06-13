@@ -11,8 +11,6 @@ import {
     REWARDS_FETCH_ERROR,
     REWARDS_FETCH_IN_PROGRESS,
     REWARDS_FETCH_SUCCESS,
-    SELECT_ACCOUNT_DIALOG_HIDE,
-    SELECT_ACCOUNT_DIALOG_SHOW,
     STAKE_ACCOUNT_ADDRESS_SET,
     UN_BONDING_DELEGATIONS_FETCH_ERROR,
     UN_BONDING_DELEGATIONS_FETCH_IN_PROGRESS,
@@ -135,17 +133,6 @@ const vestingBalance = (state = {
     }
 };
 
-const selectDialog = (state = false, action) => {
-    switch (action.type) {
-        case SELECT_ACCOUNT_DIALOG_SHOW:
-            return true;
-        case SELECT_ACCOUNT_DIALOG_HIDE:
-            return false;
-        default:
-            return state;
-    }
-};
-
 const unBondingDelegations = (state = {
     result: [],
     inProgress: false,
@@ -221,7 +208,6 @@ export default combineReducers({
     delegations,
     balance,
     vestingBalance,
-    selectDialog,
     unBondingDelegations,
     stakeAccountAddress,
     rewards,

@@ -10,8 +10,6 @@ import {
     REWARDS_FETCH_ERROR,
     REWARDS_FETCH_IN_PROGRESS,
     REWARDS_FETCH_SUCCESS,
-    SELECT_ACCOUNT_DIALOG_HIDE,
-    SELECT_ACCOUNT_DIALOG_SHOW,
     STAKE_ACCOUNT_ADDRESS_SET,
     UN_BONDING_DELEGATIONS_FETCH_ERROR,
     UN_BONDING_DELEGATIONS_FETCH_IN_PROGRESS,
@@ -163,18 +161,6 @@ export const fetchVestingBalance = (address) => (dispatch) => {
                     : 'Failed!',
             ));
         });
-};
-
-export const showSelectAccountDialog = () => {
-    return {
-        type: SELECT_ACCOUNT_DIALOG_SHOW,
-    };
-};
-
-export const hideSelectAccountDialog = () => {
-    return {
-        type: SELECT_ACCOUNT_DIALOG_HIDE,
-    };
 };
 
 const fetchUnBondingDelegationsInProgress = () => {
