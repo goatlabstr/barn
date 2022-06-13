@@ -4,9 +4,9 @@
   "private": true,
   "license": "MIT",
   "dependencies": {
-    "@cosmjs/amino": "^0.28.4",
-    "@cosmjs/proto-signing": "^0.28.4",
-    "@cosmjs/stargate": "^0.28.4",
+    "@cosmjs/amino": "0.28.4",
+    "@cosmjs/proto-signing": "0.28.4",
+    "@cosmjs/stargate": "0.28.4",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.8.3",
