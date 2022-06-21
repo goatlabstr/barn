@@ -71,7 +71,6 @@ export default function Index() {
             delegation.entries && delegation.entries.length &&
             delegation.entries.map((entry) => {
                 unStaked = unStaked + Number(entry.balance);
-
                 return null;
             });
             return null;
