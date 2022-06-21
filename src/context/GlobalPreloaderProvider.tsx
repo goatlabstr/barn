@@ -24,7 +24,7 @@ interface GlobalPreloaderProps extends PropsWithChildren<any> {
     type?: "circular" | "linear"
 }
 
-const GlobalPreloaderProvider: FunctionComponent = ({children, size = 41, color = 'warning', opacity = 0.1, thickness = 2.5, type = "linear"}: GlobalPreloaderProps) => {
+const GlobalPreloaderProvider: FunctionComponent = ({children, size = 41, color = 'warning', opacity = 0.4, thickness = 4.5, type = "circular"}: GlobalPreloaderProps) => {
     const [loading, setLoading] = useState<boolean>(false);
 
     const activate = useCallback(() => {

@@ -67,11 +67,32 @@ function Main() {
     const vestingBalanceInProgress = useAppSelector(state => state.accounts.vestingBalance.inProgress);
 
     useEffect(() => {
+        if (!(balanceInProgress || delegationsInProgress || governanceInProgress ||
+            validatorListInProgress))
+            passivate();
+
+    }, [balanceInProgress, delegationsInProgress, governanceInProgress,
+        validatorListInProgress])
+
+    useEffect(() => {
+        activate();
         if (localStorage.getItem('goat_wl_addr'))
             initKeplr();
 
+        if (address) {
+            handleFetchDetails(address);
+        }
+
+        if (!validatorList.length && !validatorListInProgress) {
+            dispatch(allActions.getValidators((data) => {
+                if (data && data.length && validatorImages && validatorImages.length === 0) {
+                    const array = data.filter((val) => val && val.description && val.description.identity);
+                    getValidatorImage(0, array);
+                }
+            }));
+        }
+
         if (proposals && !proposals.length && !governanceInProgress) {
-            activate();
             dispatch(allActions.getProposals((result) => {
                 if (result && result.length) {
                     const array = [];
@@ -91,35 +112,21 @@ function Main() {
             }));
         }
 
-        if (address) {
-            handleFetchDetails(address);
-        }
-
-        if (!validatorList.length && !validatorListInProgress) {
-            dispatch(allActions.getValidators((data) => {
-                if (data && data.length && validatorImages && validatorImages.length === 0) {
-                    const array = data.filter((val) => val && val.description && val.description.identity);
-                    getValidatorImage(0, array);
-                }
-            }));
-        }
-
         window.addEventListener('keplr_keystorechange', () => {
             if (localStorage.getItem('goat_wl_addr') || address !== '') {
-                handleChain(false);
+                handleChain(true);
             }
         });
-        passivate();
-        return window.removeEventListener('keplr_keystorechange', handleChain);
+        return () => {
+            window.removeEventListener('keplr_keystorechange', handleChain);
+        }
     }, [])
 
     useEffect(() => {
         if (address) {
-            activate();
             handleFetchDetails(address);
-            passivate();
         }
-    },[location])
+    }, [location])
 
     const isActivePath = (pathname) => {
         return location.pathname === pathname;
@@ -140,11 +147,11 @@ function Main() {
             const previousAddress = decode(localStorage.getItem('goat_wl_addr') || "");
 
             dispatch(allActions.setAccountAddress(addressList[0]?.address));
-            if (fetch) {
-                handleFetchDetails(addressList[0]?.address);
-            }
             if (previousAddress !== addressList[0]?.address) {
                 localStorage.setItem('goat_wl_addr', encode(addressList[0]?.address));
+            }
+            if (fetch) {
+                handleFetchDetails(addressList[0]?.address);
             }
         });
     }
@@ -180,7 +187,7 @@ function Main() {
             !delegationsInProgress) {
             dispatch(allActions.getDelegations(address));
         }
-        if (delegatedValidatorList && !delegatedValidatorList.length     &&
+        if (delegatedValidatorList && !delegatedValidatorList.length &&
             !delegatedValidatorListInProgress) {
             dispatch(allActions.getDelegatedValidatorsDetails(address));
         }

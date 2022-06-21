@@ -369,8 +369,8 @@ export default function EnhancedTable(props: TableProps) {
                                             }%
                                         </TableCell>
                                         <TableCell align="center" className={clsx(classes.tableCell, {
-                                            [classes.tableActiveCell]: row.stakeAmount > 0,
-                                            [classes.tablePassiveCell]: row.stakeAmount <= 0
+                                            [classes.tableActiveCell]: getStakeAmount(row) > 0,
+                                            [classes.tablePassiveCell]: getStakeAmount(row) <= 0
                                         })}>{handleStakeAmount(row)}</TableCell>
                                         <TableCell align="center"
                                                    className={classes.tableCell}>{<DelegationButtonGroup

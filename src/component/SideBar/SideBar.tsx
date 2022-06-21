@@ -177,11 +177,11 @@ export default function SideBar(props: SideBarProps) {
                         <Button variant="outlined"
                                 sx={{"color": "rgb(131 157 170)", "borderColor": "rgb(131 157 170)"}}
                                 startIcon={<LogoutRounded/>}
-                                onClick={handleDisconnectButtonClick}
+                                onClick={() => handleDisconnectButtonClick()}
                         >{t("menu.disconnect")}</Button> :
                         <Button variant="outlined" color="secondary"
                                 startIcon={<AccountBalanceWalletRounded/>}
-                                onClick={handleConnectButtonClick}
+                                onClick={() => handleConnectButtonClick()}
                         >{t("menu.connect")}</Button>}
                     <Stack direction="row" sx={{justifyContent: "center"}}>
                         <IconButton className={classes.socialMediaIcon}
@@ -204,7 +204,7 @@ export default function SideBar(props: SideBarProps) {
                     <Button variant="text"
                             sx={{textTransform: "none", color: "rgb(131 157 170)"}}
                         //@ts-ignore
-                            onClick={() => window.open("https://www.coingecko.com/", '_blank').focus()}
+                            onClick={() => window.open("https://www.coingecko.com/coins/" + config.COINGECKO_ID, '_blank').focus()}
 
                     >
                         {t("menu.coingecko")}</Button>

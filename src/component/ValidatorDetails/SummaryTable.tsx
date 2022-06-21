@@ -198,7 +198,7 @@ export default function SummaryTable(props: TableProps) {
     const handlePendingRewards = (row) => {
         let value = rewards && rewards.rewards.find((val) =>
             (val.validator_address) === row.operator_address);
-        value = value ? value.reward / 10 ** config.COIN_DECIMALS : 0;
+        value = value ? value.reward[0].amount / 10 ** config.COIN_DECIMALS : 0;
         return formatCount(value);
     }
 

@@ -1,6 +1,5 @@
 import { REST_URL, RPC_URL } from '../constants/endpoints';
 import { SigningStargateClient } from '@cosmjs/stargate';
-import { SigningCosmosClient } from '@cosmjs/launchpad';
 import { makeSignDoc } from '@cosmjs/amino';
 import { config } from '../constants/networkConfig';
 
@@ -113,107 +112,6 @@ export const signTxAndBroadcast = (tx, address, cb) => {
             tx.fee,
             tx.memo,
         ).then((result) => {
-            if (result && result.code !== undefined && result.code !== 0) {
-                //@ts-ignore
-                cb(result.log || result.rawLog);
-            } else {
-                cb(null, result);
-            }
-        }).catch((error) => {
-            cb(error && error.message);
-        });
-    })();
-};
-
-export const cosmosSignTxAndBroadcast = (tx, address, cb) => {
-    (async () => {
-        //@ts-ignore
-        await window.keplr && window.keplr.enable(chainId);
-        //@ts-ignore
-        const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId);
-        const cosmJS = new SigningCosmosClient(
-            REST_URL,
-            address,
-            offlineSigner,
-        );
-
-        cosmJS.signAndBroadcast(tx.msg, tx.fee, tx.memo).then((result) => {
-            //@ts-ignore
-            if (result && result.code !== undefined && result.code !== 0) {
-                //@ts-ignore
-                cb(result.log || result.rawLog);
-            } else {
-                cb(null, result);
-            }
-        }).catch((error) => {
-            cb(error && error.message);
-        });
-    })();
-};
-
-export const aminoSignTxAndBroadcast = (tx, address, cb) => {
-    (async () => {
-        //@ts-ignore
-        await window.keplr && window.keplr.enable(chainId);
-        //@ts-ignore
-        const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId);
-
-        const client = new SigningCosmosClient(
-            REST_URL,
-            address,
-            offlineSigner,
-        );
-
-        const client2 = await SigningStargateClient.connectWithSigner(
-            RPC_URL,
-            offlineSigner,
-        );
-        const account = {};
-        try {
-            const {
-                accountNumber,
-                sequence,
-            } = await client2.getSequence(address);
-            //@ts-ignore
-            account.accountNumber = accountNumber;
-            //@ts-ignore
-            account.sequence = sequence;
-        } catch (e) {
-            //@ts-ignore
-            account.accountNumber = 0;
-            //@ts-ignore
-            account.sequence = 0;
-        }
-
-        const signDoc = makeSignDoc(
-            tx.msgs ? tx.msgs : [tx.msg],
-            tx.fee,
-            chainId,
-            tx.memo,
-            //@ts-ignore
-            account.accountNumber,
-            //@ts-ignore
-            account.sequence,
-        );
-
-        const {
-            signed,
-            signature,
-        } = await offlineSigner.signAmino(address, signDoc);
-
-        const msg = signed.msgs ? signed.msgs : [signed.msg];
-        const fee = signed.fee;
-        const memo = signed.memo;
-
-        const voteTx = {
-            msg,
-            fee,
-            memo,
-            signatures: [signature],
-        };
-
-        client.broadcastTx(voteTx).then((result) => {
-            //@ts-ignore
             if (result && result.code !== undefined && result.code !== 0) {
                 //@ts-ignore
                 cb(result.log || result.rawLog);
