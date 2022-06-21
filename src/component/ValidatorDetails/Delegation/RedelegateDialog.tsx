@@ -20,6 +20,7 @@ import allActions from "../../../action";
 import {gas} from "../../../constants/defaultGasFees";
 import {signTxAndBroadcast} from "../../../services/cosmos";
 import {useGlobalPreloader} from "../../../context/GlobalPreloaderProvider";
+import {snackbarTxAction} from "../../Snackbar/action";
 
 const useStyles = makeStyles((theme: Theme) => ({
     button:{
@@ -110,7 +111,11 @@ export default function RedelegateDialog({initialValidator}) {
                 return;
             }
             if (result) {
-                enqueueSnackbar(result?.transactionHash, {variant: "success"});
+                enqueueSnackbar(result?.transactionHash, {
+                    variant: "success",
+                    autoHideDuration: 3000,
+                    action: (key) => snackbarTxAction(result?.transactionHash)(key)
+                });
                 updateBalance();
             }
         });
@@ -139,7 +144,7 @@ export default function RedelegateDialog({initialValidator}) {
                         type="number"
                         value={redelegateAmount}
                         onChange={(e) =>
-                            setRedelegateAmount(parseInt(e.target.value))}
+                            setRedelegateAmount(parseFloat(e.target.value))}
                         InputLabelProps={{
                             shrink: true,
                         }}

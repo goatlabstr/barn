@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Box, Button, CircularProgress, Grid, Stack, Typography} from "@mui/material";
+import {Button, CircularProgress, Grid, IconButton, Stack, Typography} from "@mui/material";
 import SummaryTable from "./SummaryTable";
 import {useTranslation} from "react-i18next";
 import {config} from "../../constants/networkConfig";
@@ -9,12 +9,13 @@ import {gas} from "../../constants/defaultGasFees";
 import {signTxAndBroadcast} from "../../services/cosmos";
 import {useState} from "react";
 import {useSnackbar} from "notistack";
+import {snackbarTxAction} from "../Snackbar/action";
 
 function Index(props) {
     const {rows, images} = props;
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
-    const { enqueueSnackbar } = useSnackbar();
+    const {enqueueSnackbar} = useSnackbar();
 
     const [inTxProgress, setInTxProgress] = useState(false);
 
@@ -88,7 +89,11 @@ function Index(props) {
                 return;
             }
             if (result) {
-                enqueueSnackbar(result?.transactionHash, {variant: "success"});
+                enqueueSnackbar(result?.transactionHash, {
+                    variant: "success",
+                    autoHideDuration: 3000,
+                    action: (key) => snackbarTxAction(result?.transactionHash)(key)
+                });
                 updateBalance();
             }
         });
@@ -97,30 +102,31 @@ function Index(props) {
     return (
         <React.Fragment>
             <Grid container rowSpacing={0.5}>
-                    <Grid item xs={12}>
-                        <Stack direction="row" justifyContent="space-between">
-                            <div>
-                                <Typography variant={"h6"}>{t("staking.name",{"name": config.NETWORK_NAME})}</Typography>
-                                <Typography variant={"body1"} style={{color: "rgb(131 157 170)"}}>{t("staking.totalStaked", {
-                                    "value": getStakedAmount()
-                                })}</Typography>
-                            </div>
-                            <Button variant="outlined"
-                                    color="secondary"
-                                    disabled={inTxProgress || handleRewards() <= 0}
-                                    onClick={() => handleClaimAll()}
-                                    size="small"
-                                    sx={{height: "fit-content"}}>
-                                {inTxProgress && <CircularProgress color="inherit" size={20} sx={{mr: 1}}/>}
-                                {t("claimReward", {
-                                "value": handleRewards(),
+                <Grid item xs={12}>
+                    <Stack direction="row" justifyContent="space-between">
+                        <div>
+                            <Typography variant={"h6"}>{t("staking.name", {"name": config.NETWORK_NAME})}</Typography>
+                            <Typography variant={"body1"}
+                                        style={{color: "rgb(131 157 170)"}}>{t("staking.totalStaked", {
+                                "value": getStakedAmount()
+                            })}</Typography>
+                        </div>
+                        <Button variant="outlined"
+                                color="secondary"
+                                disabled={inTxProgress || handleRewards() <= 0}
+                                onClick={() => handleClaimAll()}
+                                size="small"
+                                sx={{height: "fit-content"}}>
+                            {inTxProgress && <CircularProgress color="inherit" size={20} sx={{mr: 1}}/>}
+                            {t("claimReward", {
+                                "value": handleRewards().toFixed(3),
                                 "name": config.NETWORK_NAME
                             })}</Button>
-                        </Stack>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <SummaryTable rows={rows} images={images}/>
-                    </Grid>
+                    </Stack>
+                </Grid>
+                <Grid item xs={12}>
+                    <SummaryTable rows={rows} images={images}/>
+                </Grid>
             </Grid>
         </React.Fragment>
     );
