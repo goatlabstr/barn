@@ -20,6 +20,7 @@ import {gas} from "../../../constants/defaultGasFees";
 import {signTxAndBroadcast} from "../../../services/cosmos";
 import allActions from "../../../action";
 import {useGlobalPreloader} from "../../../context/GlobalPreloaderProvider";
+import {snackbarTxAction} from "../../Snackbar/action";
 
 const useStyles = makeStyles((theme: Theme) => ({
     button:{
@@ -101,7 +102,11 @@ export default function DelegateDialog({initialValidator}) {
                 return;
             }
             if (result) {
-                enqueueSnackbar(result?.transactionHash, {variant: "success"});
+                enqueueSnackbar(result?.transactionHash, {
+                    variant: "success",
+                    autoHideDuration: 3000,
+                    action: (key) => snackbarTxAction(result?.transactionHash)(key)
+                });
                 updateBalance();
             }
         });
@@ -124,7 +129,7 @@ export default function DelegateDialog({initialValidator}) {
                         type="number"
                         value={delegateAmount}
                         onChange={(e) =>
-                            setDelegateAmount(parseInt(e.target.value))}
+                            setDelegateAmount(parseFloat(e.target.value))}
                         InputLabelProps={{
                             shrink: true,
                         }}

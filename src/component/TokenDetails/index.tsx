@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button, CircularProgress, Grid, Stack, Typography} from "@mui/material";
+import {Button, CircularProgress, Grid, IconButton, Stack, Typography} from "@mui/material";
 import DetailViewer from "./DetailViewer";
 import {
     AccountBalanceWalletRounded,
@@ -20,6 +20,7 @@ import {signTxAndBroadcast} from "../../services/cosmos";
 import {useSnackbar} from "notistack";
 import allActions from "../../action";
 import {useState} from "react";
+import {snackbarTxAction} from "../Snackbar/action";
 
 const useStyles = makeStyles((theme: Theme) => ({
     icon: {
@@ -32,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 export default function Index() {
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
-    const { enqueueSnackbar } = useSnackbar();
+    const {enqueueSnackbar} = useSnackbar();
     const classes = useStyles();
     const {
         appState: {currentPrice}
@@ -137,7 +138,11 @@ export default function Index() {
                 return;
             }
             if (result) {
-                enqueueSnackbar(result?.transactionHash, {variant: "success"});
+                enqueueSnackbar(result?.transactionHash, {
+                    variant: "success",
+                    autoHideDuration: 3000,
+                    action: (key) => snackbarTxAction(result?.transactionHash)(key)
+                });
                 updateBalance();
             }
         });
@@ -158,8 +163,9 @@ export default function Index() {
                                 sx={{height: "fit-content"}}>
                             {inTxProgress && <CircularProgress color="inherit" size={20} sx={{mr: 1}}/>}
                             {t("claimReward", {
-                                "value": handleRewards(),
-                                "name": config.NETWORK_NAME})}</Button>
+                                "value": handleRewards().toFixed(3),
+                                "name": config.NETWORK_NAME
+                            })}</Button>
                     </Stack>
                 </Grid>
                 <Grid item lg={2}>
@@ -168,19 +174,19 @@ export default function Index() {
                 </Grid>
                 <Grid item lg={3}>
                     <DetailViewer title={t("dashboard.availableAmount")} amount={handleBalance().toFixed(3)}
-                                  icon={<CurrencyExchangeRounded className={classes.icon}  color={"secondary"}/>}/>
+                                  icon={<CurrencyExchangeRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
                 <Grid item lg={3}>
                     <DetailViewer title={t("dashboard.stakedAmount")} amount={handleStakedAmount().toFixed(3)}
-                                  icon={<AssuredWorkloadRounded className={classes.icon}  color={"secondary"}/>}/>
+                                  icon={<AssuredWorkloadRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
                 <Grid item lg={2}>
                     <DetailViewer title={t("dashboard.rewards")} amount={handleRewards().toFixed(3)}
-                                  icon={<StarsRounded className={classes.icon}  color={"secondary"}/>}/>
+                                  icon={<StarsRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
                 <Grid item lg={2}>
                     <DetailViewer title={t("dashboard.unstakedAmount")} amount={handleUnstakedAmount().toFixed(3)}
-                                  icon={<HourglassTopRounded className={classes.icon}  color={"secondary"}/>}/>
+                                  icon={<HourglassTopRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
             </Grid>
         </React.Fragment>
