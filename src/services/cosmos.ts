@@ -1,7 +1,7 @@
-import { REST_URL, RPC_URL } from '../constants/endpoints';
-import { SigningStargateClient } from '@cosmjs/stargate';
-import { makeSignDoc } from '@cosmjs/amino';
-import { config } from '../constants/networkConfig';
+import {REST_URL, RPC_URL} from '../constants/endpoints';
+import {SigningStargateClient} from '@cosmjs/stargate';
+import {makeSignDoc} from '@cosmjs/amino';
+import {config} from '../constants/networkConfig';
 
 const chainId = config.CHAIN_ID;
 const chainName = config.CHAIN_NAME;
@@ -59,6 +59,17 @@ const chainConfig = {
     walletUrlForStaking: config.STAKING_URL,
 };
 
+const getSignStargateClient = async () => {
+    //@ts-ignore
+    await window.keplr && window.keplr.enable(chainId);
+    //@ts-ignore
+    const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId);
+    return await SigningStargateClient.connectWithSigner(
+        RPC_URL,
+        offlineSigner,
+    );
+}
+
 export const initializeChain = (cb) => {
     (async () => {
         //@ts-ignore
@@ -96,16 +107,10 @@ export const initializeChain = (cb) => {
     })();
 };
 
+
 export const signTxAndBroadcast = (tx, address, cb) => {
     (async () => {
-        //@ts-ignore
-        await window.keplr && window.keplr.enable(chainId);
-        //@ts-ignore
-        const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId);
-        const client = await SigningStargateClient.connectWithSigner(
-            RPC_URL,
-            offlineSigner,
-        );
+        const client = await getSignStargateClient();
         client.signAndBroadcast(
             address,
             tx.msgs ? tx.msgs : [tx.msg],
@@ -124,17 +129,33 @@ export const signTxAndBroadcast = (tx, address, cb) => {
     })();
 };
 
+export const getStakedBalance = (address, cb) => {
+    (async () => {
+        const client = await getSignStargateClient();
+        client.getBalanceStaked(address).then((result) => {
+            cb(null, result);
+        }).catch((error) => {
+            cb(error && error.message);
+        });
+    })();
+}
+
+export const getAllBalances = (address, cb) => {
+    (async () => {
+        const client = await getSignStargateClient();
+        client.getAllBalances(address).then((result) => {
+            cb(null, result);
+        }).catch((error) => {
+            cb(error && error.message);
+        });
+    })();
+}
+
 export const aminoSignTx = (tx, address, cb) => {
     (async () => {
         //@ts-ignore
-        await window.keplr && window.keplr.enable(chainId);
-        //@ts-ignore
         const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId);
-
-        const client = await SigningStargateClient.connectWithSigner(
-            RPC_URL,
-            offlineSigner,
-        );
+        const client = await getSignStargateClient();
 
         const account = {};
         try {

@@ -18,7 +18,7 @@ import {useGlobalPreloader} from "./context/GlobalPreloaderProvider";
 import {useAppDispatch, useAppSelector} from "./customHooks/hook";
 import {useSnackbar} from "notistack";
 import allActions from "./action";
-import {initializeChain} from "./services/cosmos";
+import {getAllBalances, getStakedBalance, initializeChain} from "./services/cosmos";
 import {decode, encode} from "js-base64";
 import {config} from "./constants/networkConfig";
 import CoinGecko from "./services/coingecko";
@@ -170,7 +170,7 @@ function Main() {
     const handleFetchDetails = (address) => {
         if (balance && !balance.length &&
             !balanceInProgress) {
-            dispatch(allActions.getBalance(address));
+            getAllBalances(address,(err, data) => dispatch(allActions.getBalance(err,data)));
         }
         if (vestingBalance && !vestingBalance.value &&
             !vestingBalanceInProgress) {
