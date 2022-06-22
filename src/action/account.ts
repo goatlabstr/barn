@@ -97,27 +97,13 @@ const fetchBalanceError = (message) => {
     };
 };
 
-export const getBalance = (address) => (dispatch) => {
+export const getBalance = (err, result) => (dispatch) => {
     dispatch(fetchBalanceInProgress());
-    const url = urlFetchBalance(address);
-    Axios.get(url, {
-        headers: {
-            Accept: 'application/json, text/plain, */*',
-            Connection: 'keep-alive',
-        },
-    })
-        .then((res) => {
-            dispatch(fetchBalanceSuccess(res.data && res.data.result));
-        })
-        .catch((error) => {
-            dispatch(fetchBalanceError(
-                error.response &&
-                error.response.data &&
-                error.response.data.message
-                    ? error.response.data.message
-                    : 'Failed!',
-            ));
-        });
+    if(result){
+        dispatch(fetchBalanceSuccess(result));
+    }else{
+        dispatch(fetchBalanceError(err));
+    }
 };
 
 const fetchVestingBalanceInProgress = () => {

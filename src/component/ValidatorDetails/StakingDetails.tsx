@@ -6,7 +6,7 @@ import {config} from "../../constants/networkConfig";
 import {useAppDispatch, useAppSelector} from "../../customHooks/hook";
 import allActions from "../../action";
 import {gas} from "../../constants/defaultGasFees";
-import {signTxAndBroadcast} from "../../services/cosmos";
+import {getAllBalances, signTxAndBroadcast} from "../../services/cosmos";
 import {useState} from "react";
 import {useSnackbar} from "notistack";
 import {snackbarTxAction} from "../Snackbar/action";
@@ -41,7 +41,7 @@ function Index(props) {
         const tokens = rewards && rewards.length && rewards[0] && rewards[0].reward &&
         rewards[0].reward.length && rewards[0].reward[0] && rewards[0].reward[0].amount
             ? rewards[0].reward[0].amount / 10 ** config.COIN_DECIMALS : 0;
-        dispatch(allActions.getBalance(address));
+        getAllBalances(address,(err, data) => dispatch(allActions.getBalance(err,data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.fetchRewards(address));
         dispatch(allActions.setTokens(tokens));

@@ -18,7 +18,7 @@ import {useAppDispatch, useAppSelector} from "../../../customHooks/hook";
 import {config} from "../../../constants/networkConfig";
 import allActions from "../../../action";
 import {gas} from "../../../constants/defaultGasFees";
-import {signTxAndBroadcast} from "../../../services/cosmos";
+import {getAllBalances, signTxAndBroadcast} from "../../../services/cosmos";
 import {useGlobalPreloader} from "../../../context/GlobalPreloaderProvider";
 import {snackbarTxAction} from "../../Snackbar/action";
 
@@ -64,7 +64,7 @@ export default function UndelegateDialog({initialValidator}) {
     };
 
     const updateBalance = () => {
-        dispatch(allActions.getBalance(address));
+        getAllBalances(address,(err, data) => dispatch(allActions.getBalance(err,data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.getDelegations(address));
         dispatch(allActions.getUnBondingDelegations(address));

@@ -24,7 +24,7 @@ import clsx from "clsx";
 import logo from '../../logo.svg';
 import {AccountBalanceWalletRounded, Email, Instagram, LogoutRounded, Telegram, Twitter} from "@mui/icons-material";
 import {useGlobalPreloader} from "../../context/GlobalPreloaderProvider";
-import {initializeChain} from "../../services/cosmos";
+import {getAllBalances, initializeChain} from "../../services/cosmos";
 import {encode} from 'js-base64';
 import allActions from "../../action";
 import {useSnackbar} from "notistack";
@@ -126,7 +126,7 @@ export default function SideBar(props: SideBarProps) {
             dispatch(allActions.getUnBondingDelegations(addressList[0] && addressList[0].address));
             dispatch(allActions.fetchRewards(addressList[0] && addressList[0].address));
             dispatch(allActions.getDelegations(addressList[0] && addressList[0].address));
-            dispatch(allActions.getBalance(addressList[0] && addressList[0].address));
+            getAllBalances(addressList[0] && addressList[0].address,(err, data) => dispatch(allActions.getBalance(err,data)));
             dispatch(allActions.fetchVestingBalance(addressList[0] && addressList[0].address));
             dispatch(allActions.getDelegatedValidatorsDetails(addressList[0] && addressList[0].address));
             localStorage.setItem('goat_wl_addr', encode(addressList[0] && addressList[0].address));
