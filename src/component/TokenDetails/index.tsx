@@ -16,7 +16,7 @@ import {makeStyles} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
 import {gas} from "../../constants/defaultGasFees";
 import {useGlobalPreloader} from "../../context/GlobalPreloaderProvider";
-import {signTxAndBroadcast} from "../../services/cosmos";
+import {getAllBalances, signTxAndBroadcast} from "../../services/cosmos";
 import {useSnackbar} from "notistack";
 import allActions from "../../action";
 import {useState} from "react";
@@ -89,7 +89,7 @@ export default function Index() {
         const tokens = rewards && rewards.length && rewards[0] && rewards[0].reward &&
         rewards[0].reward.length && rewards[0].reward[0] && rewards[0].reward[0].amount
             ? rewards[0].reward[0].amount / 10 ** config.COIN_DECIMALS : 0;
-        dispatch(allActions.getBalance(address));
+        getAllBalances(address,(err, data) => dispatch(allActions.getBalance(err,data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.fetchRewards(address));
         dispatch(allActions.setTokens(tokens));
