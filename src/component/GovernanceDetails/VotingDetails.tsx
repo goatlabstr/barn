@@ -3,7 +3,7 @@ import {Doughnut} from "react-chartjs-2";
 import {Theme} from "@mui/material/styles";
 
 import {
-    Tooltip as MTooltip, Stack, Typography, Paper, Grid, Box, Chip, Toolbar, IconButton, AppBar, Button
+    Tooltip as MTooltip, Stack, Typography, Paper, Grid, Box, Chip, Toolbar, IconButton, AppBar, Button, Avatar
 }
     from "@mui/material";
 import {useSnackbar} from "notistack";
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     content: {
         margin: theme.spacing(1)
     },
-    backButton:{
+    backButton: {
         [theme.breakpoints.down('md')]: {
             display: "none",
         }
@@ -93,6 +93,42 @@ const StatusIcon = ({status}) => {
     }
 }
 
+const VoteStatus = ({status}) => {
+    const {t} = useTranslation();
+    switch (status) {
+        case 1:
+            return <Chip label={t("governance.voted.yes")}
+                         sx={{
+                             backgroundColor: "transparent",
+                             color: "#D1B000",
+                             marginTop: 2
+                         }}/>
+        case 2:
+            return <Chip label={t("governance.voted.abstain")}
+                         sx={{
+                             backgroundColor: "transparent",
+                             color: "#D1B000",
+                             marginTop: 2
+                         }}/>
+        case 3:
+            return <Chip label={t("governance.voted.no")}
+                         sx={{
+                             backgroundColor: "transparent",
+                             color: "#D1B000",
+                             marginTop: 2
+                         }}/>
+        case 4:
+            return <Chip label={t("governance.voted.noWithVeto")}
+                         sx={{
+                             backgroundColor: "transparent",
+                             color: "#D1B000",
+                             marginTop: 2
+                         }}/>
+        default:
+            return <></>;
+    }
+}
+
 export default function VotingDetails() {
     const classes = useStyles();
     const {enqueueSnackbar} = useSnackbar();
@@ -103,7 +139,8 @@ export default function VotingDetails() {
     const {openDialog, closeDialog} = useDialog();
 
     const address = useAppSelector(state => state.accounts.address.value);
-    const tallyDetails = useAppSelector(state => state.governance.voteDetails.value);
+    const voteDetails = useAppSelector(state => state.governance.voteDetails.value);
+    const tallyDetails = useAppSelector(state => state.governance.tallyDetails.value);
     const proposals = useAppSelector(state => state.governance._.list);
 
     const [proposal, setProposal] = useState<typeof proposals>(null);
@@ -113,6 +150,11 @@ export default function VotingDetails() {
         if (prop)
             setProposal(prop);
     }, [proposals])
+
+    const getVoteStatus = (proposal) => {
+        //@ts-ignore
+        return voteDetails?.find(vote => vote?.proposal_id == proposal?.id)?.option;
+    }
 
     const voteCalculation = (proposal, vote) => {
         if (proposal?.status === 2) {
@@ -160,7 +202,8 @@ export default function VotingDetails() {
     };
 
     useEffect(() => {
-        dispatch(allActions.fetchVoteDetails(proposal?.id, address))
+        if (proposal)
+            dispatch(allActions.fetchVoteDetails(proposal?.id, address))
     }, [proposal, address]);
 
     return (
@@ -170,7 +213,7 @@ export default function VotingDetails() {
                     <Stack direction="row">
                         <IconButton
                             onClick={() => navigate(-1)}
-                            className={classes.backButton}><ArrowBackIcon /></IconButton>
+                            className={classes.backButton}><ArrowBackIcon/></IconButton>
                         <Typography variant="h6" className={classes.title}>
                             {proposal ? ("#" + proposal?.id + " " + proposal?.content?.value?.title) : "#Proposal"}
                         </Typography>
@@ -178,10 +221,13 @@ export default function VotingDetails() {
                 </Grid>
                 <Grid item sx={{alignItems: "center"}} xs={12}>
                     <Stack direction="column" sx={{alignItems: "center"}}>
+                        <img style={{height: 250}}
+                             src={proposal?.content?.value?.msg?.image_url}/>
                         <Stack direction="column" pt={2} spacing={2}>
                             <Box sx={{width: 250, textAlign: "center"}}>
                                 <Doughnut data={handleData(proposal, t)}/>
                                 <StatusIcon status={proposal?.status}/>
+                                <VoteStatus status={getVoteStatus(proposal)}/>
                             </Box>
                             {proposal?.status === 2 &&
                                 <Button variant={"contained"}

@@ -91,7 +91,6 @@ const voteDetails = (state = {
                 //@ts-ignore
                 arr.push(action.value);
             }
-
             return {
                 inProgress: false,
                 value: [...arr],

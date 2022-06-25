@@ -44,6 +44,12 @@
     "stakedValidators": "Staked Validators"
   },
   "governance": {
+    "voted": {
+      "yes": "You voted 'Yes' for this proposal",
+      "no": "You voted 'No' for this proposal",
+      "noWithVeto": "You voted 'No With Veto' for this proposal",
+      "abstain": "You voted 'Abstain' for this proposal"
+    },
     "yes": "Yes ({{value}}%)",
     "no": "No ({{value}}%)",
     "no_with_veto": "No With Veto ({{value}}%)",
