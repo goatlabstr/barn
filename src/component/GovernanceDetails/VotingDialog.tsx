@@ -47,7 +47,7 @@ export default function VotingDialog({proposal}) {
         getAllBalances(address,(err, data) => dispatch(allActions.getBalance(err,data)));
         dispatch(allActions.fetchVestingBalance(id));
         dispatch(allActions.fetchVoteDetails(id, address));
-        dispatch(allActions.fetchProposalTally(address));
+        dispatch(allActions.fetchProposalTally(id));
     }
 
     const handleChange = (event) => {
