@@ -169,7 +169,7 @@ export default function SideBar(props: SideBarProps) {
                 </List>
                 <Stack direction="column">
                     <Stack direction="row" justifyContent="space-between" mb={1.5}>
-                        <Typography variant={"body2"}>{config.NETWORK_NAME.toUpperCase()}</Typography>
+                        <Typography variant={"body2"}>{config.COIN_DENOM.toUpperCase()}</Typography>
                         <Typography variant={"body2"} color={"secondary"}>${currentPrice}</Typography>
                     </Stack>
                     <CopyAddressButton address={address} />

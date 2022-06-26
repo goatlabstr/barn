@@ -242,7 +242,11 @@ export default function EnhancedTable(props: TableProps) {
     const getImage = (id) => {
         const image = images.filter((value) => value._id === id?.toString());
         //@ts-ignore
-        return <Avatar src={image[0]?.them[0]?.pictures?.primary?.url}></Avatar>
+        return <Avatar src={id && image &&
+            image.length > 0 &&
+            image[0]?.them &&
+            image[0]?.them[0]?.pictures?.primary?.url}></Avatar>
+
     }
 
     const getStakeAmount = (row) => {
