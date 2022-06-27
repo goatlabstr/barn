@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {BrowserRouter as Router} from "react-router-dom";
 import Main from "./Main";
 import CustomThemeProvider from "./context/Theme/CustomThemeProvider";
@@ -9,8 +9,14 @@ import {AppStateProvider} from "./context/AppStateContext";
 import {DialogProvider} from "./context/DialogContext/DialogContext";
 import GlobalPreloaderProvider from "./context/GlobalPreloaderProvider";
 import {Collapse} from "@mui/material";
+import Common from "./services/axios/common";
 
 function App() {
+    useEffect(() => {
+        Common.getConfig().then(res => {
+            sessionStorage.setItem("barn-configuration", JSON.stringify(res.data));
+        })
+    }, []);
     return (
         <Router basename={"/"}>
             <AppStateProvider>

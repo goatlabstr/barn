@@ -1,31 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta content="%REACT_APP_NETWORK_NAME%, Goatlabs, goatlabs barn, Smart Contracts, web3, cosmos, blockchain, tendermint"
-          name="keywords">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1"/>
+    <meta name="theme-color" content="#000000"/>
     <meta content="Goatlabs BARN is a solution for communities and cosmos blockchain networks to manage, interact & engage with fellow members."
           name="description">
-    <meta content="%REACT_APP_NETWORK_NAME% | Goatlabs Barn" property="og:site_name">
-    <meta content="https://%REACT_APP_NETWORK_NAME%.goatlabs.zone" property="og:url">
-    <meta content="https://%REACT_APP_NETWORK_NAME%.goatlabs.zone" property="al:web:url">
     <meta content="%PUBLIC_URL%/logo192.png" property="og:image">
     <meta content="200" property="og:image:width"/>
     <meta content="200" property="og:image:height"/>
-    <meta content="%REACT_APP_NETWORK_NAME% | Goatlabs Barn" property="og:image:alt"/>
-    <meta content="%REACT_APP_NETWORK_NAME% | Goatlabs Barn" property="og:title">
     <meta content="Goatlabs BARN is a solution for communities and cosmos blockchain networks to manage, interact & engage with fellow members."
           property="og:description">
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png"/>
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
 
-    <title>%REACT_APP_NETWORK_NAME% | Goatlabs Barn</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
+</head>
+<body>
+<noscript>You need to enable JavaScript to run this app.</noscript>
+<script>
+    let network_name = window.location.hostname.split(".goatlabs.zone")[0];
+    network_name = network_name.charAt(0).toUpperCase() + network_name.slice(1);
+    const metadataKeyMap = {
+        "keywords": `${network_name}, Goatlabs, goatlabs barn, Smart Contracts, web3, cosmos, blockchain, tendermint`,
+        "og:site_name": `${network_name} | Goatlabs Barn`,
+        "og:url": `https://${network_name}.goatlabs.zone`,
+        "al:web:url": `https://${network_name}.goatlabs.zone`,
+        "og:image:alt": `${network_name} | Goatlabs Barn`,
+        "og:title": `${network_name} | Goatlabs Barn`,
+    }
+    for(const key in metadataKeyMap){
+        const meta = document.createElement("meta");
+        meta.setAttribute("content", metadataKeyMap[key]);
+        meta.setAttribute("property", key);
+        document.getElementsByTagName("head")[0].appendChild(meta);
+    }
+    const title = document.createElement("title");
+    title.innerText = `${network_name} | Goatlabs Barn`;
+    document.getElementsByTagName("head")[0].appendChild(title);
+</script>
+<div id="root"></div>
+</body>
 </html>

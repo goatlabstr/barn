@@ -23,12 +23,12 @@ import {
 } from '@mui/icons-material';
 import SearchTextField from "./SearchTextField";
 import {useTranslation} from "react-i18next";
-import {config} from "../../constants/networkConfig";
 import {useAppSelector} from "../../customHooks/hook";
 import {useDialog} from "../../context/DialogContext/DialogContext";
 import DelegateDialog from "./Delegation/DelegateDialog";
 import RedelegateDialog from "./Delegation/RedelegateDialog";
 import UndelegateDialog from "./Delegation/UndelegateDialog";
+import {getConfig} from "../../services/network-config";
 
 const useStyles = makeStyles((theme: Theme) => ({
     tableHead: {
@@ -252,7 +252,7 @@ export default function EnhancedTable(props: TableProps) {
     const getStakeAmount = (row) => {
         let value = delegations.find((val) =>
             (val.delegation && val.delegation.validator_address) === row.operator_address);
-        return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** config.COIN_DECIMALS : 0;
+        return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** getConfig("COIN_DECIMALS") : 0;
     }
 
     const handleStakeAmount = (row) => {
@@ -361,7 +361,7 @@ export default function EnhancedTable(props: TableProps) {
                                         <TableCell align="center"
                                                    className={classes.tableCell}>
                                             {
-                                                formatCount(parseFloat((Number(row.tokens) / (10 ** config.COIN_DECIMALS)).toFixed(1)))
+                                                formatCount(parseFloat((Number(row.tokens) / (10 ** getConfig("COIN_DECIMALS"))).toFixed(1)))
                                             }
                                         </TableCell>
                                         <TableCell align="center"

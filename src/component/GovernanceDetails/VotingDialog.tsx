@@ -17,8 +17,8 @@ import {useAppDispatch, useAppSelector} from "../../customHooks/hook";
 import {useGlobalPreloader} from "../../context/GlobalPreloaderProvider";
 import {getAllBalances, signTxAndBroadcast} from "../../services/cosmos";
 import {gas} from "../../constants/defaultGasFees";
-import {config} from "../../constants/networkConfig";
 import allActions from "../../action";
+import {getConfig} from "../../services/network-config";
 
 const useStyles = makeStyles((theme: Theme) => ({
     button: {
@@ -73,8 +73,8 @@ export default function VotingDialog({proposal}) {
             }],
             fee: {
                 amount: [{
-                    amount: String(gas.vote * config.GAS_PRICE_STEP_AVERAGE),
-                    denom: config.COIN_MINIMAL_DENOM,
+                    amount: String(gas.vote * getConfig("GAS_PRICE_STEP_AVERAGE")),
+                    denom: getConfig("COIN_MINIMAL_DENOM"),
                 }],
                 gas: String(gas.vote),
             },

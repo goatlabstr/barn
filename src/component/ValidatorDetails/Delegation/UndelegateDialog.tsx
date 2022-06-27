@@ -15,12 +15,12 @@ import {makeStyles} from "@mui/styles";
 import {useDialog} from "../../../context/DialogContext/DialogContext";
 import SelectValidator from "./SelectValidator";
 import {useAppDispatch, useAppSelector} from "../../../customHooks/hook";
-import {config} from "../../../constants/networkConfig";
 import allActions from "../../../action";
 import {gas} from "../../../constants/defaultGasFees";
 import {getAllBalances, signTxAndBroadcast} from "../../../services/cosmos";
 import {useGlobalPreloader} from "../../../context/GlobalPreloaderProvider";
 import {snackbarTxAction} from "../../Snackbar/action";
+import {getConfig} from "../../../services/network-config";
 
 const useStyles = makeStyles((theme: Theme) => ({
     button:{
@@ -57,8 +57,8 @@ export default function UndelegateDialog({initialValidator}) {
             delegatorAddress: address,
             validatorAddress: validator?.operator_address,
             amount: {
-                amount: String(undelegateAmount * (10 ** config.COIN_DECIMALS)),
-                denom: config.COIN_MINIMAL_DENOM,
+                amount: String(undelegateAmount * (10 ** getConfig("COIN_DECIMALS"))),
+                denom: getConfig("COIN_MINIMAL_DENOM"),
             },
         };
     };
@@ -84,8 +84,8 @@ export default function UndelegateDialog({initialValidator}) {
             },
             fee: {
                 amount: [{
-                    amount: String(gasValue * config.GAS_PRICE_STEP_AVERAGE),
-                    denom: config.COIN_MINIMAL_DENOM,
+                    amount: String(gasValue * getConfig("GAS_PRICE_STEP_AVERAGE")),
+                    denom: getConfig("COIN_MINIMAL_DENOM"),
                 }],
                 gas: String(gasValue),
             },
@@ -112,7 +112,7 @@ export default function UndelegateDialog({initialValidator}) {
     useEffect(() => {
         const found = delegations.find(el => el?.delegation?.validator_address === validator?.operator_address);
         if(found !== undefined)
-            setValidatorUndelegateAmount(found?.balance?.amount / (10 ** config.COIN_DECIMALS));
+            setValidatorUndelegateAmount(found?.balance?.amount / (10 ** getConfig("COIN_DECIMALS")));
     },[validator])
 
 

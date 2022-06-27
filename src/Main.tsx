@@ -18,11 +18,11 @@ import {useGlobalPreloader} from "./context/GlobalPreloaderProvider";
 import {useAppDispatch, useAppSelector} from "./customHooks/hook";
 import {useSnackbar} from "notistack";
 import allActions from "./action";
-import {getAllBalances, getStakedBalance, initializeChain} from "./services/cosmos";
+import {getAllBalances, initializeChain} from "./services/cosmos";
 import {decode, encode} from "js-base64";
-import {config} from "./constants/networkConfig";
-import CoinGecko from "./services/coingecko";
+import CoinGecko from "./services/axios/coingecko";
 import VotingDetails from "./component/GovernanceDetails/VotingDetails";
+import {getConfig} from "./services/network-config";
 
 const menuItems = (t) => [
     {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
@@ -43,8 +43,8 @@ function Main() {
 
     useEffect(() => {
         i18n.changeLanguage(localStorage.getItem("lang") || "en");
-        CoinGecko.getPrice(config.COINGECKO_ID).then((res) => {
-            setCurrentPrice(res.data[config.COINGECKO_ID]["usd"])
+        CoinGecko.getPrice(getConfig("COINGECKO_ID")).then((res) => {
+            setCurrentPrice(res.data[getConfig("COINGECKO_ID")]["usd"])
         })
     }, []);
 
@@ -170,7 +170,7 @@ function Main() {
     const handleFetchDetails = (address) => {
         if (balance && !balance.length &&
             !balanceInProgress) {
-            getAllBalances(address,(err, data) => dispatch(allActions.getBalance(err,data)));
+            getAllBalances(address, (err, data) => dispatch(allActions.getBalance(err, data)));
         }
         if (vestingBalance && !vestingBalance.value &&
             !vestingBalanceInProgress) {
@@ -198,7 +198,7 @@ function Main() {
         for (let i = 0; i < 3; i++) {
             if (data[index + i]) {
                 const value = data[index + i];
-                let list = sessionStorage.getItem(`${config.PREFIX}_images`) || '{}';
+                let list = sessionStorage.getItem(`${getConfig("PREFIX")}_images`) || '{}';
                 list = JSON.parse(list);
                 if (value?.description?.identity && !list[value?.description?.identity]) {
                     //@ts-ignore

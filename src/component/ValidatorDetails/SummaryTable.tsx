@@ -12,13 +12,13 @@ import {Avatar, Button, ButtonGroup, Stack, Typography} from "@mui/material";
 import {formatCount, getComparator, Order, stableSort} from './CommonTable';
 import {makeStyles} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
-import {config} from "../../constants/networkConfig";
 import {useAppSelector} from "../../customHooks/hook";
 import {useTranslation} from "react-i18next";
 import {useDialog} from "../../context/DialogContext/DialogContext";
 import DelegateDialog from "./Delegation/DelegateDialog";
 import RedelegateDialog from "./Delegation/RedelegateDialog";
 import UndelegateDialog from "./Delegation/UndelegateDialog";
+import {getConfig} from "../../services/network-config";
 
 const useStyles = makeStyles((theme: Theme) => ({
     tableHead: {
@@ -185,7 +185,7 @@ export default function SummaryTable(props: TableProps) {
     const getStakeAmount = (row) => {
         let value = delegations.find((val) =>
             (val.delegation && val.delegation.validator_address) === row.operator_address);
-        return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** config.COIN_DECIMALS : 0;
+        return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** getConfig("COIN_DECIMALS") : 0;
     }
 
     const handleStakeAmount = (row) => {
@@ -198,7 +198,7 @@ export default function SummaryTable(props: TableProps) {
     const handlePendingRewards = (row) => {
         let value = rewards && rewards.rewards?.find((val) =>
             (val.validator_address) === row.operator_address);
-        value = value && value.reward ? value.reward[0].amount / 10 ** config.COIN_DECIMALS : 0;
+        value = value && value.reward ? value.reward[0].amount / 10 ** getConfig("COIN_DECIMALS") : 0;
         return formatCount(value);
     }
 
