@@ -70,7 +70,7 @@
   },
   "scripts": {
     "start": "env-cmd -f .env.development react-app-rewired start",
-    "build": "env-cmd -f .env.production react-app-rewired build",
+    "build": "env-cmd -f .env.cosmos react-app-rewired build",
     "cosmos-build": "env-cmd -f .env.cosmos react-app-rewired build",
     "chihuahua-build": "env-cmd -f .env.chihuahua react-app-rewired build",
     "cerberus-build": "env-cmd -f .env.cerberus react-app-rewired build",
