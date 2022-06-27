@@ -1,4 +1,3 @@
-import {REST_URL, RPC_URL} from '../constants/endpoints';
 import {SigningStargateClient} from '@cosmjs/stargate';
 import {makeSignDoc} from '@cosmjs/amino';
 import {getConfig} from "./network-config";
@@ -10,43 +9,45 @@ const coinMinimalDenom = () => getConfig("COIN_MINIMAL_DENOM");
 const coinDecimals = () => getConfig("COIN_DECIMALS");
 const prefix = () => getConfig("PREFIX");
 const coinGeckoId = () => getConfig("COINGECKO_ID");
+const restUrl = () => getConfig("REST_URL");
+const rpcUrl = () => getConfig("RPC_URL");
 
-const chainConfig = () => ({
-    chainId: chainId(),
-    chainName: chainName(),
-    rpc: RPC_URL(),
-    rest: REST_URL(),
+const chainConfig = (chainId, chainName, coinDenom, coinMinimalDenom, coinDecimals, prefix, coinGeckoId, restUrl, rpcUrl) => ({
+    chainId: chainId,
+    chainName,
+    rpc: rpcUrl,
+    rest: restUrl,
     stakeCurrency: {
-        coinDenom: coinDenom(),
-        coinMinimalDenom: coinMinimalDenom(),
-        coinDecimals: coinDecimals(),
-        coinGeckoId: coinGeckoId(),
+        coinDenom,
+        coinMinimalDenom,
+        coinDecimals,
+        coinGeckoId,
     },
     bip44: {
         coinType: 118,
     },
     bech32Config: {
-        bech32PrefixAccAddr: `${prefix()}`,
-        bech32PrefixAccPub: `${prefix()}pub`,
-        bech32PrefixValAddr: `${prefix()}valoper`,
-        bech32PrefixValPub: `${prefix()}valoperpub`,
-        bech32PrefixConsAddr: `${prefix()}valcons`,
-        bech32PrefixConsPub: `${prefix()}valconspub`,
+        bech32PrefixAccAddr: `${prefix}`,
+        bech32PrefixAccPub: `${prefix}pub`,
+        bech32PrefixValAddr: `${prefix}valoper`,
+        bech32PrefixValPub: `${prefix}valoperpub`,
+        bech32PrefixConsAddr: `${prefix}valcons`,
+        bech32PrefixConsPub: `${prefix}valconspub`,
     },
     currencies: [
         {
-            coinDenom: coinDenom(),
-            coinMinimalDenom: coinMinimalDenom(),
-            coinDecimals: coinDecimals(),
-            coinGeckoId: coinGeckoId(),
+            coinDenom,
+            coinMinimalDenom,
+            coinDecimals,
+            coinGeckoId,
         },
     ],
     feeCurrencies: [
         {
-            coinDenom: coinDenom(),
-            coinMinimalDenom: coinMinimalDenom(),
-            coinDecimals: coinDecimals(),
-            coinGeckoId: coinGeckoId(),
+            coinDenom,
+            coinMinimalDenom,
+            coinDecimals,
+            coinGeckoId,
         },
     ],
     coinType: getConfig("COIN_TYPE"),
@@ -65,7 +66,7 @@ const getSignStargateClient = async () => {
     //@ts-ignore
     const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId());
     return await SigningStargateClient.connectWithSigner(
-        RPC_URL(),
+        rpcUrl(),
         offlineSigner,
     );
 }
@@ -81,7 +82,10 @@ export const initializeChain = (cb) => {
             if (window.keplr.experimentalSuggestChain) {
                 try {
                     //@ts-ignore
-                    await window.keplr.experimentalSuggestChain(chainConfig());
+                    await window.keplr.experimentalSuggestChain(chainConfig(
+                        chainId(), chainName(), coinDenom(),
+                        coinMinimalDenom(), coinDecimals(),
+                        prefix(), coinGeckoId(), restUrl(), rpcUrl()));
                 } catch (error) {
                     const chainError = 'Failed to suggest the chain';
                     cb(chainError);
