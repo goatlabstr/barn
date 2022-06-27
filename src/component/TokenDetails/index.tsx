@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {Button, CircularProgress, Grid, IconButton, Stack, Typography} from "@mui/material";
+import {useState} from 'react';
+import {Button, CircularProgress, Grid, Stack, Typography} from "@mui/material";
 import DetailViewer from "./DetailViewer";
 import {
     AccountBalanceWalletRounded,
@@ -9,18 +10,16 @@ import {
     StarsRounded
 } from '@mui/icons-material';
 import {useTranslation} from "react-i18next";
-import {config} from '../../constants/networkConfig';
 import {useAppDispatch, useAppSelector} from "../../customHooks/hook";
 import {useAppState} from "../../context/AppStateContext";
 import {makeStyles} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
 import {gas} from "../../constants/defaultGasFees";
-import {useGlobalPreloader} from "../../context/GlobalPreloaderProvider";
 import {getAllBalances, signTxAndBroadcast} from "../../services/cosmos";
 import {useSnackbar} from "notistack";
 import allActions from "../../action";
-import {useState} from "react";
 import {snackbarTxAction} from "../Snackbar/action";
+import {getConfig} from "../../services/network-config";
 
 const useStyles = makeStyles((theme: Theme) => ({
     icon: {
@@ -48,21 +47,21 @@ export default function Index() {
     const unBondingDelegations = useAppSelector(state => state.accounts.unBondingDelegations.result);
 
     const handleBalance = () => {
-        const bal = balance && balance.length && balance.find((val) => val.denom === config.COIN_MINIMAL_DENOM);
-        return bal?.amount / (10 ** config.COIN_DECIMALS) || 0;
+        const bal = balance && balance.length && balance.find((val) => val.denom === getConfig("COIN_MINIMAL_DENOM"));
+        return bal?.amount / (10 ** getConfig("COIN_DECIMALS")) || 0;
     }
 
     const handleRewards = () => {
         return rewards && rewards.total && rewards.total.length &&
         rewards.total[0] && rewards.total[0].amount
-            ? rewards.total[0].amount / 10 ** config.COIN_DECIMALS : 0;
+            ? rewards.total[0].amount / 10 ** getConfig("COIN_DECIMALS") : 0;
     }
 
     const handleStakedAmount = () => {
         const staked = delegations.reduce((accumulator, currentValue) => {
             return accumulator + Number(currentValue.balance.amount);
         }, 0);
-        return staked / (10 ** config.COIN_DECIMALS);
+        return staked / (10 ** getConfig("COIN_DECIMALS"));
     }
 
     const handleUnstakedAmount = () => {
@@ -75,7 +74,7 @@ export default function Index() {
             });
             return null;
         });
-        return unStaked / (10 ** config.COIN_DECIMALS);
+        return unStaked / (10 ** getConfig("COIN_DECIMALS"));
     }
 
     const handleTotalBalance = () => {
@@ -88,7 +87,7 @@ export default function Index() {
     const updateBalance = () => {
         const tokens = rewards && rewards.length && rewards[0] && rewards[0].reward &&
         rewards[0].reward.length && rewards[0].reward[0] && rewards[0].reward[0].amount
-            ? rewards[0].reward[0].amount / 10 ** config.COIN_DECIMALS : 0;
+            ? rewards[0].reward[0].amount / 10 ** getConfig("COIN_DECIMALS") : 0;
         getAllBalances(address,(err, data) => dispatch(allActions.getBalance(err,data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.fetchRewards(address));
@@ -106,8 +105,8 @@ export default function Index() {
             msgs: [],
             fee: {
                 amount: [{
-                    amount: String(gasValue * config.GAS_PRICE_STEP_AVERAGE),
-                    denom: config.COIN_MINIMAL_DENOM,
+                    amount: String(gasValue * getConfig("GAS_PRICE_STEP_AVERAGE")),
+                    denom: getConfig("COIN_MINIMAL_DENOM"),
                 }],
                 gas: String(gasValue),
             },
@@ -153,7 +152,7 @@ export default function Index() {
                 <Grid item xs={12} lg={12}>
                     <Stack direction="row" justifyContent="space-between">
                         <Typography
-                            variant={"h6"}>{t("dashboard.networkBalances", {"name": config.NETWORK_NAME})}</Typography>
+                            variant={"h6"}>{t("dashboard.networkBalances", {"name": getConfig("NETWORK_NAME")})}</Typography>
                         <Button variant="outlined"
                                 color="secondary"
                                 disabled={inTxProgress || handleRewards() <= 0}
@@ -163,7 +162,7 @@ export default function Index() {
                             {inTxProgress && <CircularProgress color="inherit" size={20} sx={{mr: 1}}/>}
                             {t("claimReward", {
                                 "value": handleRewards().toFixed(3),
-                                "name": config.NETWORK_NAME
+                                "name": getConfig("NETWORK_NAME")
                             })}</Button>
                     </Stack>
                 </Grid>

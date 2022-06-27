@@ -15,12 +15,12 @@ import {makeStyles} from "@mui/styles";
 import {useDialog} from "../../../context/DialogContext/DialogContext";
 import SelectValidator from "./SelectValidator";
 import {useAppDispatch, useAppSelector} from "../../../customHooks/hook";
-import {config} from "../../../constants/networkConfig";
 import {gas} from "../../../constants/defaultGasFees";
 import {getAllBalances, signTxAndBroadcast} from "../../../services/cosmos";
 import allActions from "../../../action";
 import {useGlobalPreloader} from "../../../context/GlobalPreloaderProvider";
 import {snackbarTxAction} from "../../Snackbar/action";
+import {getConfig} from "../../../services/network-config";
 
 const useStyles = makeStyles((theme: Theme) => ({
     button:{
@@ -49,8 +49,8 @@ export default function DelegateDialog({initialValidator}) {
 
 
     const handleBalance = () => {
-        const bal = balance && balance.length && balance.find((val) => val.denom === config.COIN_MINIMAL_DENOM);
-        return bal?.amount / (10 ** config.COIN_DECIMALS) || 0;
+        const bal = balance && balance.length && balance.find((val) => val.denom === getConfig("COIN_MINIMAL_DENOM"));
+        return bal?.amount / (10 ** getConfig("COIN_DECIMALS")) || 0;
     }
 
     const [delegateAmount, setDelegateAmount] = useState<number>(0);
@@ -61,8 +61,8 @@ export default function DelegateDialog({initialValidator}) {
             delegatorAddress: address,
             validatorAddress: validator?.operator_address,
             amount: {
-                amount: String(delegateAmount * (10 ** config.COIN_DECIMALS)),
-                denom: config.COIN_MINIMAL_DENOM,
+                amount: String(delegateAmount * (10 ** getConfig("COIN_DECIMALS"))),
+                denom: getConfig("COIN_MINIMAL_DENOM"),
             },
         };
     };
@@ -88,8 +88,8 @@ export default function DelegateDialog({initialValidator}) {
             },
             fee: {
                 amount: [{
-                    amount: String(gasValue * config.GAS_PRICE_STEP_AVERAGE),
-                    denom: config.COIN_MINIMAL_DENOM,
+                    amount: String(gasValue * getConfig("GAS_PRICE_STEP_AVERAGE")),
+                    denom: getConfig("COIN_MINIMAL_DENOM"),
                 }],
                 gas: String(gasValue),
             },

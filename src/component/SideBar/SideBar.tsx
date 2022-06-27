@@ -29,9 +29,9 @@ import {encode} from 'js-base64';
 import allActions from "../../action";
 import {useSnackbar} from "notistack";
 import {useAppDispatch, useAppSelector} from '../../customHooks/hook';
-import {config} from "../../constants/networkConfig";
 import {useAppState} from "../../context/AppStateContext";
 import {CopyAddressButton} from "./CopyAddressButton";
+import {getConfig} from "../../services/network-config";
 
 const drawerWidth = 220;
 
@@ -169,7 +169,7 @@ export default function SideBar(props: SideBarProps) {
                 </List>
                 <Stack direction="column">
                     <Stack direction="row" justifyContent="space-between" mb={1.5}>
-                        <Typography variant={"body2"}>{config.COIN_DENOM.toUpperCase()}</Typography>
+                        <Typography variant={"body2"}>{getConfig("COIN_DENOM").toUpperCase()}</Typography>
                         <Typography variant={"body2"} color={"secondary"}>${currentPrice}</Typography>
                     </Stack>
                     <CopyAddressButton address={address} />
@@ -204,7 +204,7 @@ export default function SideBar(props: SideBarProps) {
                     <Button variant="text"
                             sx={{textTransform: "none", color: "rgb(131 157 170)"}}
                         //@ts-ignore
-                            onClick={() => window.open("https://www.coingecko.com/coins/" + config.COINGECKO_ID, '_blank').focus()}
+                            onClick={() => window.open("https://www.coingecko.com/coins/" + getConfig("COINGECKO_ID"), '_blank').focus()}
 
                     >
                         {t("menu.coingecko")}</Button>

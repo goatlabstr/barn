@@ -1,15 +1,15 @@
 import {REST_URL, RPC_URL} from '../constants/endpoints';
 import {SigningStargateClient} from '@cosmjs/stargate';
 import {makeSignDoc} from '@cosmjs/amino';
-import {config} from '../constants/networkConfig';
+import {getConfig} from "./network-config";
 
-const chainId = config.CHAIN_ID;
-const chainName = config.CHAIN_NAME;
-const coinDenom = config.COIN_DENOM;
-const coinMinimalDenom = config.COIN_MINIMAL_DENOM;
-const coinDecimals = config.COIN_DECIMALS;
-const prefix = config.PREFIX;
-const coinGeckoId = config.COINGECKO_ID;
+const chainId = getConfig("CHAIN_ID");
+const chainName = getConfig("CHAIN_NAME");
+const coinDenom = getConfig("COIN_DENOM");
+const coinMinimalDenom = getConfig("COIN_MINIMAL_DENOM");
+const coinDecimals = getConfig("COIN_DECIMALS");
+const prefix = getConfig("PREFIX");
+const coinGeckoId = getConfig("COINGECKO_ID");
 
 const chainConfig = {
     chainId: chainId,
@@ -49,14 +49,14 @@ const chainConfig = {
             coinGeckoId,
         },
     ],
-    coinType: config.COIN_TYPE,
+    coinType: getConfig("COIN_TYPE"),
     gasPriceStep: {
-        low: config.GAS_PRICE_STEP_LOW,
-        average: config.GAS_PRICE_STEP_AVERAGE,
-        high: config.GAS_PRICE_STEP_HIGH,
+        low: getConfig("GAS_PRICE_STEP_LOW"),
+        average: getConfig("GAS_PRICE_STEP_AVERAGE"),
+        high: getConfig("GAS_PRICE_STEP_HIGH"),
     },
-    features: config.FEATURES,
-    walletUrlForStaking: config.STAKING_URL,
+    features: getConfig("FEATURES"),
+    walletUrlForStaking: getConfig("STAKING_URL"),
 };
 
 const getSignStargateClient = async () => {

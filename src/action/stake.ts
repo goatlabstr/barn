@@ -16,7 +16,7 @@ import {
 } from './types/stake';
 import Axios from 'axios';
 import { getDelegatedValidatorsURL, getValidatorURL, validatorImageURL, VALIDATORS_LIST_URL } from '../constants/endpoints';
-import { config } from '../constants/networkConfig';
+import {getConfig} from "../services/network-config";
 
 const fetchValidatorsInProgress = () => {
     return {
@@ -190,12 +190,12 @@ export const fetchValidatorImage = (id) => (dispatch) => {
         },
     })
         .then((res) => {
-            let obj = sessionStorage.getItem(`${config.PREFIX}_images`) || '{}';
+            let obj = sessionStorage.getItem(`${getConfig("PREFIX")}_images`) || '{}';
             obj = obj && JSON.parse(obj);
             //@ts-ignore
             obj[id] = res.data;
             obj = obj && JSON.stringify(obj);
-            sessionStorage.setItem(`${config.PREFIX}_images`, obj);
+            sessionStorage.setItem(`${getConfig("PREFIX")}_images`, obj);
             dispatch(fetchValidatorImageSuccess({
                 ...res.data,
                 _id: id,
