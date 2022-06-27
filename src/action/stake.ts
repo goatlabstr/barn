@@ -43,7 +43,6 @@ export const getValidators = (cb) => (dispatch) => {
     Axios.get(VALIDATORS_LIST_URL, {
         headers: {
             Accept: 'application/json, text/plain, */*',
-            Connection: 'keep-alive',
         },
     })
         .then((res) => {
@@ -95,7 +94,6 @@ export const getValidatorDetails = (address, cb) => (dispatch) => {
     Axios.get(URL, {
         headers: {
             Accept: 'application/json, text/plain, */*',
-            Connection: 'keep-alive',
         },
     })
         .then((res) => {
@@ -140,7 +138,6 @@ export const getDelegatedValidatorsDetails = (address) => (dispatch) => {
     Axios.get(URL, {
         headers: {
             Accept: 'application/json, text/plain, */*',
-            Connection: 'keep-alive',
         },
     })
         .then((res) => {
@@ -190,7 +187,6 @@ export const fetchValidatorImage = (id) => (dispatch) => {
     return Axios.get(URL, {
         headers: {
             Accept: 'application/json, text/plain, */*',
-            Connection: 'keep-alive',
         },
     })
         .then((res) => {

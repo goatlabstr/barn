@@ -60,7 +60,6 @@ export const getDelegations = (address) => (dispatch) => {
     Axios.get(url, {
         headers: {
             Accept: 'application/json, text/plain, */*',
-            Connection: 'keep-alive',
         },
     })
         .then((res) => {
@@ -132,7 +131,6 @@ export const fetchVestingBalance = (address) => (dispatch) => {
     Axios.get(url, {
         headers: {
             Accept: 'application/json, text/plain, */*',
-            Connection: 'keep-alive',
         },
     })
         .then((res) => {
@@ -175,7 +173,6 @@ export const getUnBondingDelegations = (address) => (dispatch) => {
     Axios.get(url, {
         headers: {
             Accept: 'application/json, text/plain, */*',
-            Connection: 'keep-alive',
         },
     })
         .then((res) => {
@@ -225,7 +222,6 @@ export const fetchRewards = (address) => (dispatch) => {
     Axios.get(url, {
         headers: {
             Accept: 'application/json, text/plain, */*',
-            Connection: 'keep-alive',
         },
     })
         .then((res) => {

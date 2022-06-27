@@ -221,8 +221,10 @@ export default function VotingDetails() {
                 </Grid>
                 <Grid item sx={{alignItems: "center"}} xs={12}>
                     <Stack direction="column" sx={{alignItems: "center"}}>
-                        <img style={{height: 250}}
-                             src={proposal?.content?.value?.msg?.image_url}/>
+                        {proposal?.content?.value?.msg?.image_url &&
+                            <img style={{height: 250}}
+                                 src={proposal?.content?.value?.msg?.image_url}/>
+                        }
                         <Stack direction="column" pt={2} spacing={2}>
                             <Box sx={{width: 250, textAlign: "center"}}>
                                 <Doughnut data={handleData(proposal, t)}/>

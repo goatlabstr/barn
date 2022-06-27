@@ -71,6 +71,15 @@
   "scripts": {
     "start": "env-cmd -f .env.development react-app-rewired start",
     "build": "env-cmd -f .env.production react-app-rewired build",
+    "cosmos-build": "env-cmd -f .env.cosmos react-app-rewired build",
+    "chihuahua-build": "env-cmd -f .env.chihuahua react-app-rewired build",
+    "cerberus-build": "env-cmd -f .env.cerberus react-app-rewired build",
+    "omniflix-build": "env-cmd -f .env.omniflix react-app-rewired build",
+    "agoric-build": "env-cmd -f .env.agoric react-app-rewired build",
+    "akash-build": "env-cmd -f .env.akash react-app-rewired build",
+    "osmosis-build": "env-cmd -f .env.osmosis react-app-rewired build",
+    "stargaze-build": "env-cmd -f .env.stargaze react-app-rewired build",
+    "desmos-build": "env-cmd -f .env.desmos react-app-rewired build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

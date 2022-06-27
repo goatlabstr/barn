@@ -3,10 +3,34 @@ const COUNT_ABBRS = ['', 'K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
 export type Order = 'asc' | 'desc';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-    if (b[orderBy] < a[orderBy]) {
+    let aVal;
+    let bVal;
+    switch (orderBy){
+        case "validator":
+            aVal = a["description"]?.moniker;
+            bVal = b["description"]?.moniker;
+            break;
+        case "status":
+            aVal = a["status"];
+            bVal = b["status"];
+            break;
+        case "votingPower":
+            aVal = parseInt(a["tokens"]);
+            bVal = parseInt(b["tokens"]);
+            break;
+        case "commission":
+            aVal = a["commission"]?.commission_rates?.rate;
+            bVal = b["commission"]?.commission_rates?.rate;
+            break;
+        default:
+            aVal = a[orderBy];
+            bVal = b[orderBy];
+
+    }
+    if (bVal < aVal) {
         return -1;
     }
-    if (b[orderBy] > a[orderBy]) {
+    if (bVal > aVal) {
         return 1;
     }
     return 0;

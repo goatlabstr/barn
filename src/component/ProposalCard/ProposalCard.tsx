@@ -130,7 +130,7 @@ export default function ProposalCard(props: ProposalCardType) {
                                 variant="body2"
                                 color="text.secondary"
                             >
-                                {description.length >= 200 ? description.slice(0, 200) + "..." : description}
+                                {description && description.length >= 200 ? description.slice(0, 200) + "..." : description}
                             </Typography>
                         </p>
                         {proposer !== undefined && <Stack direction="row" spacing={1} mb={1}>
