@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {BrowserRouter as Router} from "react-router-dom";
 import Main from "./Main";
 import CustomThemeProvider from "./context/Theme/CustomThemeProvider";
@@ -7,17 +7,29 @@ import "./locales";
 import {SnackbarProvider} from "notistack";
 import {AppStateProvider} from "./context/AppStateContext";
 import {DialogProvider} from "./context/DialogContext/DialogContext";
-import GlobalPreloaderProvider from "./context/GlobalPreloaderProvider";
+import GlobalPreloaderProvider, {useGlobalPreloader} from "./context/GlobalPreloaderProvider";
 import {Collapse} from "@mui/material";
 import Common from "./services/axios/common";
 
 function App() {
+    const [configsLoaded, setConfigStatus] = useState(false);
+    const {activate, passivate} = useGlobalPreloader();
+
     useEffect(() => {
         Common.getConfig().then(res => {
-            sessionStorage.setItem(window.location.hostname.split(".goatlabs.zone")[0] +"-barn-configuration",
+            sessionStorage.setItem(window.location.hostname.split(".goatlabs.zone")[0] + "-barn-configuration",
                 JSON.stringify(res.data));
+            setConfigStatus(true);
         })
-    }, []);
+    }, [])
+
+    useEffect(() => {
+        if(!configsLoaded)
+            activate();
+        else
+            passivate();
+    },[configsLoaded])
+
     return (
         <Router basename={"/"}>
             <AppStateProvider>
@@ -34,7 +46,7 @@ function App() {
                             TransitionComponent={Collapse}
                         >
                             <DialogProvider>
-                                <Main/>
+                                {configsLoaded ? <Main/> : <div/>}
                             </DialogProvider>
                         </SnackbarProvider>
                     </GlobalPreloaderProvider>

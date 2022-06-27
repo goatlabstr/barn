@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Route, Routes, useLocation} from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
@@ -23,6 +23,7 @@ import {decode, encode} from "js-base64";
 import CoinGecko from "./services/axios/coingecko";
 import VotingDetails from "./component/GovernanceDetails/VotingDetails";
 import {getConfig} from "./services/network-config";
+import Common from "./services/axios/common";
 
 const menuItems = (t) => [
     {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
@@ -40,14 +41,6 @@ function Main() {
         appState: {},
         setCurrentPrice
     } = useAppState();
-
-    useEffect(() => {
-        i18n.changeLanguage(localStorage.getItem("lang") || "en");
-        CoinGecko.getPrice(getConfig("COINGECKO_ID")).then((res) => {
-            setCurrentPrice(res.data[getConfig("COINGECKO_ID")]["usd"])
-        })
-    }, []);
-
 
     const address = useAppSelector(state => state.accounts.address.value);
     const balance = useAppSelector(state => state.accounts.balance.result);
@@ -121,6 +114,13 @@ function Main() {
             window.removeEventListener('keplr_keystorechange', handleChain);
         }
     }, [])
+
+    useEffect(() => {
+        i18n.changeLanguage(localStorage.getItem("lang") || "en");
+        CoinGecko.getPrice(getConfig("COINGECKO_ID")).then((res) => {
+            setCurrentPrice(res.data[getConfig("COINGECKO_ID")]["usd"])
+        })
+    }, []);
 
     useEffect(() => {
         if (address) {

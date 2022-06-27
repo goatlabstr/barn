@@ -3,50 +3,50 @@ import {SigningStargateClient} from '@cosmjs/stargate';
 import {makeSignDoc} from '@cosmjs/amino';
 import {getConfig} from "./network-config";
 
-const chainId = getConfig("CHAIN_ID");
-const chainName = getConfig("CHAIN_NAME");
-const coinDenom = getConfig("COIN_DENOM");
-const coinMinimalDenom = getConfig("COIN_MINIMAL_DENOM");
-const coinDecimals = getConfig("COIN_DECIMALS");
-const prefix = getConfig("PREFIX");
-const coinGeckoId = getConfig("COINGECKO_ID");
+const chainId = () => getConfig("CHAIN_ID");
+const chainName = () => getConfig("CHAIN_NAME");
+const coinDenom = () => getConfig("COIN_DENOM");
+const coinMinimalDenom = () => getConfig("COIN_MINIMAL_DENOM");
+const coinDecimals = () => getConfig("COIN_DECIMALS");
+const prefix = () => getConfig("PREFIX");
+const coinGeckoId = () => getConfig("COINGECKO_ID");
 
-const chainConfig = {
-    chainId: chainId,
-    chainName,
-    rpc: RPC_URL,
-    rest: REST_URL,
+const chainConfig = () => ({
+    chainId: chainId(),
+    chainName: chainName(),
+    rpc: RPC_URL(),
+    rest: REST_URL(),
     stakeCurrency: {
-        coinDenom,
-        coinMinimalDenom,
-        coinDecimals,
-        coinGeckoId,
+        coinDenom: coinDenom(),
+        coinMinimalDenom: coinMinimalDenom(),
+        coinDecimals: coinDecimals(),
+        coinGeckoId: coinGeckoId(),
     },
     bip44: {
         coinType: 118,
     },
     bech32Config: {
-        bech32PrefixAccAddr: `${prefix}`,
-        bech32PrefixAccPub: `${prefix}pub`,
-        bech32PrefixValAddr: `${prefix}valoper`,
-        bech32PrefixValPub: `${prefix}valoperpub`,
-        bech32PrefixConsAddr: `${prefix}valcons`,
-        bech32PrefixConsPub: `${prefix}valconspub`,
+        bech32PrefixAccAddr: `${prefix()}`,
+        bech32PrefixAccPub: `${prefix()}pub`,
+        bech32PrefixValAddr: `${prefix()}valoper`,
+        bech32PrefixValPub: `${prefix()}valoperpub`,
+        bech32PrefixConsAddr: `${prefix()}valcons`,
+        bech32PrefixConsPub: `${prefix()}valconspub`,
     },
     currencies: [
         {
-            coinDenom,
-            coinMinimalDenom,
-            coinDecimals,
-            coinGeckoId,
+            coinDenom: coinDenom(),
+            coinMinimalDenom: coinMinimalDenom(),
+            coinDecimals: coinDecimals(),
+            coinGeckoId: coinGeckoId(),
         },
     ],
     feeCurrencies: [
         {
-            coinDenom,
-            coinMinimalDenom,
-            coinDecimals,
-            coinGeckoId,
+            coinDenom: coinDenom(),
+            coinMinimalDenom: coinMinimalDenom(),
+            coinDecimals: coinDecimals(),
+            coinGeckoId: coinGeckoId(),
         },
     ],
     coinType: getConfig("COIN_TYPE"),
@@ -57,15 +57,15 @@ const chainConfig = {
     },
     features: getConfig("FEATURES"),
     walletUrlForStaking: getConfig("STAKING_URL"),
-};
+});
 
 const getSignStargateClient = async () => {
     //@ts-ignore
-    await window.keplr && window.keplr.enable(chainId);
+    await window.keplr && window.keplr.enable(chainId());
     //@ts-ignore
-    const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId);
+    const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId());
     return await SigningStargateClient.connectWithSigner(
-        RPC_URL,
+        RPC_URL(),
         offlineSigner,
     );
 }
@@ -81,7 +81,7 @@ export const initializeChain = (cb) => {
             if (window.keplr.experimentalSuggestChain) {
                 try {
                     //@ts-ignore
-                    await window.keplr.experimentalSuggestChain(chainConfig);
+                    await window.keplr.experimentalSuggestChain(chainConfig());
                 } catch (error) {
                     const chainError = 'Failed to suggest the chain';
                     cb(chainError);
@@ -95,10 +95,10 @@ export const initializeChain = (cb) => {
         //@ts-ignore
         if (window.keplr) {
             //@ts-ignore
-            await window.keplr.enable(chainId);
+            await window.keplr.enable(chainId());
 
             //@ts-ignore
-            const offlineSigner = window.getOfflineSignerOnlyAmino(chainId);
+            const offlineSigner = window.getOfflineSignerOnlyAmino(chainId());
             const accounts = await offlineSigner.getAccounts();
             cb(null, accounts);
         } else {
@@ -154,7 +154,7 @@ export const getAllBalances = (address, cb) => {
 export const aminoSignTx = (tx, address, cb) => {
     (async () => {
         //@ts-ignore
-        const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId);
+        const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId());
         const client = await getSignStargateClient();
 
         const account = {};
@@ -176,7 +176,7 @@ export const aminoSignTx = (tx, address, cb) => {
         const signDoc = makeSignDoc(
             tx.msgs ? tx.msgs : [tx.msg],
             tx.fee,
-            chainId,
+            chainId(),
             tx.memo,
             //@ts-ignore
             account.accountNumber,

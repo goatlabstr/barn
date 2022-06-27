@@ -6,7 +6,7 @@ const getBarnConfigEndpoint = () => {
         const chainName = hostname.split(".goatlabs.zone")[0];
         return "https://raw.githubusercontent.com/goatlabstr/barn-chain-config/main/" + chainName + "/config.json"
     } else
-        return "https://raw.githubusercontent.com/goatlabstr/barn-chain-config/main/juno/config.json"
+        return "https://raw.githubusercontent.com/goatlabstr/barn-chain-config/main/cosmos/config.json"
 }
 
 const Common = {
