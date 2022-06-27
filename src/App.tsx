@@ -14,7 +14,8 @@ import Common from "./services/axios/common";
 function App() {
     useEffect(() => {
         Common.getConfig().then(res => {
-            sessionStorage.setItem("barn-configuration", JSON.stringify(res.data));
+            sessionStorage.setItem(window.location.hostname.split(".goatlabs.zone")[0] +"-barn-configuration",
+                JSON.stringify(res.data));
         })
     }, []);
     return (
