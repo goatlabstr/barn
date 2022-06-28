@@ -6,6 +6,15 @@ import reportWebVitals from './reportWebVitals';
 import {Provider} from 'react-redux';
 import {store} from './store'
 import './polyfill';
+import Common from "./services/axios/common";
+
+(function () {
+    if (sessionStorage.getItem(window.location.hostname.split(".goatlabs.zone")[0] + "-barn-configuration") === undefined)
+        Common.getConfig().then(res => {
+            sessionStorage.setItem(window.location.hostname.split(".goatlabs.zone")[0] + "-barn-configuration",
+                JSON.stringify(res.data));
+        })
+})()
 
 ReactDOM.render(
     <React.StrictMode>
