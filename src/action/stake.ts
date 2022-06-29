@@ -40,7 +40,7 @@ const fetchValidatorsError = (message) => {
 
 export const getValidators = (cb) => (dispatch) => {
     dispatch(fetchValidatorsInProgress());
-    Axios.get(VALIDATORS_LIST_URL, {
+    Axios.get(VALIDATORS_LIST_URL(), {
         headers: {
             Accept: 'application/json, text/plain, */*',
         },

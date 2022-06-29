@@ -47,7 +47,7 @@ const fetchProposalsError = (message) => {
 
 export const getProposals = (cb) => (dispatch) => {
     dispatch(fetchProposalsInProgress());
-    Axios.get(PROPOSALS_LIST_URL, {
+    Axios.get(PROPOSALS_LIST_URL(), {
         headers: {
             Accept: 'application/json, text/plain, */*',
         },

@@ -162,7 +162,7 @@ export default function Index() {
                             {inTxProgress && <CircularProgress color="inherit" size={20} sx={{mr: 1}}/>}
                             {t("claimReward", {
                                 "value": handleRewards().toFixed(3),
-                                "name": getConfig("NETWORK_NAME")
+                                "name": getConfig("COIN_DENOM")
                             })}</Button>
                     </Stack>
                 </Grid>
