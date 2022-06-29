@@ -1,7 +1,6 @@
 import {getConfig} from "../services/network-config";
 
 const REST_URL = () => getConfig("REST_URL");
-const RPC_URL = () => getConfig("RPC_URL");
 
 export const urlFetchDelegations = (address) => `${REST_URL()}/staking/delegators/${address}/delegations`;
 export const urlFetchBalance = (address) => `${REST_URL()}/bank/balances/${address}`;
