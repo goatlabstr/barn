@@ -18,7 +18,8 @@ import {useGlobalPreloader} from "../../context/GlobalPreloaderProvider";
 import {getAllBalances, signTxAndBroadcast} from "../../services/cosmos";
 import {gas} from "../../constants/defaultGasFees";
 import allActions from "../../action";
-import {getConfig} from "../../services/network-config";
+import {config} from "../../constants/networkConfig";
+import {useAppState} from "../../context/AppStateContext";
 
 const useStyles = makeStyles((theme: Theme) => ({
     button: {
@@ -40,11 +41,17 @@ export default function VotingDialog({proposal}) {
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
     const [voteValue, setVoteValue] = useState(null);
+    const {
+        appState: {
+            chains
+        }
+    } = useAppState();
 
     const address = useAppSelector(state => state.accounts.address.value);
 
     const updateBalance = (id) => {
-        getAllBalances(address,(err, data) => dispatch(allActions.getBalance(err,data)));
+        //@ts-ignore
+        getAllBalances(chains?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
         dispatch(allActions.fetchVestingBalance(id));
         dispatch(allActions.fetchVoteDetails(id, address));
         dispatch(allActions.fetchProposalTally(id));
@@ -73,15 +80,17 @@ export default function VotingDialog({proposal}) {
             }],
             fee: {
                 amount: [{
-                    amount: String(gas.vote * getConfig("GAS_PRICE_STEP_AVERAGE")),
-                    denom: getConfig("COIN_MINIMAL_DENOM"),
+                    amount: String(gas.vote * config.GAS_PRICE_STEP_AVERAGE),
+                    //@ts-ignore
+                    denom: chains?.denom,
                 }],
                 gas: String(gas.vote),
             },
             memo: '',
         };
 
-        signTxAndBroadcast(tx, address, (error, result) => {
+        //@ts-ignore
+        signTxAndBroadcast(chains?.chain_id, tx, address, (error, result) => {
             passivate();
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});

@@ -10,6 +10,7 @@ import {useNavigate} from "react-router-dom";
 import ProposalList from "../component/GovernanceDetails/ProposalList";
 import {useTranslation} from "react-i18next";
 import {useAppSelector} from "../customHooks/hook";
+import {useAppState} from "../context/AppStateContext";
 
 const useStyles = makeStyles((theme: Theme) => ({
     centerBox: {
@@ -28,11 +29,21 @@ function Index() {
     let navigate = useNavigate();
     const theme = useTheme();
     const [activeProposals, setActiveProposals] = useState<typeof proposals>([]);
+    const {
+        appState: {
+            activeValidators
+        },
+    } = useAppState();
 
     const delegatedValidatorList = useAppSelector(state => state.stake.delegatedValidators.list);
     const validatorImages = useAppSelector(state => state.stake.validators.images);
     const proposals = useAppSelector(state => state.governance._.list);
     const proposalDetails = useAppSelector(state => state.governance.proposalDetails.value);
+
+    const getDelegatedValidators = () => {
+        return activeValidators.filter(valid =>
+            delegatedValidatorList.some(delegated => valid?.moniker === delegated?.description?.moniker));
+    }
 
     useEffect(() => {
         if (proposals)
@@ -61,14 +72,13 @@ function Index() {
                         p: 3
                     }} className={classes.centerBox}>
                         <Box className={classes.centerInnerBox}>
-                            <EnhancedTable rows={delegatedValidatorList}
-                                           images={validatorImages}
+                            <EnhancedTable rows={getDelegatedValidators()}
                                            title={t("dashboard.stakedValidators")}
                                            buttonTitle={t("dashboard.viewAll")}
                                            onClickToolbarButton={() => {
                                                navigate("/stake")
                                            }}
-                                           search
+                                           search={false}
                             />
                         </Box>
                     </Box>

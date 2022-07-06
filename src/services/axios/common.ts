@@ -1,16 +1,9 @@
 import Axios from 'axios';
-
-const getBarnConfigEndpoint = () => {
-    const hostname = window.location.hostname;
-    if (hostname.includes(".goatlabs.zone")) {
-        const chainName = hostname.split(".goatlabs.zone")[0];
-        return "https://raw.githubusercontent.com/goatlabstr/barn-chain-config/main/" + chainName + "/config.json"
-    } else
-        return "https://raw.githubusercontent.com/goatlabstr/barn-chain-config/main/juno/config.json"
-}
+import {config} from "../../constants/networkConfig";
 
 const Common = {
-    getConfig: () => Axios.get(getBarnConfigEndpoint()),
+    getChainsInfo: () => Axios.get(config.CHAINS_URL),
+    getValidatorsInfo: () => Axios.get(config.VALIDATORS_URL)
 };
 
 export default Common;

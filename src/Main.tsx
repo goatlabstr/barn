@@ -22,7 +22,6 @@ import {getAllBalances, initializeChain} from "./services/cosmos";
 import {decode, encode} from "js-base64";
 import CoinGecko from "./services/axios/coingecko";
 import VotingDetails from "./component/GovernanceDetails/VotingDetails";
-import {getConfig} from "./services/network-config";
 import Common from "./services/axios/common";
 
 const menuItems = (t) => [
@@ -38,9 +37,36 @@ function Main() {
     const dispatch = useAppDispatch();
     const {enqueueSnackbar} = useSnackbar();
     const {
-        appState: {},
-        setCurrentPrice
+        appState: {
+            chains
+        },
+        setCurrentPrice,
+        setChains,
+        setActiveValidators,
+        setInactiveValidators
     } = useAppState();
+
+    useEffect(() => {
+        activate();
+        Common.getChainsInfo().then((res) => {
+            setChains(res?.data?.chain);
+            Common.getValidatorsInfo().then((response) => {
+                const validatorsResponse = response?.data?.validators;
+                if (validatorsResponse) {
+                    const activeValidators = validatorsResponse.filter((valid) => valid?.status === "BOND_STATUS_BONDED");
+                    const inactiveValidators = validatorsResponse.filter((valid) => !(valid?.status === "BOND_STATUS_BONDED"));
+                    setActiveValidators(activeValidators);
+                    setInactiveValidators(inactiveValidators);
+                    window.addEventListener('keplr_keystorechange', () => {
+                        if (localStorage.getItem('goat_wl_addr') || address !== '') {
+                            handleChain(res?.data?.chain, true);
+                        }
+                    });
+                }
+                passivate();
+            })
+        });
+    }, []);
 
     const address = useAppSelector(state => state.accounts.address.value);
     const balance = useAppSelector(state => state.accounts.balance.result);
@@ -53,36 +79,22 @@ function Main() {
     const governanceInProgress = useAppSelector(state => state.governance._.inProgress);
     const unBondingDelegations = useAppSelector(state => state.accounts.unBondingDelegations.result);
     const unBondingDelegationsInProgress = useAppSelector(state => state.accounts.unBondingDelegations.inProgress);
-    const validatorImages = useAppSelector(state => state.stake.validators.images);
-    const validatorList = useAppSelector(state => state.stake.validators.list);
-    const validatorListInProgress = useAppSelector(state => state.stake.validators.inProgress);
     const vestingBalance = useAppSelector(state => state.accounts.vestingBalance.result);
     const vestingBalanceInProgress = useAppSelector(state => state.accounts.vestingBalance.inProgress);
 
     useEffect(() => {
-        if (!(balanceInProgress || delegationsInProgress || governanceInProgress ||
-            validatorListInProgress))
+        if (!(balanceInProgress || delegationsInProgress || governanceInProgress))
             passivate();
 
-    }, [balanceInProgress, delegationsInProgress, governanceInProgress,
-        validatorListInProgress])
+    }, [balanceInProgress, delegationsInProgress, governanceInProgress])
 
     useEffect(() => {
         activate();
-        if (localStorage.getItem('goat_wl_addr'))
+        if (chains && Object.keys(chains).length > 0 && localStorage.getItem('goat_wl_addr'))
             initKeplr();
 
-        if (address) {
+        if (address && chains && Object.keys(chains).length > 0) {
             handleFetchDetails(address);
-        }
-
-        if (!validatorList.length && !validatorListInProgress) {
-            dispatch(allActions.getValidators((data) => {
-                if (data && data.length && validatorImages && validatorImages.length === 0) {
-                    const array = data.filter((val) => val && val.description && val.description.identity);
-                    getValidatorImage(0, array);
-                }
-            }));
         }
 
         if (proposals && !proposals.length && !governanceInProgress) {
@@ -104,40 +116,39 @@ function Main() {
                 }
             }));
         }
-
-        window.addEventListener('keplr_keystorechange', () => {
-            if (localStorage.getItem('goat_wl_addr') || address !== '') {
-                handleChain(true);
-            }
-        });
-        return () => {
-            window.removeEventListener('keplr_keystorechange', handleChain);
-        }
-    }, [])
+    }, [chains])
 
     useEffect(() => {
         i18n.changeLanguage(localStorage.getItem("lang") || "en");
-        CoinGecko.getPrice(getConfig("COINGECKO_ID")).then((res) => {
-            setCurrentPrice(res.data[getConfig("COINGECKO_ID")]["usd"])
-        })
-    }, []);
+        //@ts-ignore
+        const coingeckoId = chains?.coingecko_id;
+        if (coingeckoId) {
+            CoinGecko.getPrice(coingeckoId).then((res) => {
+                setCurrentPrice(res.data[coingeckoId]["usd"])
+            })
+        } else {
+            setCurrentPrice(0)
+        }
+    }, [chains]);
 
     useEffect(() => {
-        if (address) {
+        if (address && chains && Object.keys(chains).length > 0) {
             handleFetchDetails(address);
         }
-    }, [location])
+    }, [location, chains])
 
     const isActivePath = (pathname) => {
         return location.pathname === pathname;
     }
 
     const initKeplr = () => {
-        window.onload = () => handleChain(true);
+        handleChain(chains, true);
     }
 
-    const handleChain = (fetch) => {
-        initializeChain((error, addressList) => {
+    const handleChain = (chain, fetch) => {
+        if (!chain || Object.keys(chain).length === 0)
+            return;
+        initializeChain(chain, (error, addressList) => {
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});
                 localStorage.removeItem('goat_wl_addr');
@@ -150,7 +161,7 @@ function Main() {
             if (previousAddress !== addressList[0]?.address) {
                 localStorage.setItem('goat_wl_addr', encode(addressList[0]?.address));
             }
-            if (fetch) {
+            if (fetch && chain) {
                 handleFetchDetails(addressList[0]?.address);
             }
         });
@@ -170,7 +181,8 @@ function Main() {
     const handleFetchDetails = (address) => {
         if (balance && !balance.length &&
             !balanceInProgress) {
-            getAllBalances(address, (err, data) => dispatch(allActions.getBalance(err, data)));
+            //@ts-ignore
+            getAllBalances(chains?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         }
         if (vestingBalance && !vestingBalance.value &&
             !vestingBalanceInProgress) {
@@ -191,35 +203,6 @@ function Main() {
             !delegatedValidatorListInProgress) {
             dispatch(allActions.getDelegatedValidatorsDetails(address));
         }
-    }
-
-    const getValidatorImage = (index, data) => {
-        const array = [];
-        for (let i = 0; i < 3; i++) {
-            if (data[index + i]) {
-                const value = data[index + i];
-                let list = sessionStorage.getItem(`${getConfig("PREFIX")}_images`) || '{}';
-                list = JSON.parse(list);
-                if (value?.description?.identity && !list[value?.description?.identity]) {
-                    //@ts-ignore
-                    array.push(dispatch(allActions.fetchValidatorImage(value.description.identity)));
-                } else if (value?.description?.identity && list[value?.description?.identity]) {
-                    dispatch(allActions.fetchValidatorImageSuccess({
-                        //@ts-ignore
-                        ...list[value?.description?.identity],
-                        _id: value.description.identity,
-                    }));
-                }
-            } else {
-                break;
-            }
-        }
-
-        Promise.all(array).then(() => {
-            if (index + 3 < data.length - 1) {
-                getValidatorImage(index + 3, data);
-            }
-        });
     }
 
     return (

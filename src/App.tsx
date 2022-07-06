@@ -5,29 +5,13 @@ import CustomThemeProvider from "./context/Theme/CustomThemeProvider";
 import "./locales";
 
 import {SnackbarProvider} from "notistack";
-import {AppStateProvider} from "./context/AppStateContext";
+import {AppStateProvider, useAppState} from "./context/AppStateContext";
 import {DialogProvider} from "./context/DialogContext/DialogContext";
 import GlobalPreloaderProvider, {useGlobalPreloader} from "./context/GlobalPreloaderProvider";
 import {Collapse} from "@mui/material";
 import Common from "./services/axios/common";
 
 function App() {
-    const [configReady, setConfigReady] = useState<boolean>(false);
-    const {activate, passivate} = useGlobalPreloader();
-
-    useEffect(() => {
-        if (sessionStorage.getItem(window.location.hostname.split(".goatlabs.zone")[0] + "-barn-configuration") === null) {
-            activate();
-            Common.getConfig().then(res => {
-                sessionStorage.setItem(window.location.hostname.split(".goatlabs.zone")[0] + "-barn-configuration",
-                    JSON.stringify(res.data));
-                setConfigReady(true);
-                passivate();
-            });
-        } else
-            setConfigReady(true);
-    }, []);
-
     return (
         <Router basename={"/"}>
             <AppStateProvider>
@@ -43,9 +27,9 @@ function App() {
                             preventDuplicate
                             TransitionComponent={Collapse}
                         >
-                            {configReady ? <DialogProvider>
+                            <DialogProvider>
                                 <Main/>
-                            </DialogProvider> : <div/>}
+                            </DialogProvider>
                         </SnackbarProvider>
                     </GlobalPreloaderProvider>
                 </CustomThemeProvider>

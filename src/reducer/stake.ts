@@ -9,9 +9,6 @@ import {
     VALIDATOR_FETCH_IN_PROGRESS,
     VALIDATOR_FETCH_SUCCESS,
     VALIDATOR_IMAGE_FETCH_SUCCESS,
-    VALIDATORS_FETCH_ERROR,
-    VALIDATORS_FETCH_IN_PROGRESS,
-    VALIDATORS_FETCH_SUCCESS,
 } from '../action/types/stake';
 import { DISCONNECT_SET } from '../action/types/account';
 
@@ -21,22 +18,6 @@ const validators = (state = {
     images: [],
 }, action) => {
     switch (action.type) {
-        case VALIDATORS_FETCH_IN_PROGRESS:
-            return {
-                ...state,
-                inProgress: true,
-            };
-        case VALIDATORS_FETCH_SUCCESS:
-            return {
-                ...state,
-                list: action.list,
-                inProgress: false,
-            };
-        case VALIDATORS_FETCH_ERROR:
-            return {
-                ...state,
-                inProgress: false,
-            };
         case VALIDATOR_IMAGE_FETCH_SUCCESS: {
             const array = [...state.images];
             //@ts-ignore

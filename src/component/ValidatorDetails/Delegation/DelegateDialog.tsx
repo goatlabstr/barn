@@ -20,7 +20,8 @@ import {getAllBalances, signTxAndBroadcast} from "../../../services/cosmos";
 import allActions from "../../../action";
 import {useGlobalPreloader} from "../../../context/GlobalPreloaderProvider";
 import {snackbarTxAction} from "../../Snackbar/action";
-import {getConfig} from "../../../services/network-config";
+import {useAppState} from "../../../context/AppStateContext";
+import {config} from "../../../constants/networkConfig";
 
 const useStyles = makeStyles((theme: Theme) => ({
     button:{
@@ -41,34 +42,47 @@ export default function DelegateDialog({initialValidator}) {
     const {activate, passivate} = useGlobalPreloader();
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
+    const {
+        appState: {
+            chains,
+            activeValidators,
+            inactiveValidators
+        }
+    } = useAppState();
 
-    const validatorList = useAppSelector(state => state.stake.validators.list);
     const validatorImages = useAppSelector(state => state.stake.validators.images);
     const balance = useAppSelector(state => state.accounts.balance.result);
     const address = useAppSelector(state => state.accounts.address.value);
 
 
     const handleBalance = () => {
-        const bal = balance && balance.length && balance.find((val) => val.denom === getConfig("COIN_MINIMAL_DENOM"));
-        return bal?.amount / (10 ** getConfig("COIN_DECIMALS")) || 0;
+        //@ts-ignore
+        const decimals = chains?.decimals | 6;
+        //@ts-ignore
+        const bal = balance && balance.length && balance.find((val) => val.denom === chains?.denom);
+        return bal?.amount / (10 ** decimals) || 0;
     }
 
     const [delegateAmount, setDelegateAmount] = useState<number>(0);
     const [validator, setValidator] = useState<any>(initialValidator);
 
     const getValueObject = () => {
+        //@ts-ignore
+        const decimals = chains?.decimals | 6;
         return {
             delegatorAddress: address,
             validatorAddress: validator?.operator_address,
             amount: {
-                amount: String(delegateAmount * (10 ** getConfig("COIN_DECIMALS"))),
-                denom: getConfig("COIN_MINIMAL_DENOM"),
+                amount: String(delegateAmount * (10 ** decimals)),
+                //@ts-ignore
+                denom: chains?.denom,
             },
         };
     };
 
     const updateBalance = () => {
-        getAllBalances(address,(err, data) => dispatch(allActions.getBalance(err,data)));
+        //@ts-ignore
+        getAllBalances(chains?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.getDelegations(address));
         dispatch(allActions.getUnBondingDelegations(address));
@@ -88,14 +102,16 @@ export default function DelegateDialog({initialValidator}) {
             },
             fee: {
                 amount: [{
-                    amount: String(gasValue * getConfig("GAS_PRICE_STEP_AVERAGE")),
-                    denom: getConfig("COIN_MINIMAL_DENOM"),
+                    amount: String(gasValue * config.GAS_PRICE_STEP_AVERAGE),
+                    //@ts-ignore
+                    denom: chains?.denom,
                 }],
                 gas: String(gasValue),
             },
             memo: '',
         };
-        signTxAndBroadcast(updatedTx, address, (error, result) => {
+        //@ts-ignore
+        signTxAndBroadcast(chains?.chain_id, updatedTx, address, (error, result) => {
             passivate();
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});
@@ -119,8 +135,7 @@ export default function DelegateDialog({initialValidator}) {
             <DialogContent className={classes.content}>
                 <Stack direction="column">
                     <SelectValidator title={t("delegateSelectValidator")}
-                                     validators={validatorList}
-                                     images={validatorImages}
+                                     validators={activeValidators.concat(inactiveValidators)}
                                      initialValue={initialValidator}
                                      onChange={val => setValidator(val)}/>
                     <TextField

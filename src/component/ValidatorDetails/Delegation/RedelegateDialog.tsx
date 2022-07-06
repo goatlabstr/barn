@@ -20,7 +20,8 @@ import {gas} from "../../../constants/defaultGasFees";
 import {getAllBalances, signTxAndBroadcast} from "../../../services/cosmos";
 import {useGlobalPreloader} from "../../../context/GlobalPreloaderProvider";
 import {snackbarTxAction} from "../../Snackbar/action";
-import {getConfig} from "../../../services/network-config";
+import {useAppState} from "../../../context/AppStateContext";
+import {config} from "../../../constants/networkConfig";
 
 const useStyles = makeStyles((theme: Theme) => ({
     button:{
@@ -41,6 +42,13 @@ export default function RedelegateDialog({initialValidator}) {
     const {activate, passivate} = useGlobalPreloader();
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
+    const {
+        appState: {
+            activeValidators,
+            inactiveValidators,
+            chains
+        }
+    } = useAppState();
 
     const [fromValidator, setFromValidator] = useState<any>(initialValidator);
     const [toValidator, setToValidator] = useState<any>();
@@ -48,33 +56,43 @@ export default function RedelegateDialog({initialValidator}) {
     const [validatorRedelegateAmount, setValidatorRedelegateAmount] = useState<number>(0);
 
     const delegatedValidatorList = useAppSelector(state => state.stake.delegatedValidators.list);
-    const validatorList = useAppSelector(state => state.stake.validators.list);
     const validatorImages = useAppSelector(state => state.stake.validators.images);
     const address = useAppSelector(state => state.accounts.address.value);
     const delegations = useAppSelector(state => state.accounts.delegations.result);
 
+    const getDelegatedValidators = () => {
+        return activeValidators.filter(valid =>
+            delegatedValidatorList.some(delegated => valid?.moniker === delegated?.description?.moniker));
+    }
+
 
     useEffect(() => {
+        //@ts-ignore
+        const decimals = chains?.decimals | 6;
         const found = delegations.find(el => el?.delegation?.validator_address === fromValidator?.operator_address);
         if(found !== undefined)
-            setValidatorRedelegateAmount(found?.balance?.amount / (10 ** getConfig("COIN_DECIMALS")));
+            setValidatorRedelegateAmount(found?.balance?.amount / (10 ** decimals));
     },[fromValidator])
 
 
     const getValueObject = () => {
+        //@ts-ignore
+        const decimals = chains?.decimals | 6;
         return {
             delegatorAddress: address,
             validatorSrcAddress: fromValidator?.operator_address,
             validatorDstAddress: toValidator?.operator_address,
             amount: {
-                amount: String(redelegateAmount * (10 ** getConfig("COIN_DECIMALS"))),
-                denom: getConfig("COIN_MINIMAL_DENOM"),
+                amount: String(redelegateAmount * (10 ** decimals)),
+                //@ts-ignore
+                denom: chains?.denom,
             },
         };
     };
 
     const updateBalance = () => {
-        getAllBalances(address,(err, data) => dispatch(allActions.getBalance(err,data)));
+        //@ts-ignore
+        getAllBalances(chains?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.getDelegations(address));
         dispatch(allActions.getUnBondingDelegations(address));
@@ -94,14 +112,16 @@ export default function RedelegateDialog({initialValidator}) {
             },
             fee: {
                 amount: [{
-                    amount: String(gasValue * getConfig("GAS_PRICE_STEP_AVERAGE")),
-                    denom: getConfig("COIN_MINIMAL_DENOM"),
+                    amount: String(gasValue * config.GAS_PRICE_STEP_AVERAGE),
+                    //@ts-ignore
+                    denom: chains?.denom,
                 }],
                 gas: String(gasValue),
             },
             memo: '',
         };
-        signTxAndBroadcast(updatedTx, address, (error, result) => {
+        //@ts-ignore
+        signTxAndBroadcast(chains?.chain_id, updatedTx, address, (error, result) => {
             passivate();
             if (error) {
                 /*if (error.indexOf('not yet found on the chain') > -1) {
@@ -129,13 +149,11 @@ export default function RedelegateDialog({initialValidator}) {
                 <Stack direction="column">
                     <Stack direction="column" spacing={2}>
                         <SelectValidator title={t("delegatedValidator")}
-                                         validators={delegatedValidatorList}
-                                         images={validatorImages}
+                                         validators={getDelegatedValidators()}
                                          onChange={val => setFromValidator(val)}
                                          initialValue={initialValidator}/>
                         <SelectValidator title={t("redelegateSelectValidator")}
-                                         validators={validatorList}
-                                         images={validatorImages}
+                                         validators={activeValidators.concat(inactiveValidators)}
                                          onChange={val => setToValidator(val)}/>
                     </Stack>
                     <TextField

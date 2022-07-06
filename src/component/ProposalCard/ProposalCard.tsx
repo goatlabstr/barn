@@ -72,20 +72,20 @@ export default function ProposalCard(props: ProposalCardType) {
         switch (vote) {
             case 'yes':
                 return <Typography className={classes.typo}><CircleIcon className={classes.typo}
-                                                                   color="success"/>{t("governance.yes", {"value": voteCalculation(proposal, vote)})}
+                                                                        color="success"/>{t("governance.yes", {"value": voteCalculation(proposal, vote)})}
                 </Typography>
             case 'no':
                 return <Typography className={classes.typo}><CircleIcon className={classes.typo}
-                                                                   color="disabled"/>{t("governance.no", {"value": voteCalculation(proposal, vote)})}
+                                                                        color="disabled"/>{t("governance.no", {"value": voteCalculation(proposal, vote)})}
                 </Typography>
             case 'no_with_veto':
                 return <Typography className={classes.typo}><CircleIcon className={classes.typo}
-                                                                   color="error"/>{t("governance.no_with_veto", {"value": voteCalculation(proposal, vote)})}
+                                                                        color="error"/>{t("governance.no_with_veto", {"value": voteCalculation(proposal, vote)})}
                 </Typography>
             case 'abstain':
             default:
                 return <Typography className={classes.typo}><CircleIcon className={classes.typo}
-                                                                   color="warning"/>{t("governance.abstain", {"value": voteCalculation(proposal, vote)})}
+                                                                        color="warning"/>{t("governance.abstain", {"value": voteCalculation(proposal, vote)})}
                 </Typography>
         }
     }
@@ -121,18 +121,16 @@ export default function ProposalCard(props: ProposalCardType) {
                             </Typography>
                             {getStatusIcon(proposal?.status)}
                         </Stack>
-                        <p>
-                            <Typography
-                                sx={{
-                                    display: 'inline'
-                                }}
-                                component="span"
-                                variant="body2"
-                                color="text.secondary"
-                            >
-                                {description && description.length >= 200 ? description.slice(0, 200) + "..." : description}
-                            </Typography>
-                        </p>
+                        <Typography
+                            sx={{
+                                display: 'inline'
+                            }}
+                            component="span"
+                            variant="body2"
+                            color="text.secondary"
+                        >
+                            {description && description.length >= 200 ? description.slice(0, 200) + "..." : description}
+                        </Typography>
                         {proposer !== undefined && <Stack direction="row" spacing={1} mb={1}>
                             <Typography
                                 sx={{display: 'inline', fontSize: 12}}
@@ -160,7 +158,7 @@ export default function ProposalCard(props: ProposalCardType) {
                                 <Typography variant={"body2"}
                                             className={classes.typo}
                                             sx={{
-                                               pr: 1,
+                                                pr: 1,
                                                 //@ts-ignore
                                                 color: theme.palette.secondary.main
                                             }}>{t("governance.votingStartTime")}</Typography>

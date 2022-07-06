@@ -1,18 +1,20 @@
 import {SigningStargateClient} from '@cosmjs/stargate';
 import {makeSignDoc} from '@cosmjs/amino';
-import {getConfig} from "./network-config";
+import {config} from "../constants/networkConfig";
 
-const chainId = () => getConfig("CHAIN_ID");
-const chainName = () => getConfig("CHAIN_NAME");
-const coinDenom = () => getConfig("COIN_DENOM");
-const coinMinimalDenom = () => getConfig("COIN_MINIMAL_DENOM");
-const coinDecimals = () => getConfig("COIN_DECIMALS");
-const prefix = () => getConfig("PREFIX");
-const coinGeckoId = () => getConfig("COINGECKO_ID");
-const restUrl = () => getConfig("REST_URL");
-const rpcUrl = () => getConfig("RPC_URL");
+const restUrl = config.REST_URL;
+const rpcUrl = config.RPC_URL;
+const stakingUrl = config.STAKING_URL;
+const features = config.FEATURES;
 
-const chainConfig = (chainId, chainName, coinDenom, coinMinimalDenom, coinDecimals, prefix, coinGeckoId, restUrl, rpcUrl) => ({
+const chainConfig = (chainId,
+                     chainName,
+                     coinDenom,
+                     coinMinimalDenom,
+                     coinDecimals,
+                     coinType,
+                     prefix,
+                     coinGeckoId) => ({
     chainId: chainId,
     chainName,
     rpc: rpcUrl,
@@ -50,29 +52,37 @@ const chainConfig = (chainId, chainName, coinDenom, coinMinimalDenom, coinDecima
             coinGeckoId,
         },
     ],
-    coinType: getConfig("COIN_TYPE"),
+    coinType: coinType,
     gasPriceStep: {
-        low: getConfig("GAS_PRICE_STEP_LOW"),
-        average: getConfig("GAS_PRICE_STEP_AVERAGE"),
-        high: getConfig("GAS_PRICE_STEP_HIGH"),
+        low: config.GAS_PRICE_STEP_LOW,
+        average: config.GAS_PRICE_STEP_AVERAGE,
+        high: config.GAS_PRICE_STEP_HIGH,
     },
-    features: getConfig("FEATURES"),
-    walletUrlForStaking: getConfig("STAKING_URL"),
+    features: features,
+    walletUrlForStaking: stakingUrl,
 });
 
-const getSignStargateClient = async () => {
+const getSignStargateClient = async (chainId) => {
     //@ts-ignore
-    await window.keplr && window.keplr.enable(chainId());
+    await window.keplr && window.keplr.enable();
     //@ts-ignore
-    const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId());
+    const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId);
     return await SigningStargateClient.connectWithSigner(
-        rpcUrl(),
+        rpcUrl,
         offlineSigner,
     );
 }
 
-export const initializeChain = (cb) => {
+export const initializeChain = (chains, cb) => {
     (async () => {
+        const {chain_id,
+            chain_name,
+            symbol,
+            denom,
+            decimals,
+            slip44,
+            bech32_prefix,
+            coingecko_id} = chains;
         //@ts-ignore
         if (!window.getOfflineSignerOnlyAmino || !window.keplr) {
             const error = 'Please install keplr extension';
@@ -83,9 +93,14 @@ export const initializeChain = (cb) => {
                 try {
                     //@ts-ignore
                     await window.keplr.experimentalSuggestChain(chainConfig(
-                        chainId(), chainName(), coinDenom(),
-                        coinMinimalDenom(), coinDecimals(),
-                        prefix(), coinGeckoId(), restUrl(), rpcUrl()));
+                        chain_id,
+                        chain_name,
+                        symbol,
+                        denom,
+                        decimals,
+                        slip44,
+                        bech32_prefix,
+                        coingecko_id));
                 } catch (error) {
                     const chainError = 'Failed to suggest the chain';
                     cb(chainError);
@@ -99,22 +114,19 @@ export const initializeChain = (cb) => {
         //@ts-ignore
         if (window.keplr) {
             //@ts-ignore
-            await window.keplr.enable(chainId());
-
+            await window.keplr.enable(chain_id);
             //@ts-ignore
-            const offlineSigner = window.getOfflineSignerOnlyAmino(chainId());
+            const offlineSigner = window.getOfflineSignerOnlyAmino(chain_id);
             const accounts = await offlineSigner.getAccounts();
             cb(null, accounts);
-        } else {
-            return null;
         }
     })();
 };
 
 
-export const signTxAndBroadcast = (tx, address, cb) => {
+export const signTxAndBroadcast = (chainId, tx, address, cb) => {
     (async () => {
-        const client = await getSignStargateClient();
+        const client = await getSignStargateClient(chainId);
         client.signAndBroadcast(
             address,
             tx.msgs ? tx.msgs : [tx.msg],
@@ -133,9 +145,9 @@ export const signTxAndBroadcast = (tx, address, cb) => {
     })();
 };
 
-export const getStakedBalance = (address, cb) => {
+export const getStakedBalance = (chainId, address, cb) => {
     (async () => {
-        const client = await getSignStargateClient();
+        const client = await getSignStargateClient(chainId);
         client.getBalanceStaked(address).then((result) => {
             cb(null, result);
         }).catch((error) => {
@@ -144,9 +156,9 @@ export const getStakedBalance = (address, cb) => {
     })();
 }
 
-export const getAllBalances = (address, cb) => {
+export const getAllBalances = (chainId, address, cb) => {
     (async () => {
-        const client = await getSignStargateClient();
+        const client = await getSignStargateClient(chainId);
         client.getAllBalances(address).then((result) => {
             cb(null, result);
         }).catch((error) => {
@@ -155,11 +167,11 @@ export const getAllBalances = (address, cb) => {
     })();
 }
 
-export const aminoSignTx = (tx, address, cb) => {
+export const aminoSignTx = (chainId, tx, address, cb) => {
     (async () => {
         //@ts-ignore
-        const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId());
-        const client = await getSignStargateClient();
+        const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId);
+        const client = await getSignStargateClient(chainId);
 
         const account = {};
         try {
@@ -180,7 +192,7 @@ export const aminoSignTx = (tx, address, cb) => {
         const signDoc = makeSignDoc(
             tx.msgs ? tx.msgs : [tx.msg],
             tx.fee,
-            chainId(),
+            chainId,
             tx.memo,
             //@ts-ignore
             account.accountNumber,

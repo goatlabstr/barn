@@ -20,7 +20,8 @@ import {gas} from "../../../constants/defaultGasFees";
 import {getAllBalances, signTxAndBroadcast} from "../../../services/cosmos";
 import {useGlobalPreloader} from "../../../context/GlobalPreloaderProvider";
 import {snackbarTxAction} from "../../Snackbar/action";
-import {getConfig} from "../../../services/network-config";
+import {useAppState} from "../../../context/AppStateContext";
+import {config} from "../../../constants/networkConfig";
 
 const useStyles = makeStyles((theme: Theme) => ({
     button:{
@@ -41,6 +42,12 @@ export default function UndelegateDialog({initialValidator}) {
     const {activate, passivate} = useGlobalPreloader();
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
+    const {
+        appState: {
+            chains,
+            activeValidators
+        }
+    } = useAppState();
 
     const [validatorUndelegateAmount, setValidatorUndelegateAmount] = useState<number>(0);
     const [undelegateAmount, setUndelegateAmount] = useState<number>(0);
@@ -51,20 +58,28 @@ export default function UndelegateDialog({initialValidator}) {
     const address = useAppSelector(state => state.accounts.address.value);
     const delegations = useAppSelector(state => state.accounts.delegations.result);
 
+    const getDelegatedValidators = () => {
+        return activeValidators.filter(valid =>
+            delegatedValidatorList.some(delegated => valid?.moniker === delegated?.description?.moniker));
+    }
 
     const getValueObject = () => {
+        //@ts-ignore
+        const decimals = chains?.decimals | 6;
         return {
             delegatorAddress: address,
             validatorAddress: validator?.operator_address,
             amount: {
-                amount: String(undelegateAmount * (10 ** getConfig("COIN_DECIMALS"))),
-                denom: getConfig("COIN_MINIMAL_DENOM"),
+                amount: String(undelegateAmount * (10 ** decimals)),
+                //@ts-ignore
+                denom: chains?.denom,
             },
         };
     };
 
     const updateBalance = () => {
-        getAllBalances(address,(err, data) => dispatch(allActions.getBalance(err,data)));
+        //@ts-ignore
+        getAllBalances(chains?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.getDelegations(address));
         dispatch(allActions.getUnBondingDelegations(address));
@@ -84,14 +99,17 @@ export default function UndelegateDialog({initialValidator}) {
             },
             fee: {
                 amount: [{
-                    amount: String(gasValue * getConfig("GAS_PRICE_STEP_AVERAGE")),
-                    denom: getConfig("COIN_MINIMAL_DENOM"),
+                    amount: String(gasValue * config.GAS_PRICE_STEP_AVERAGE),
+                    //@ts-ignore
+                    denom: chains?.denom,
                 }],
                 gas: String(gasValue),
             },
             memo: '',
         };
-        signTxAndBroadcast(updatedTx, address, (error, result) => {
+
+        //@ts-ignore
+        signTxAndBroadcast(chains?.chain_id, updatedTx, address, (error, result) => {
             passivate();
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});
@@ -110,9 +128,11 @@ export default function UndelegateDialog({initialValidator}) {
     };
 
     useEffect(() => {
+        //@ts-ignore
+        const decimals = chains?.decimals | 6;
         const found = delegations.find(el => el?.delegation?.validator_address === validator?.operator_address);
         if(found !== undefined)
-            setValidatorUndelegateAmount(found?.balance?.amount / (10 ** getConfig("COIN_DECIMALS")));
+            setValidatorUndelegateAmount(found?.balance?.amount / (10 ** decimals));
     },[validator])
 
 
@@ -123,8 +143,7 @@ export default function UndelegateDialog({initialValidator}) {
             <DialogContent className={classes.content}>
                 <Stack direction="column">
                 <SelectValidator title={t("undelegateSelectValidator")}
-                                 validators={delegatedValidatorList}
-                                 images={validatorImages}
+                                 validators={getDelegatedValidators()}
                                  onChange={val => setValidator(val)}
                                  initialValue={initialValidator}/>
                     <TextField

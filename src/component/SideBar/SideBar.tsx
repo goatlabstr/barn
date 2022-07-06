@@ -31,54 +31,53 @@ import {useSnackbar} from "notistack";
 import {useAppDispatch, useAppSelector} from '../../customHooks/hook';
 import {useAppState} from "../../context/AppStateContext";
 import {CopyAddressButton} from "./CopyAddressButton";
-import {getConfig} from "../../services/network-config";
 
 const drawerWidth = 220;
 
 const useStyles = makeStyles((theme: Theme) => ({
-        menuSelected: {
-            borderLeft: "solid 0px " + theme.palette.secondary.main,
-            backgroundColor: alpha(theme.palette.primary.main, 0.1),
-        },
-        menuNoneSelected: {
-            borderLeft: "solid 0px transparent",
-            color: "rgb(131 157 170)"
-        },
-        iconSelected: {
-            color: theme.palette.secondary.main
-        },
-        iconNoneSelected: {
-            color: "rgb(131 157 170)"
-        },
-        menuListItem: {
-            paddingLeft: 18,
-            flexWrap: "wrap"
-        },
-        menuListItemText: {
-            [theme.breakpoints.down("md")]: {
-                "& .MuiTypography-body1": {
-                    width: 80,
-                    fontSize: "0.7rem",
-                    display: "inline-block",
-                    maxHeight: "1.4rem",
-                    overflow: "hidden",
-                    whiteSpace: "nowrap",
-                    fontWeight: 400,
-                    lineHeight: "1.4rem",
-                    textOverflow: "ellipsis"
-                }
+    menuSelected: {
+        borderLeft: "solid 0px " + theme.palette.secondary.main,
+        backgroundColor: alpha(theme.palette.primary.main, 0.1),
+    },
+    menuNoneSelected: {
+        borderLeft: "solid 0px transparent",
+        color: "rgb(131 157 170)"
+    },
+    iconSelected: {
+        color: theme.palette.secondary.main
+    },
+    iconNoneSelected: {
+        color: "rgb(131 157 170)"
+    },
+    menuListItem: {
+        paddingLeft: 18,
+        flexWrap: "wrap"
+    },
+    menuListItemText: {
+        [theme.breakpoints.down("md")]: {
+            "& .MuiTypography-body1": {
+                width: 80,
+                fontSize: "0.7rem",
+                display: "inline-block",
+                maxHeight: "1.4rem",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                fontWeight: 400,
+                lineHeight: "1.4rem",
+                textOverflow: "ellipsis"
             }
-        },
-        goatlabs: {
-            marginLeft: "-10px",
-            marginTop: "2px",
-            fontSize: "24px",
-            filter: "drop-shadow(2px 3px 2px rgb(0 0 0 / 0.4))"
-        },
-        socialMediaIcon: {
-            color: "rgb(131 157 170)"
         }
-    }));
+    },
+    goatlabs: {
+        marginLeft: "-10px",
+        marginTop: "2px",
+        fontSize: "24px",
+        filter: "drop-shadow(2px 3px 2px rgb(0 0 0 / 0.4))"
+    },
+    socialMediaIcon: {
+        color: "rgb(131 157 170)"
+    }
+}));
 
 type SideBarProps = {
     menuItems: any
@@ -95,7 +94,10 @@ export default function SideBar(props: SideBarProps) {
     const dispatch = useAppDispatch();
     const {enqueueSnackbar} = useSnackbar();
     const {
-        appState: {currentPrice}
+        appState: {
+            currentPrice,
+            chains
+        }
     } = useAppState();
 
     const address = useAppSelector(state => state.accounts.address.value);
@@ -114,8 +116,10 @@ export default function SideBar(props: SideBarProps) {
     }
 
     const handleConnectButtonClick = () => {
+        if (!chains || Object.keys(chains).length === 0)
+            return;
         activate();
-        initializeChain((error, addressList) => {
+        initializeChain(chains, (error, addressList) => {
             passivate();
             if (error) {
                 localStorage.removeItem('goat_wl_addr');
@@ -126,7 +130,8 @@ export default function SideBar(props: SideBarProps) {
             dispatch(allActions.getUnBondingDelegations(addressList[0] && addressList[0].address));
             dispatch(allActions.fetchRewards(addressList[0] && addressList[0].address));
             dispatch(allActions.getDelegations(addressList[0] && addressList[0].address));
-            getAllBalances(addressList[0] && addressList[0].address,(err, data) => dispatch(allActions.getBalance(err,data)));
+            //@ts-ignore
+            getAllBalances(chains?.chain_id, addressList[0] && addressList[0].address, (err, data) => dispatch(allActions.getBalance(err, data)));
             dispatch(allActions.fetchVestingBalance(addressList[0] && addressList[0].address));
             dispatch(allActions.getDelegatedValidatorsDetails(addressList[0] && addressList[0].address));
             localStorage.setItem('goat_wl_addr', encode(addressList[0] && addressList[0].address));
@@ -169,10 +174,13 @@ export default function SideBar(props: SideBarProps) {
                 </List>
                 <Stack direction="column">
                     <Stack direction="row" justifyContent="space-between" mb={1.5}>
-                        <Typography variant={"body2"}>{getConfig("COIN_DENOM").toUpperCase()}</Typography>
+                        <Typography variant={"body2"}>{
+                            //@ts-ignore
+                            chains?.symbol?.toUpperCase()
+                        }</Typography>
                         <Typography variant={"body2"} color={"secondary"}>${currentPrice}</Typography>
                     </Stack>
-                    <CopyAddressButton address={address} />
+                    <CopyAddressButton address={address}/>
                     {localStorage.getItem('goat_wl_addr') || address ?
                         <Button variant="outlined"
                                 sx={{"color": "rgb(131 157 170)", "borderColor": "rgb(131 157 170)"}}
@@ -203,8 +211,16 @@ export default function SideBar(props: SideBarProps) {
                     </Stack>
                     <Button variant="text"
                             sx={{textTransform: "none", color: "rgb(131 157 170)"}}
-                        //@ts-ignore
-                            onClick={() => window.open("https://www.coingecko.com/coins/" + getConfig("COINGECKO_ID"), '_blank').focus()}
+                            onClick={
+                                () => {
+                                    const coingeckoUrl =
+                                        //@ts-ignore
+                                        chains?.coingecko_id ? "https://www.coingecko.com/coins/" + chains?.coingecko_id :
+                                            "https://www.coingecko.com"
+                                    //@ts-ignore
+                                    window.open(coingeckoUrl, '_blank').focus()
+                                }
+                            }
 
                     >
                         {t("menu.coingecko")}</Button>

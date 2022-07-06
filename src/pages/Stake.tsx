@@ -8,6 +8,7 @@ import EnhancedTable from '../component/ValidatorDetails/EnhancedTable';
 import {Done as ActiveIcon} from "@mui/icons-material";
 import {useTranslation} from "react-i18next";
 import {useAppSelector} from "../customHooks/hook";
+import {useAppState} from "../context/AppStateContext";
 
 const useStyles = makeStyles((theme: Theme) => ({
     centerBox: {
@@ -24,10 +25,18 @@ function Index() {
     const classes = useStyles();
     const theme = useTheme();
     const {t} = useTranslation();
+    const {
+        appState: {
+            activeValidators
+        }
+    } = useAppState();
 
-    const validatorList = useAppSelector(state => state.stake.validators.list);
     const delegatedValidatorList = useAppSelector(state => state.stake.delegatedValidators.list);
-    const validatorImages = useAppSelector(state => state.stake.validators.images);
+
+    const getDelegatedValidators = () => {
+        return activeValidators.filter(valid =>
+            delegatedValidatorList.some(delegated => valid?.moniker === delegated?.description?.moniker));
+    }
 
     return (
         <React.Fragment>
@@ -40,7 +49,7 @@ function Index() {
                         p: 3
                     }} className={classes.centerBox}>
                         <Box className={classes.centerInnerBox}>
-                            <StakingDetails rows={delegatedValidatorList} images={validatorImages}/>
+                            <StakingDetails rows={getDelegatedValidators()}/>
                         </Box>
                     </Box>
                 </Grid>}
@@ -50,7 +59,7 @@ function Index() {
                         p: 3
                     }} className={classes.centerBox}>
                         <Box className={classes.centerInnerBox}>
-                            <EnhancedTable rows={validatorList} images={validatorImages} search title={t("staking.allValidators")}/>
+                            <EnhancedTable rows={activeValidators} search title={t("staking.allValidators")}/>
                         </Box>
                     </Box>
                 </Grid>
