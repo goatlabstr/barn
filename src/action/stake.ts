@@ -10,56 +10,9 @@ import {
     VALIDATOR_IMAGE_FETCH_ERROR,
     VALIDATOR_IMAGE_FETCH_IN_PROGRESS,
     VALIDATOR_IMAGE_FETCH_SUCCESS,
-    VALIDATORS_FETCH_ERROR,
-    VALIDATORS_FETCH_IN_PROGRESS,
-    VALIDATORS_FETCH_SUCCESS,
 } from './types/stake';
 import Axios from 'axios';
 import { getDelegatedValidatorsURL, getValidatorURL, validatorImageURL, VALIDATORS_LIST_URL } from '../constants/endpoints';
-import {getConfig} from "../services/network-config";
-
-const fetchValidatorsInProgress = () => {
-    return {
-        type: VALIDATORS_FETCH_IN_PROGRESS,
-    };
-};
-
-const fetchValidatorsSuccess = (list) => {
-    return {
-        type: VALIDATORS_FETCH_SUCCESS,
-        list,
-    };
-};
-
-const fetchValidatorsError = (message) => {
-    return {
-        type: VALIDATORS_FETCH_ERROR,
-        message,
-    };
-};
-
-export const getValidators = (cb) => (dispatch) => {
-    dispatch(fetchValidatorsInProgress());
-    Axios.get(VALIDATORS_LIST_URL(), {
-        headers: {
-            Accept: 'application/json, text/plain, */*',
-        },
-    })
-        .then((res) => {
-            dispatch(fetchValidatorsSuccess(res.data && res.data.result));
-            cb(res.data && res.data.result);
-        })
-        .catch((error) => {
-            dispatch(fetchValidatorsError(
-                error.response &&
-                error.response.data &&
-                error.response.data.message
-                    ? error.response.data.message
-                    : 'Failed!',
-            ));
-            cb(null);
-        });
-};
 
 export const setTokens = (value) => {
     return {
@@ -181,7 +134,7 @@ const fetchValidatorImageError = (message) => {
     };
 };
 
-export const fetchValidatorImage = (id) => (dispatch) => {
+export const fetchValidatorImage = (id, prefix) => (dispatch) => {
     dispatch(fetchValidatorImageInProgress());
     const URL = validatorImageURL(id);
     return Axios.get(URL, {
@@ -190,12 +143,12 @@ export const fetchValidatorImage = (id) => (dispatch) => {
         },
     })
         .then((res) => {
-            let obj = sessionStorage.getItem(`${getConfig("PREFIX")}_images`) || '{}';
+            let obj = sessionStorage.getItem(`${prefix}_images`) || '{}';
             obj = obj && JSON.parse(obj);
             //@ts-ignore
             obj[id] = res.data;
             obj = obj && JSON.stringify(obj);
-            sessionStorage.setItem(`${getConfig("PREFIX")}_images`, obj);
+            sessionStorage.setItem(`${prefix}_images`, obj);
             dispatch(fetchValidatorImageSuccess({
                 ...res.data,
                 _id: id,

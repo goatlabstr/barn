@@ -19,7 +19,7 @@ import {getAllBalances, signTxAndBroadcast} from "../../services/cosmos";
 import {useSnackbar} from "notistack";
 import allActions from "../../action";
 import {snackbarTxAction} from "../Snackbar/action";
-import {getConfig} from "../../services/network-config";
+import {config} from "../../constants/networkConfig";
 
 const useStyles = makeStyles((theme: Theme) => ({
     icon: {
@@ -35,7 +35,10 @@ export default function Index() {
     const {enqueueSnackbar} = useSnackbar();
     const classes = useStyles();
     const {
-        appState: {currentPrice}
+        appState: {
+            chains,
+            currentPrice
+        }
     } = useAppState();
 
     const [inTxProgress, setInTxProgress] = useState(false);
@@ -47,24 +50,33 @@ export default function Index() {
     const unBondingDelegations = useAppSelector(state => state.accounts.unBondingDelegations.result);
 
     const handleBalance = () => {
-        const bal = balance && balance.length && balance.find((val) => val.denom === getConfig("COIN_MINIMAL_DENOM"));
-        return bal?.amount / (10 ** getConfig("COIN_DECIMALS")) || 0;
+        //@ts-ignore
+        const decimals = chains?.decimals | 6;
+        //@ts-ignore
+        const bal = balance && balance.length && balance.find((val) => val.denom === chains?.denom);
+        return bal?.amount / (10 ** decimals) || 0;
     }
 
     const handleRewards = () => {
+        //@ts-ignore
+        const decimals = chains?.decimals | 6;
         return rewards && rewards.total && rewards.total.length &&
         rewards.total[0] && rewards.total[0].amount
-            ? rewards.total[0].amount / 10 ** getConfig("COIN_DECIMALS") : 0;
+            ? rewards.total[0].amount / 10 ** decimals : 0;
     }
 
     const handleStakedAmount = () => {
+        //@ts-ignore
+        const decimals = chains?.decimals | 6;
         const staked = delegations.reduce((accumulator, currentValue) => {
             return accumulator + Number(currentValue.balance.amount);
         }, 0);
-        return staked / (10 ** getConfig("COIN_DECIMALS"));
+        return staked / (10 ** decimals);
     }
 
     const handleUnstakedAmount = () => {
+        //@ts-ignore
+        const decimals = chains?.decimals | 6;
         let unStaked = 0;
         unBondingDelegations.map((delegation) => {
             delegation.entries && delegation.entries.length &&
@@ -74,7 +86,7 @@ export default function Index() {
             });
             return null;
         });
-        return unStaked / (10 ** getConfig("COIN_DECIMALS"));
+        return unStaked / (10 ** decimals);
     }
 
     const handleTotalBalance = () => {
@@ -85,10 +97,13 @@ export default function Index() {
     }
 
     const updateBalance = () => {
+        //@ts-ignore
+        const decimals = chains?.decimals | 6;
         const tokens = rewards && rewards.length && rewards[0] && rewards[0].reward &&
         rewards[0].reward.length && rewards[0].reward[0] && rewards[0].reward[0].amount
-            ? rewards[0].reward[0].amount / 10 ** getConfig("COIN_DECIMALS") : 0;
-        getAllBalances(address,(err, data) => dispatch(allActions.getBalance(err,data)));
+            ? rewards[0].reward[0].amount / 10 ** decimals : 0;
+        //@ts-ignore
+        getAllBalances(chains?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.fetchRewards(address));
         dispatch(allActions.setTokens(tokens));
@@ -105,8 +120,9 @@ export default function Index() {
             msgs: [],
             fee: {
                 amount: [{
-                    amount: String(gasValue * getConfig("GAS_PRICE_STEP_AVERAGE")),
-                    denom: getConfig("COIN_MINIMAL_DENOM"),
+                    amount: String(gasValue * config.GAS_PRICE_STEP_AVERAGE),
+                    //@ts-ignore
+                    denom: chains?.denom,
                 }],
                 gas: String(gasValue),
             },
@@ -129,7 +145,8 @@ export default function Index() {
             });
         }
 
-        signTxAndBroadcast(updatedTx, address, (error, result) => {
+        //@ts-ignore
+        signTxAndBroadcast(chains?.chain_id, updatedTx, address, (error, result) => {
             setInTxProgress(false);
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});
@@ -152,7 +169,8 @@ export default function Index() {
                 <Grid item xs={12} lg={12}>
                     <Stack direction="row" justifyContent="space-between">
                         <Typography
-                            variant={"h6"}>{t("dashboard.networkBalances", {"name": getConfig("NETWORK_NAME")})}</Typography>
+                            //@ts-ignore
+                            variant={"h6"}>{t("dashboard.networkBalances", {"name": chains?.pretty_name})}</Typography>
                         <Button variant="outlined"
                                 color="secondary"
                                 disabled={inTxProgress || handleRewards() <= 0}
@@ -162,7 +180,8 @@ export default function Index() {
                             {inTxProgress && <CircularProgress color="inherit" size={20} sx={{mr: 1}}/>}
                             {t("claimReward", {
                                 "value": handleRewards().toFixed(3),
-                                "name": getConfig("COIN_DENOM")
+                                //@ts-ignore
+                                "name": chains?.symbol
                             })}</Button>
                     </Stack>
                 </Grid>

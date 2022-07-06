@@ -18,7 +18,7 @@ import {useDialog} from "../../context/DialogContext/DialogContext";
 import DelegateDialog from "./Delegation/DelegateDialog";
 import RedelegateDialog from "./Delegation/RedelegateDialog";
 import UndelegateDialog from "./Delegation/UndelegateDialog";
-import {getConfig} from "../../services/network-config";
+import {useAppState} from "../../context/AppStateContext";
 
 const useStyles = makeStyles((theme: Theme) => ({
     tableHead: {
@@ -47,7 +47,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface TableProps {
     rows: Array<any>;
-    images: Array<any>;
     title?: String;
 }
 
@@ -93,8 +92,7 @@ interface EnhancedTableProps {
 
 function EnhancedTableHead(props: EnhancedTableProps) {
     const classes = useStyles();
-    const {order, orderBy, onRequestSort} =
-        props;
+    const {order, orderBy, onRequestSort} = props;
     const createSortHandler =
         (property: any) => (event: React.MouseEvent<unknown>) => {
             onRequestSort(event, property);
@@ -158,11 +156,16 @@ const DelegationButtonGroup = ({stakeAmount, rowData}) => {
 }
 
 export default function SummaryTable(props: TableProps) {
-    const {rows, images} = props;
+    const {rows} = props;
     const classes = useStyles();
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<any>('validator');
     const {t} = useTranslation();
+    const {
+        appState: {
+            chains
+        }
+    } = useAppState();
 
     const rewards = useAppSelector(state => state.accounts.rewards.result);
     const delegations = useAppSelector(state => state.accounts.delegations.result);
@@ -176,16 +179,12 @@ export default function SummaryTable(props: TableProps) {
         setOrderBy(property);
     };
 
-    const getImage = (id) => {
-        const image = images.filter((value) => value._id === id.toString());
-        //@ts-ignore
-        return <Avatar src={image[0]?.them[0]?.pictures?.primary?.url}></Avatar>
-    }
-
     const getStakeAmount = (row) => {
+        //@ts-ignore
+        const decimals = chains?.decimals | 6;
         let value = delegations.find((val) =>
             (val.delegation && val.delegation.validator_address) === row.operator_address);
-        return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** getConfig("COIN_DECIMALS") : 0;
+        return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** decimals : 0;
     }
 
     const handleStakeAmount = (row) => {
@@ -196,9 +195,11 @@ export default function SummaryTable(props: TableProps) {
     }
 
     const handlePendingRewards = (row) => {
+        //@ts-ignore
+        const decimals = chains?.decimals | 6;
         let value = rewards && rewards.rewards?.find((val) =>
             (val.validator_address) === row.operator_address);
-        value = value && value.reward ? value.reward[0].amount / 10 ** getConfig("COIN_DECIMALS") : 0;
+        value = value && value.reward ? value.reward[0].amount / 10 ** decimals : 0;
         return formatCount(value);
     }
 
@@ -234,8 +235,9 @@ export default function SummaryTable(props: TableProps) {
                                             className={classes.tableCell}
                                         >
                                             <Stack direction="row" spacing={1}>
-                                                {   //@ts-ignore
-                                                    getImage(row?.description?.identity)
+                                                {
+                                                    //@ts-ignore
+                                                    <Avatar src={row?.keybase_image}/>
                                                 }
                                                 <Typography style={{
                                                     justifyContent: "center",

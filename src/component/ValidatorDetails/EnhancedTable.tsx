@@ -28,7 +28,7 @@ import {useDialog} from "../../context/DialogContext/DialogContext";
 import DelegateDialog from "./Delegation/DelegateDialog";
 import RedelegateDialog from "./Delegation/RedelegateDialog";
 import UndelegateDialog from "./Delegation/UndelegateDialog";
-import {getConfig} from "../../services/network-config";
+import {useAppState} from "../../context/AppStateContext";
 
 const useStyles = makeStyles((theme: Theme) => ({
     tableHead: {
@@ -59,7 +59,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface TableProps {
     rows: Array<any>;
-    images: Array<any>;
     title?: String;
     buttonTitle?: String;
     onClickToolbarButton?: Function;
@@ -80,6 +79,12 @@ export interface EnhancedTableProps {
 }
 
 const headCells: readonly HeadCell[] = [
+    {
+        id: 'rank',
+        numeric: true,
+        disablePadding: false,
+        label: 'Rank',
+    },
     {
         id: 'validator',
         numeric: false,
@@ -229,30 +234,27 @@ const DelegationButtonGroup = ({stakeAmount, rowData}) => {
 }
 
 export default function EnhancedTable(props: TableProps) {
-    const {images, rows, title, buttonTitle, onClickToolbarButton, search} = props;
+    const {rows, title, buttonTitle, onClickToolbarButton, search} = props;
     const classes = useStyles();
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<any>('validator');
     const [filterValue, setFilterValue] = useState<string>("");
     const [data, setData] = useState<any>([]);
     const {t} = useTranslation();
+    const {
+        appState: {
+            chains
+        }
+    } = useAppState();
 
     const delegations = useAppSelector(state => state.accounts.delegations.result);
 
-    const getImage = (id) => {
-        const image = images.filter((value) => value._id === id?.toString());
-        //@ts-ignore
-        return <Avatar src={id && image &&
-            image.length > 0 &&
-            image[0]?.them &&
-            image[0]?.them[0]?.pictures?.primary?.url}></Avatar>
-
-    }
-
     const getStakeAmount = (row) => {
+        //@ts-ignore
+        const decimals = chains?.decimals | 6;
         let value = delegations.find((val) =>
             (val.delegation && val.delegation.validator_address) === row.operator_address);
-        return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** getConfig("COIN_DECIMALS") : 0;
+        return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** decimals : 0;
     }
 
     const handleStakeAmount = (row) => {
@@ -283,26 +285,27 @@ export default function EnhancedTable(props: TableProps) {
         setOrderBy(property);
     };
 
-    const getStatus = (val) => {
+    const getStatus = (row) => {
         let label: string;
         let icon: JSX.Element;
-        switch (val) {
-            case 1:
-                label = t("inactive");
-                icon = <InactiveIcon/>
-                break;
-            case 2:
-                label = t("unbounding");
-                icon = <UnboundingIcon/>
-                break;
-            case 3:
-                label = t("active");
-                icon = <ActiveIcon/>
-                break;
-            default:
-                label = t("jailed");
-                icon = <JailedIcon/>
-                break;
+        if (row.jailed) {
+            label = t("jailed");
+            icon = <JailedIcon/>
+        } else {
+            switch (row.status) {
+                case "BOND_STATUS_UNBONDED":
+                    label = t("inactive");
+                    icon = <InactiveIcon/>
+                    break;
+                case "BOND_STATUS_BONDED":
+                    label = t("active");
+                    icon = <ActiveIcon/>
+                    break;
+                default:
+                    label = t("unbounding");
+                    icon = <UnboundingIcon/>
+                    break;
+            }
         }
         return <Chip label={label} variant="filled" icon={icon}/>;
     }
@@ -334,8 +337,12 @@ export default function EnhancedTable(props: TableProps) {
                                         hover
                                         tabIndex={-1}
                                         //@ts-ignore
-                                        key={row?.description?.moniker}
+                                        key={row?.description?.moniker + row?.rank}
                                     >
+                                        <TableCell
+                                            className={classes.tableCell}>
+                                            {row?.rank}
+                                        </TableCell>
                                         <TableCell
                                             id={labelId}
                                             scope="row"
@@ -344,7 +351,7 @@ export default function EnhancedTable(props: TableProps) {
                                         >
                                             <Stack direction="row" spacing={1}>
                                                 {   //@ts-ignore
-                                                    getImage(row?.description?.identity)
+                                                    <Avatar src={row?.keybase_image}/>
                                                 }
                                                 <Typography style={{
                                                     justifyContent: "center",
@@ -356,12 +363,13 @@ export default function EnhancedTable(props: TableProps) {
                                         </TableCell>
                                         <TableCell
                                             className={classes.tableCell}>
-                                            {getStatus(row.status)}
+                                            {getStatus(row)}
                                         </TableCell>
                                         <TableCell align="center"
                                                    className={classes.tableCell}>
                                             {
-                                                formatCount(parseFloat((Number(row.tokens) / (10 ** getConfig("COIN_DECIMALS"))).toFixed(1)))
+                                                //@ts-ignore
+                                                formatCount(parseFloat((Number(row.tokens) / (10 ** (chains?.decimal | 6))).toFixed(1)))
                                             }
                                         </TableCell>
                                         <TableCell align="center"
@@ -385,7 +393,7 @@ export default function EnhancedTable(props: TableProps) {
                             })}
                         {data.length <= 0 && (
                             <TableRow>
-                                <TableCell colSpan={6} align="center"
+                                <TableCell colSpan={7} align="center"
                                            className={classes.emptyCell}>No Data Found</TableCell>
                             </TableRow>
                         )}
