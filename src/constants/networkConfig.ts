@@ -14,7 +14,7 @@ type NetworkConfig = {
 
 const getSubdomain = () => {
     let subdomain = window.location.hostname.split(".goatlabs.zone")[0];
-    if (subdomain === "localhost")
+    if (!window.location.hostname.includes(".goatlabs.zone"))
         subdomain = "chihuahua";
     return subdomain;
 }
