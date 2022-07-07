@@ -5,7 +5,7 @@ import {Theme} from "@mui/material/styles";
 import {useTranslation} from "react-i18next";
 import {makeStyles} from "@mui/styles";
 import {
-    alpha,
+    alpha, Avatar,
     Box,
     Button,
     Drawer,
@@ -173,11 +173,16 @@ export default function SideBar(props: SideBarProps) {
                     ))}
                 </List>
                 <Stack direction="column">
-                    <Stack direction="row" justifyContent="space-between" mb={1.5}>
-                        <Typography variant={"body2"}>{
-                            //@ts-ignore
-                            chains?.symbol?.toUpperCase()
-                        }</Typography>
+                    <Stack direction="row" justifyContent="space-between" alignItems={"center"} mb={1.5}>
+                        <Stack direction="row" alignItems={"center"} spacing={0.5}>
+                            {//@ts-ignore
+                                chains?.image && <Avatar src={chains?.image} sx={{ width: 24, height: 24 }}/>
+                            }
+                            <Typography variant={"body2"}>{
+                                //@ts-ignore
+                                chains?.symbol?.toUpperCase()
+                            }</Typography>
+                        </Stack>
                         <Typography variant={"body2"} color={"secondary"}>${currentPrice}</Typography>
                     </Stack>
                     <CopyAddressButton address={address}/>

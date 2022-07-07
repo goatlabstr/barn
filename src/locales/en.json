@@ -29,6 +29,7 @@
     "dashboard": "Dashboard",
     "stake": "Stake",
     "governance": "Governance",
+    "networks": "Networks",
     "coingecko": "Price Data by Coingecko"
   },
   "claimReward": "Claim Reward: {{value}} {{name}}",
