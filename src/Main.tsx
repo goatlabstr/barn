@@ -12,7 +12,8 @@ import Governance from "./pages/Governance";
 import {
     AccountBalanceRounded as DashboardIcon,
     HowToVoteRounded as GovernanceIcon,
-    MonetizationOnRounded as StakeIcon
+    MonetizationOnRounded as StakeIcon,
+    Flare as NetworksIcon
 } from "@mui/icons-material";
 import {useGlobalPreloader} from "./context/GlobalPreloaderProvider";
 import {useAppDispatch, useAppSelector} from "./customHooks/hook";
@@ -23,11 +24,13 @@ import {decode, encode} from "js-base64";
 import CoinGecko from "./services/axios/coingecko";
 import VotingDetails from "./component/GovernanceDetails/VotingDetails";
 import Common from "./services/axios/common";
+import SupportedNetworks from "./pages/SupportedNetworks";
 
 const menuItems = (t) => [
     {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
     {key: "stake", path: "/stake", title: t("menu.stake"), icon: <StakeIcon/>},
-    {key: "governance", path: "/governance", title: t("menu.governance"), icon: <GovernanceIcon/>}
+    {key: "governance", path: "/governance", title: t("menu.governance"), icon: <GovernanceIcon/>},
+    {key: "networks", path: "/networks", title: t("menu.networks"), icon: <NetworksIcon/>}
 ];
 
 function Main() {
@@ -217,6 +220,7 @@ function Main() {
                     <Route path="/stake" element={<Stake/>}/>
                     <Route path="/governance" element={<Governance/>}/>
                     <Route path="/governance/:id" element={<VotingDetails/>}/>
+                    <Route path="/networks" element={<SupportedNetworks />}/>
                     <Route path="*" element={<Dashboard/>}/>
                 </Routes>
             </Box>

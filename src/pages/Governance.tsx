@@ -6,8 +6,6 @@ import {GeneralConstants} from "../constants/general";
 import {useTranslation} from "react-i18next";
 import ProposalCard from "../component/ProposalCard/ProposalCard";
 import {useAppSelector} from "../customHooks/hook";
-import VotingDialog from "../component/GovernanceDetails/VotingDetails";
-import {useDialog} from "../context/DialogContext/DialogContext";
 import {useNavigate} from "react-router-dom";
 
 interface TabPanelProps {

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useState} from 'react';
-import {Button, CircularProgress, Grid, Stack, Typography} from "@mui/material";
+import {Avatar, Button, CircularProgress, Grid, Stack, Typography} from "@mui/material";
 import DetailViewer from "./DetailViewer";
 import {
     AccountBalanceWalletRounded,
@@ -168,9 +168,14 @@ export default function Index() {
             <Grid container rowSpacing={3}>
                 <Grid item xs={12} lg={12}>
                     <Stack direction="row" justifyContent="space-between">
-                        <Typography
-                            //@ts-ignore
-                            variant={"h6"}>{t("dashboard.networkBalances", {"name": chains?.pretty_name})}</Typography>
+                        <Stack direction="row" alignItems={"center"} spacing={1}>
+                            {//@ts-ignore
+                                chains?.image && <Avatar src={chains?.image}/>
+                            }
+                            <Typography
+                                //@ts-ignore
+                                variant={"h6"}>{t("dashboard.networkBalances", {"name": chains?.pretty_name})}</Typography>
+                        </Stack>
                         <Button variant="outlined"
                                 color="secondary"
                                 disabled={inTxProgress || handleRewards() <= 0}
