@@ -33,6 +33,7 @@
     "coingecko": "Price Data by Coingecko"
   },
   "claimReward": "Claim Reward: {{value}} {{name}}",
+  "claimAll": "Claim All",
   "dashboard": {
     "viewAll": "View All",
     "activeProposal": "Active Proposal",

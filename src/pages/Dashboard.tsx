@@ -36,9 +36,7 @@ function Index() {
     } = useAppState();
 
     const delegatedValidatorList = useAppSelector(state => state.stake.delegatedValidators.list);
-    const validatorImages = useAppSelector(state => state.stake.validators.images);
     const proposals = useAppSelector(state => state.governance._.list);
-    const proposalDetails = useAppSelector(state => state.governance.proposalDetails.value);
 
     const getDelegatedValidators = () => {
         return activeValidators.filter(valid =>
@@ -95,7 +93,7 @@ function Index() {
                                         color="secondary"
                                         onClick={() => navigate("/governance")}>{t("dashboard.viewAll")}</Button>
                             </Stack>
-                            <ProposalList data={activeProposals} details={proposalDetails}/>
+                            <ProposalList data={activeProposals}/>
                         </Box>
                     </Box>
                 </Grid>

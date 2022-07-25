@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useState} from 'react';
-import {Avatar, Button, CircularProgress, Grid, Stack, Typography} from "@mui/material";
+import {Avatar, Box, Button, CircularProgress, Grid, Stack, TextField, Typography} from "@mui/material";
 import DetailViewer from "./DetailViewer";
 import {
     AccountBalanceWalletRounded,
@@ -103,7 +103,7 @@ export default function Index() {
         rewards[0].reward.length && rewards[0].reward[0] && rewards[0].reward[0].amount
             ? rewards[0].reward[0].amount / 10 ** decimals : 0;
         //@ts-ignore
-        getAllBalances(chains?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
+        getAllBalances(chains?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.fetchRewards(address));
         dispatch(allActions.setTokens(tokens));
@@ -183,30 +183,36 @@ export default function Index() {
                                 size="small"
                                 sx={{height: "fit-content"}}>
                             {inTxProgress && <CircularProgress color="inherit" size={20} sx={{mr: 1}}/>}
-                            {t("claimReward", {
-                                "value": handleRewards().toFixed(3),
-                                //@ts-ignore
-                                "name": chains?.symbol
-                            })}</Button>
+                            <Box sx={{display: {xs: "none", md: 'block'}}}>
+                                {t("claimReward", {
+                                    "value": handleRewards().toFixed(3),
+                                    //@ts-ignore
+                                    "name": chains?.symbol
+                                })}
+                            </Box>
+                            <Box sx={{display: {xs: "block", md: 'none'}}}>
+                                {t("claimAll")}
+                            </Box>
+                        </Button>
                     </Stack>
                 </Grid>
-                <Grid item lg={2}>
+                <Grid item xs={6} lg={2}>
                     <DetailViewer title={t("dashboard.totalBalances")} amount={handleTotalBalance()} prefix={"$"}
                                   icon={<AccountBalanceWalletRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
-                <Grid item lg={3}>
+                <Grid item xs={6} lg={3}>
                     <DetailViewer title={t("dashboard.availableAmount")} amount={handleBalance().toFixed(3)}
                                   icon={<CurrencyExchangeRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
-                <Grid item lg={3}>
+                <Grid item xs={6} lg={3}>
                     <DetailViewer title={t("dashboard.stakedAmount")} amount={handleStakedAmount().toFixed(3)}
                                   icon={<AssuredWorkloadRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
-                <Grid item lg={2}>
+                <Grid item xs={6} lg={2}>
                     <DetailViewer title={t("dashboard.rewards")} amount={handleRewards().toFixed(3)}
                                   icon={<StarsRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
-                <Grid item lg={2}>
+                <Grid item xs={6} lg={2}>
                     <DetailViewer title={t("dashboard.unstakedAmount")} amount={handleUnstakedAmount().toFixed(3)}
                                   icon={<HourglassTopRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>

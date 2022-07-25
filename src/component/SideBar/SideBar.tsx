@@ -80,16 +80,17 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 type SideBarProps = {
-    menuItems: any
+    menuItems: any,
+    mobileOpen: boolean,
+    handleDrawerToggle: () => void
 }
 
 export default function SideBar(props: SideBarProps) {
-    const {menuItems} = props;
+    const {menuItems, handleDrawerToggle, mobileOpen} = props;
     const classes = useStyles();
     const location = useLocation();
     const {t} = useTranslation();
     const navigate = useNavigate();
-    const [mobileOpen, setMobileOpen] = React.useState(false);
     const {activate, passivate} = useGlobalPreloader();
     const dispatch = useAppDispatch();
     const {enqueueSnackbar} = useSnackbar();
@@ -101,10 +102,6 @@ export default function SideBar(props: SideBarProps) {
     } = useAppState();
 
     const address = useAppSelector(state => state.accounts.address.value);
-
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
 
     const isActivePath = (pathname) => {
         return location.pathname === pathname;
@@ -176,7 +173,7 @@ export default function SideBar(props: SideBarProps) {
                     <Stack direction="row" justifyContent="space-between" alignItems={"center"} mb={1.5}>
                         <Stack direction="row" alignItems={"center"} spacing={0.5}>
                             {//@ts-ignore
-                                chains?.image && <Avatar src={chains?.image} sx={{ width: 24, height: 24 }}/>
+                                chains?.image && <Avatar src={chains?.image} sx={{width: 24, height: 24}}/>
                             }
                             <Typography variant={"body2"}>{
                                 //@ts-ignore
@@ -236,15 +233,6 @@ export default function SideBar(props: SideBarProps) {
 
     return (
         <div>
-            <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="start"
-                onClick={handleDrawerToggle}
-                sx={{mr: 2, display: {md: 'none'}, position: "absolute", left: 10, size: "large"}}
-            >
-                <MenuIcon fontSize="large"/>
-            </IconButton>
             <Box
                 component="nav"
                 sx={{width: {md: drawerWidth}, flexShrink: {xs: 0}}}

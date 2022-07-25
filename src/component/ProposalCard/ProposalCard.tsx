@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 type ProposalCardType = {
     id: number,
     title: string,
-    proposer?: string,
     description: string,
     startTime: string,
     endingTime: string,
@@ -44,7 +43,7 @@ export const tally = (value, sum) => {
 };
 
 export default function ProposalCard(props: ProposalCardType) {
-    const {id, title, proposer, description, startTime, endingTime, proposal, onClick} = props;
+    const {id, title, description, startTime, endingTime, proposal, onClick} = props;
     const theme = useTheme();
     const {t} = useTranslation();
     const classes = useStyles();
@@ -131,20 +130,6 @@ export default function ProposalCard(props: ProposalCardType) {
                         >
                             {description && description.length >= 200 ? description.slice(0, 200) + "..." : description}
                         </Typography>
-                        {proposer !== undefined && <Stack direction="row" spacing={1} mb={1}>
-                            <Typography
-                                sx={{display: 'inline', fontSize: 12}}
-                                color="secondary"
-                            >
-                                {t("governance.proposer")}
-                            </Typography>
-                            <Typography
-                                sx={{display: 'inline', fontSize: 12}}
-                                color="text.primary"
-                            >
-                                {proposer}
-                            </Typography>
-                        </Stack>}
                         <Stack direction="row" sx={{justifyContent: "space-between"}}>
                             <Stack direction="column">
                                 {getVoteTypo('yes', proposal)}
