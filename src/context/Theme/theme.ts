@@ -81,7 +81,7 @@ const theme = {
                 fontSize: 25,
             },
             [rawTheme.breakpoints.down('sm')]: {
-                fontSize: 16,
+                fontSize: 20,
             },
         },
         h3: {

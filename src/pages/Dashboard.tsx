@@ -11,6 +11,7 @@ import ProposalList from "../component/GovernanceDetails/ProposalList";
 import {useTranslation} from "react-i18next";
 import {useAppSelector} from "../customHooks/hook";
 import {useAppState} from "../context/AppStateContext";
+import MobileTable from "../component/ValidatorDetails/Mobile/MobileTable";
 
 const useStyles = makeStyles((theme: Theme) => ({
     centerBox: {
@@ -36,9 +37,7 @@ function Index() {
     } = useAppState();
 
     const delegatedValidatorList = useAppSelector(state => state.stake.delegatedValidators.list);
-    const validatorImages = useAppSelector(state => state.stake.validators.images);
     const proposals = useAppSelector(state => state.governance._.list);
-    const proposalDetails = useAppSelector(state => state.governance.proposalDetails.value);
 
     const getDelegatedValidators = () => {
         return activeValidators.filter(valid =>
@@ -53,7 +52,7 @@ function Index() {
     return (
         <React.Fragment>
             <Grid container>
-                <Grid item xs={12} lg={12}>
+                <Grid item xs={12} xl={12}>
                     <Box sx={{
                         width: "100%",
                         height: "auto",
@@ -66,24 +65,35 @@ function Index() {
                         </Box>
                     </Box>
                 </Grid>
-                <Grid item xs={12} lg={8}>
+                <Grid item xs={12} xl={9}>
                     <Box sx={{
                         width: "100%",
                         p: 3
                     }} className={classes.centerBox}>
                         <Box className={classes.centerInnerBox}>
-                            <EnhancedTable rows={getDelegatedValidators()}
-                                           title={t("dashboard.stakedValidators")}
-                                           buttonTitle={t("dashboard.viewAll")}
-                                           onClickToolbarButton={() => {
-                                               navigate("/stake")
-                                           }}
-                                           search={false}
-                            />
+                            <Box sx={{display: {xs: "none", md: 'block'}}}>
+                                <EnhancedTable rows={getDelegatedValidators()}
+                                               title={t("dashboard.stakedValidators")}
+                                               buttonTitle={t("dashboard.viewAll")}
+                                               onClickToolbarButton={() => {
+                                                   navigate("/stake")
+                                               }}
+                                               search={false}
+                                />
+                            </Box>
+                            <Box sx={{display: {xs: "block", md: 'none'}}}>
+                                <MobileTable rows={getDelegatedValidators()}
+                                             title={t("dashboard.stakedValidators")}
+                                             buttonTitle={t("dashboard.viewAll")}
+                                             onClickToolbarButton={() => {
+                                                 navigate("/stake")
+                                             }}
+                                />
+                            </Box>
                         </Box>
                     </Box>
                 </Grid>
-                <Grid item xs={12} lg={4}>
+                <Grid item xs={12} xl={3}>
                     <Box sx={{
                         width: "100%",
                         p: 3
@@ -95,7 +105,7 @@ function Index() {
                                         color="secondary"
                                         onClick={() => navigate("/governance")}>{t("dashboard.viewAll")}</Button>
                             </Stack>
-                            <ProposalList data={activeProposals} details={proposalDetails}/>
+                            <ProposalList data={activeProposals}/>
                         </Box>
                     </Box>
                 </Grid>

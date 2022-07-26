@@ -9,29 +9,11 @@ import {useNavigate} from "react-router-dom";
 
 type ProposalProps = {
     data: any;
-    details: any;
 }
 
 export default function ProposalList(props: ProposalProps) {
-    const {data, details} = props;
-    const theme = useTheme();
+    const {data} = props;
     const {t} = useTranslation();
-
-    const getProposer = (proposal, proposalDetails) => {
-        let proposer = proposal.proposer;
-        proposalDetails && Object.keys(proposalDetails).length &&
-        Object.keys(proposalDetails).filter((key) => {
-            if (key === proposal.id) {
-                if (proposalDetails[key] &&
-                    proposalDetails[key][0] &&
-                    proposalDetails[key][0]?.tx?.value?.msg[0]?.value?.proposer) {
-                    proposer = proposalDetails[key][0]?.tx?.value?.msg[0]?.value?.proposer;
-                }
-            }
-            return null;
-        });
-        return proposer;
-    }
 
     const ProposalContent = ({data}) => {
         const navigate = useNavigate();
@@ -43,7 +25,6 @@ export default function ProposalList(props: ProposalProps) {
                         <ProposalCard
                             id={proposal?.id}
                             title={proposal?.content?.value?.title}
-                            proposer={(getProposer(proposal, details))}
                             description={proposal?.content?.value?.description}
                             startTime={proposal?.voting_start_time}
                             endingTime={proposal?.voting_end_time}

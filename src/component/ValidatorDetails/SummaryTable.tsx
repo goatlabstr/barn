@@ -75,13 +75,7 @@ const headCells: readonly HeadCell[] = [
         numeric: true,
         disablePadding: false,
         label: 'PendingRewards',
-    },
-    {
-        id: 'action',
-        numeric: false,
-        disablePadding: false,
-        label: 'Action',
-    },
+    }
 ];
 
 interface EnhancedTableProps {
@@ -135,24 +129,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             </TableRow>
         </TableHead>
     );
-}
-
-const DelegationButtonGroup = ({stakeAmount, rowData}) => {
-    const {openDialog, closeDialog} = useDialog();
-    const {t} = useTranslation();
-
-    if (typeof stakeAmount !== "number" || stakeAmount <= 0)
-        return <><ButtonGroup variant="text" size="small"><Button color="success" onClick={() => openDialog(
-            <DelegateDialog initialValidator={rowData}/>, t("delegateTitle"))}>Delegate</Button></ButtonGroup></>
-    else
-        return <><ButtonGroup variant="text" size="small">
-            <Button color="warning" onClick={() => openDialog(
-                <RedelegateDialog initialValidator={rowData}/>, t("redelegateTitle"))}>Redelegate</Button>
-            <Button color="success" onClick={() => openDialog(
-                <DelegateDialog initialValidator={rowData}/>, t("delegateTitle"))}>Delegate</Button>
-            <Button color="error" onClick={() => openDialog(
-                <UndelegateDialog initialValidator={rowData}/>, t("undelegateTitle"))}>Undelegate</Button>
-        </ButtonGroup></>
 }
 
 export default function SummaryTable(props: TableProps) {
@@ -251,10 +227,6 @@ export default function SummaryTable(props: TableProps) {
                                                    className={classes.tableActiveCell}>{handleStakeAmount(row)}</TableCell>
                                         <TableCell align="center"
                                                    className={classes.tableCell}>{handlePendingRewards(row)}</TableCell>
-                                        <TableCell align="center"
-                                                   className={classes.tableCell}>{<DelegationButtonGroup
-                                            stakeAmount={getStakeAmount(row)}
-                                            rowData={row}/>}</TableCell>
                                     </TableRow>
                                 );
                             })}

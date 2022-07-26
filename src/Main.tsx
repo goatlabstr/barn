@@ -6,7 +6,7 @@ import {useTranslation} from "react-i18next";
 import {useAppState} from "./context/AppStateContext";
 
 import SideBar from "./component/SideBar/SideBar";
-import {Box} from "@mui/material";
+import {alpha, AppBar, Box, Container, IconButton, Toolbar, Typography} from "@mui/material";
 import Stake from "./pages/Stake";
 import Governance from "./pages/Governance";
 import {
@@ -25,6 +25,10 @@ import CoinGecko from "./services/axios/coingecko";
 import VotingDetails from "./component/GovernanceDetails/VotingDetails";
 import Common from "./services/axios/common";
 import SupportedNetworks from "./pages/SupportedNetworks";
+import logo from "./logo.svg";
+import MenuIcon from "@mui/icons-material/Menu";
+import {makeStyles, useTheme} from "@mui/styles";
+import {Theme} from "@mui/material/styles";
 
 const menuItems = (t) => [
     {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
@@ -37,6 +41,8 @@ function Main() {
     const {i18n} = useTranslation();
     const location = useLocation();
     const {activate, passivate} = useGlobalPreloader();
+    const [mobileOpen, setMobileOpen] = React.useState(false);
+    const theme = useTheme();
     const dispatch = useAppDispatch();
     const {enqueueSnackbar} = useSnackbar();
     const {
@@ -48,6 +54,10 @@ function Main() {
         setActiveValidators,
         setInactiveValidators
     } = useAppState();
+
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
+    };
 
     useEffect(() => {
         activate();
@@ -210,19 +220,61 @@ function Main() {
 
     return (
         <Box sx={{display: 'flex'}}>
-            <SideBar menuItems={menuItems(i18n.t)}/>
-            <Box
-                component="main"
-                sx={{flexGrow: 1, p: 0}}
-            >
-                <Routes>
-                    <Route path="/" element={<Dashboard/>}/>
-                    <Route path="/stake" element={<Stake/>}/>
-                    <Route path="/governance" element={<Governance/>}/>
-                    <Route path="/governance/:id" element={<VotingDetails/>}/>
-                    <Route path="/networks" element={<SupportedNetworks />}/>
-                    <Route path="*" element={<Dashboard/>}/>
-                </Routes>
+            <SideBar menuItems={menuItems(i18n.t)} handleDrawerToggle={() => handleDrawerToggle()}
+                     mobileOpen={mobileOpen}/>
+            <Box sx={{flexGrow: 1}}>
+                <Box sx={{
+                    flexGrow: 1,
+                    display: {md: 'none'}
+                }}>
+                    <AppBar position="fixed" sx={{
+                        pt: 1,
+                        pb: 1,
+                        pl: 1,
+                        //@ts-ignore
+                        bgcolor: "transparent"
+                    }} enableColorOnDark>
+                        <Toolbar sx={{justifyContent: "space-between"}}>
+                            <Box sx={{display: "flex"}}>
+                                <img style={{
+                                    width: 48,
+                                    filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
+                                }} src={logo}/>
+                                <Typography variant={"h4"} sx={{
+                                    ml: "7px",
+                                    mt: "11px",
+                                    filter: "drop-shadow(2px 3px 2px rgb(0 0 0 / 0.4))"
+                                }}>GOATLABS</Typography>
+                            </Box>
+                            <IconButton
+                                color="inherit"
+                                aria-label="open drawer"
+                                onClick={handleDrawerToggle}
+                                sx={{
+                                    mr: 2,
+                                    display: {md: 'none'},
+                                    size: "large",
+                                    filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
+                                }}
+                            >
+                                <MenuIcon fontSize="large"/>
+                            </IconButton>
+                        </Toolbar>
+                    </AppBar>
+                </Box>
+                <Box
+                    component="main"
+                    sx={{flexGrow: 1, p: 0, pt: {xs: 9, md: 0}}}
+                >
+                    <Routes>
+                        <Route path="/" element={<Dashboard/>}/>
+                        <Route path="/stake" element={<Stake/>}/>
+                        <Route path="/governance" element={<Governance/>}/>
+                        <Route path="/governance/:id" element={<VotingDetails/>}/>
+                        <Route path="/networks" element={<SupportedNetworks/>}/>
+                        <Route path="*" element={<Dashboard/>}/>
+                    </Routes>
+                </Box>
             </Box>
         </Box>
     );

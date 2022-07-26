@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button, CircularProgress, Grid, IconButton, Stack, Typography} from "@mui/material";
+import {Box, Button, CircularProgress, Grid, IconButton, Stack, Typography} from "@mui/material";
 import SummaryTable from "./SummaryTable";
 import {useTranslation} from "react-i18next";
 import {useAppDispatch, useAppSelector} from "../../customHooks/hook";
@@ -54,7 +54,7 @@ function Index(props) {
         rewards[0].reward.length && rewards[0].reward[0] && rewards[0].reward[0].amount
             ? rewards[0].reward[0].amount / 10 ** decimals : 0;
         //@ts-ignore
-        getAllBalances(chains?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
+        getAllBalances(chains?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.fetchRewards(address));
         dispatch(allActions.setTokens(tokens));
@@ -136,11 +136,17 @@ function Index(props) {
                                 size="small"
                                 sx={{height: "fit-content"}}>
                             {inTxProgress && <CircularProgress color="inherit" size={20} sx={{mr: 1}}/>}
-                            {t("claimReward", {
-                                "value": handleRewards().toFixed(3),
-                                //@ts-ignore
-                                "name": chains?.denom
-                            })}</Button>
+                            <Box sx={{display: {xs: "none", md: 'block'}}}>
+                                {t("claimReward", {
+                                    "value": handleRewards().toFixed(3),
+                                    //@ts-ignore
+                                    "name": chains?.denom
+                                })}
+                            </Box>
+                            <Box sx={{display: {xs: "block", md: 'none'}}}>
+                                {t("claimAll")}
+                            </Box>
+                        </Button>
                     </Stack>
                 </Grid>
                 <Grid item xs={12}>

@@ -93,29 +93,11 @@ function Index() {
     const {t} = useTranslation();
     const [value, setValue] = React.useState(3);
 
-
     const proposals = useAppSelector(state => state.governance._.list);
-    const proposalDetails = useAppSelector(state => state.governance.proposalDetails.value);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
-
-    const getProposer = (proposal, proposalDetails) => {
-        let proposer = proposal.proposer;
-        proposalDetails && Object.keys(proposalDetails).length &&
-        Object.keys(proposalDetails).filter((key) => {
-            if (key === proposal.id) {
-                if (proposalDetails[key] &&
-                    proposalDetails[key][0] &&
-                    proposalDetails[key][0]?.tx?.value?.msg[0]?.value?.proposer) {
-                    proposer = proposalDetails[key][0]?.tx?.value?.msg[0]?.value?.proposer;
-                }
-            }
-            return null;
-        });
-        return proposer;
-    }
 
     const ActiveProposalContent = ({proposals}) => {
         const data = proposals.filter(proposal => proposal.status === 2).reverse();
@@ -141,7 +123,6 @@ function Index() {
                         <ProposalCard
                             id={proposal?.id}
                             title={proposal?.content?.value?.title}
-                            proposer={(getProposer(proposal, proposalDetails))}
                             description={proposal?.content?.value?.description}
                             startTime={proposal?.voting_start_time}
                             endingTime={proposal?.voting_end_time}
@@ -158,45 +139,41 @@ function Index() {
 
     return (
         <React.Fragment>
-            <Grid container>
-                <Grid item xs={12}>
-                    <Box sx={{
-                        width: "100%",
-                        p: 2
-                    }} className={classes.centerBox}>
-                        <Box className={classes.centerInnerBox}>
-                            <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
-                                <StyledTabs value={value} onChange={handleChange} aria-label="lab API tabs example">
-                                    <StyledTab label={t("governance.active")}/>
-                                    <StyledTab label={t("governance.passed")}/>
-                                    <StyledTab label={t("governance.rejected")}/>
-                                    <StyledTab label={t("governance.all")}/>
-                                </StyledTabs>
-                            </Box>
-                            <TabPanel value={value} index={0}>
-                                <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
-                                    <ActiveProposalContent proposals={proposals} />
-                                </Grid>
-                            </TabPanel>
-                            <TabPanel value={value} index={1}>
-                                <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
-                                    <PassedProposalContent proposals={proposals} />
-                                </Grid>
-                            </TabPanel>
-                            <TabPanel value={value} index={2}>
-                                <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
-                                    <RejectedProposalContent proposals={proposals} />
-                                </Grid>
-                            </TabPanel>
-                            <TabPanel value={value} index={3}>
-                                <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
-                                    <Content data={([...proposals].reverse())} />
-                                </Grid>
-                            </TabPanel>
-                        </Box>
+            <Box sx={{
+                width: "100%",
+                pt: 2
+            }} className={classes.centerBox}>
+                <Box className={classes.centerInnerBox}>
+                    <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
+                        <StyledTabs value={value} onChange={handleChange}>
+                            <StyledTab label={t("governance.active")}/>
+                            <StyledTab label={t("governance.passed")}/>
+                            <StyledTab label={t("governance.rejected")}/>
+                            <StyledTab label={t("governance.all")}/>
+                        </StyledTabs>
                     </Box>
-                </Grid>
-            </Grid>
+                    <TabPanel value={value} index={0}>
+                        <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
+                            <ActiveProposalContent proposals={proposals} />
+                        </Grid>
+                    </TabPanel>
+                    <TabPanel value={value} index={1}>
+                        <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
+                            <PassedProposalContent proposals={proposals} />
+                        </Grid>
+                    </TabPanel>
+                    <TabPanel value={value} index={2}>
+                        <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
+                            <RejectedProposalContent proposals={proposals} />
+                        </Grid>
+                    </TabPanel>
+                    <TabPanel value={value} index={3}>
+                        <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
+                            <Content data={([...proposals].reverse())} />
+                        </Grid>
+                    </TabPanel>
+                </Box>
+            </Box>
         </React.Fragment>
     );
 }

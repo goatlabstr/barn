@@ -23,6 +23,7 @@
   "no": "No",
   "no_with_veto": "No With Veto",
   "abstain": "Abstain",
+  "viewStakedValidators": "View staked validators",
   "menu": {
     "connect": "Connect",
     "disconnect": "Disconnect",
@@ -33,6 +34,7 @@
     "coingecko": "Price Data by Coingecko"
   },
   "claimReward": "Claim Reward: {{value}} {{name}}",
+  "claimAll": "Claim All",
   "dashboard": {
     "viewAll": "View All",
     "activeProposal": "Active Proposal",
