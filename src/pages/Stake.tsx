@@ -9,6 +9,7 @@ import {Done as ActiveIcon} from "@mui/icons-material";
 import {useTranslation} from "react-i18next";
 import {useAppSelector} from "../customHooks/hook";
 import {useAppState} from "../context/AppStateContext";
+import MobileTable from "../component/ValidatorDetails/Mobile/MobileTable";
 
 const useStyles = makeStyles((theme: Theme) => ({
     centerBox: {
@@ -42,25 +43,32 @@ function Index() {
         <React.Fragment>
             <Grid container>
                 {delegatedValidatorList.length > 0 && <Grid item xs={12}>
-                    <Box sx={{
-                        width: "100%",
-                        //@ts-ignore
-                        backgroundColor: theme.palette.background.paper,
-                        p: 3
-                    }} className={classes.centerBox}>
-                        <Box className={classes.centerInnerBox}>
-                            <StakingDetails rows={getDelegatedValidators()}/>
+                    <Box sx={{display: {xs: "none", md: 'block'}}}>
+                        <Box sx={{
+                            width: "100%",
+                            //@ts-ignore
+                            backgroundColor: theme.palette.background.paper,
+                            p: 3
+                        }} className={classes.centerBox}>
+                            <Box className={classes.centerInnerBox}>
+                                <StakingDetails rows={getDelegatedValidators()}/>
+                            </Box>
                         </Box>
                     </Box>
                 </Grid>}
-                <Grid item xs={12}>
-                    <Box sx={{
-                        width: "100%",
-                        p: 3
-                    }} className={classes.centerBox}>
-                        <Box className={classes.centerInnerBox}>
-                            <EnhancedTable rows={activeValidators} search title={t("staking.allValidators")}/>
+                <Grid item xs={12} sx={{p: 3}}>
+                    <Box sx={{display: {xs: "none", md: 'block'}}}>
+                        <Box sx={{
+                            width: "100%",
+                            p: 3
+                        }} className={classes.centerBox}>
+                            <Box className={classes.centerInnerBox}>
+                                <EnhancedTable rows={activeValidators} search title={t("staking.allValidators")}/>
+                            </Box>
                         </Box>
+                    </Box>
+                    <Box sx={{display: {xs: "block", md: 'none'}}}>
+                        <MobileTable rows={activeValidators} viewStakedValidators title={t("staking.allValidators")}/>
                     </Box>
                 </Grid>
             </Grid>

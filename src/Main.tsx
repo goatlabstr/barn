@@ -27,7 +27,7 @@ import Common from "./services/axios/common";
 import SupportedNetworks from "./pages/SupportedNetworks";
 import logo from "./logo.svg";
 import MenuIcon from "@mui/icons-material/Menu";
-import {makeStyles} from "@mui/styles";
+import {makeStyles, useTheme} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
 
 const menuItems = (t) => [
@@ -42,6 +42,7 @@ function Main() {
     const location = useLocation();
     const {activate, passivate} = useGlobalPreloader();
     const [mobileOpen, setMobileOpen] = React.useState(false);
+    const theme = useTheme();
     const dispatch = useAppDispatch();
     const {enqueueSnackbar} = useSnackbar();
     const {
@@ -222,8 +223,17 @@ function Main() {
             <SideBar menuItems={menuItems(i18n.t)} handleDrawerToggle={() => handleDrawerToggle()}
                      mobileOpen={mobileOpen}/>
             <Box sx={{flexGrow: 1}}>
-                <Box sx={{flexGrow: 1, display: {md: 'none'}}}>
-                    <AppBar position="static" sx={{pt: 1, pb: 1, pl: 1}} color="transparent">
+                <Box sx={{
+                    flexGrow: 1,
+                    display: {md: 'none'}
+                }}>
+                    <AppBar position="fixed" sx={{
+                        pt: 1,
+                        pb: 1,
+                        pl: 1,
+                        //@ts-ignore
+                        bgcolor: "transparent"
+                    }} enableColorOnDark>
                         <Toolbar sx={{justifyContent: "space-between"}}>
                             <Box sx={{display: "flex"}}>
                                 <img style={{
@@ -240,7 +250,12 @@ function Main() {
                                 color="inherit"
                                 aria-label="open drawer"
                                 onClick={handleDrawerToggle}
-                                sx={{mr: 2, display: {md: 'none'}, size: "large"}}
+                                sx={{
+                                    mr: 2,
+                                    display: {md: 'none'},
+                                    size: "large",
+                                    filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
+                                }}
                             >
                                 <MenuIcon fontSize="large"/>
                             </IconButton>
@@ -249,7 +264,7 @@ function Main() {
                 </Box>
                 <Box
                     component="main"
-                    sx={{flexGrow: 1, p: 0}}
+                    sx={{flexGrow: 1, p: 0, pt: {xs: 9, md: 0}}}
                 >
                     <Routes>
                         <Route path="/" element={<Dashboard/>}/>
