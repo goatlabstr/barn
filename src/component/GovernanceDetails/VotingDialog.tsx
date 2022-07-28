@@ -12,14 +12,14 @@ import {
 import {useSnackbar} from "notistack";
 import {useTranslation} from "react-i18next";
 import {makeStyles} from "@mui/styles";
-import {useDialog} from "../../context/DialogContext/DialogContext";
-import {useAppDispatch, useAppSelector} from "../../customHooks/hook";
-import {useGlobalPreloader} from "../../context/GlobalPreloaderProvider";
+import {useDialog} from "../../hooks/use-dialog/DialogContext";
+import {useAppDispatch, useAppSelector} from "../../hooks/hook";
+import {useGlobalPreloader} from "../../hooks/useGlobalPreloader";
 import {getAllBalances, signTxAndBroadcast} from "../../services/cosmos";
 import {gas} from "../../constants/defaultGasFees";
 import allActions from "../../action";
 import {config} from "../../constants/networkConfig";
-import {useAppState} from "../../context/AppStateContext";
+import {useAppState} from "../../hooks/useAppState";
 
 const useStyles = makeStyles((theme: Theme) => ({
     button: {
@@ -43,7 +43,7 @@ export default function VotingDialog({proposal}) {
     const [voteValue, setVoteValue] = useState(null);
     const {
         appState: {
-            chains
+            chainInfo
         }
     } = useAppState();
 
@@ -51,7 +51,7 @@ export default function VotingDialog({proposal}) {
 
     const updateBalance = (id) => {
         //@ts-ignore
-        getAllBalances(chains?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
+        getAllBalances(chainInfo?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
         dispatch(allActions.fetchVestingBalance(id));
         dispatch(allActions.fetchVoteDetails(id, address));
         dispatch(allActions.fetchProposalTally(id));
@@ -82,7 +82,7 @@ export default function VotingDialog({proposal}) {
                 amount: [{
                     amount: String(gas.vote * config.GAS_PRICE_STEP_AVERAGE),
                     //@ts-ignore
-                    denom: chains?.denom,
+                    denom: chainInfo?.denom,
                 }],
                 gas: String(gas.vote),
             },
@@ -90,7 +90,7 @@ export default function VotingDialog({proposal}) {
         };
 
         //@ts-ignore
-        signTxAndBroadcast(chains?.chain_id, tx, address, (error, result) => {
+        signTxAndBroadcast(chainInfo?.chain_id, tx, address, (error, result) => {
             passivate();
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});

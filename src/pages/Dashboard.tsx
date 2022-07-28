@@ -9,8 +9,8 @@ import EnhancedTable from "../component/ValidatorDetails/EnhancedTable";
 import {useNavigate} from "react-router-dom";
 import ProposalList from "../component/GovernanceDetails/ProposalList";
 import {useTranslation} from "react-i18next";
-import {useAppSelector} from "../customHooks/hook";
-import {useAppState} from "../context/AppStateContext";
+import {useAppSelector} from "../hooks/hook";
+import {useAppState} from "../hooks/useAppState";
 import MobileTable from "../component/ValidatorDetails/Mobile/MobileTable";
 
 const useStyles = makeStyles((theme: Theme) => ({

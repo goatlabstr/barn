@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {Route, Routes, useLocation} from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
 import {useTranslation} from "react-i18next";
-import {useAppState} from "./context/AppStateContext";
+import {useAppState} from "./hooks/useAppState";
 
 import SideBar from "./component/SideBar/SideBar";
-import {alpha, AppBar, Box, Container, IconButton, Toolbar, Typography} from "@mui/material";
+import {AppBar, Box, IconButton, Toolbar, Typography} from "@mui/material";
 import Stake from "./pages/Stake";
 import Governance from "./pages/Governance";
 import {
@@ -15,8 +15,8 @@ import {
     MonetizationOnRounded as StakeIcon,
     Flare as NetworksIcon
 } from "@mui/icons-material";
-import {useGlobalPreloader} from "./context/GlobalPreloaderProvider";
-import {useAppDispatch, useAppSelector} from "./customHooks/hook";
+import {useGlobalPreloader} from "./hooks/useGlobalPreloader";
+import {useAppDispatch, useAppSelector} from "./hooks/hook";
 import {useSnackbar} from "notistack";
 import allActions from "./action";
 import {getAllBalances, initializeChain} from "./services/cosmos";
@@ -27,8 +27,6 @@ import Common from "./services/axios/common";
 import SupportedNetworks from "./pages/SupportedNetworks";
 import logo from "./logo.svg";
 import MenuIcon from "@mui/icons-material/Menu";
-import {makeStyles, useTheme} from "@mui/styles";
-import {Theme} from "@mui/material/styles";
 
 const menuItems = (t) => [
     {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
@@ -42,15 +40,14 @@ function Main() {
     const location = useLocation();
     const {activate, passivate} = useGlobalPreloader();
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    const theme = useTheme();
     const dispatch = useAppDispatch();
     const {enqueueSnackbar} = useSnackbar();
     const {
         appState: {
-            chains
+            chainInfo
         },
         setCurrentPrice,
-        setChains,
+        setChainInfo,
         setActiveValidators,
         setInactiveValidators
     } = useAppState();
@@ -62,7 +59,7 @@ function Main() {
     useEffect(() => {
         activate();
         Common.getChainsInfo().then((res) => {
-            setChains(res?.data?.chain);
+            setChainInfo(res?.data?.chain);
             Common.getValidatorsInfo().then((response) => {
                 const validatorsResponse = response?.data?.validators;
                 if (validatorsResponse) {
@@ -103,10 +100,10 @@ function Main() {
 
     useEffect(() => {
         activate();
-        if (chains && Object.keys(chains).length > 0 && localStorage.getItem('goat_wl_addr'))
+        if (chainInfo && Object.keys(chainInfo).length > 0 && localStorage.getItem('goat_wl_addr'))
             initKeplr();
 
-        if (address && chains && Object.keys(chains).length > 0) {
+        if (address && chainInfo && Object.keys(chainInfo).length > 0) {
             handleFetchDetails(address);
         }
 
@@ -129,12 +126,12 @@ function Main() {
                 }
             }));
         }
-    }, [chains])
+    }, [chainInfo])
 
     useEffect(() => {
         i18n.changeLanguage(localStorage.getItem("lang") || "en");
         //@ts-ignore
-        const coingeckoId = chains?.coingecko_id;
+        const coingeckoId = chainInfo?.coingecko_id;
         if (coingeckoId) {
             CoinGecko.getPrice(coingeckoId).then((res) => {
                 setCurrentPrice(res.data[coingeckoId]["usd"])
@@ -142,20 +139,20 @@ function Main() {
         } else {
             setCurrentPrice(0)
         }
-    }, [chains]);
+    }, [chainInfo]);
 
     useEffect(() => {
-        if (address && chains && Object.keys(chains).length > 0) {
+        if (address && chainInfo && Object.keys(chainInfo).length > 0) {
             handleFetchDetails(address);
         }
-    }, [location, chains])
+    }, [location, chainInfo])
 
     const isActivePath = (pathname) => {
         return location.pathname === pathname;
     }
 
     const initKeplr = () => {
-        handleChain(chains, true);
+        handleChain(chainInfo, true);
     }
 
     const handleChain = (chain, fetch) => {
@@ -195,7 +192,7 @@ function Main() {
         if (balance && !balance.length &&
             !balanceInProgress) {
             //@ts-ignore
-            getAllBalances(chains?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+            getAllBalances(chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         }
         if (vestingBalance && !vestingBalance.value &&
             !vestingBalanceInProgress) {

@@ -4,7 +4,7 @@ import React, {Dispatch, FunctionComponent, useCallback} from "react";
 type AppState = {
     language: string,
     currentPrice: number,
-    chains: Object,
+    chainInfo: Object,
     activeValidators: Array<any>,
     inactiveValidators: Array<any>
 };
@@ -12,7 +12,7 @@ type AppState = {
 const initialState: AppState = {
     language: localStorage.getItem("lang")?.split("_")[0] || "en",
     currentPrice: 0,
-    chains: {},
+    chainInfo: {},
     activeValidators: [],
     inactiveValidators: [],
 };
@@ -22,7 +22,7 @@ export const AppStateContext = React.createContext<{
     dispatch: Dispatch<any>;
     setLanguage: (data: string) => void;
     setCurrentPrice: (data: number) => void;
-    setChains: (data: Object) => void;
+    setChainInfo: (data: Object) => void;
     setActiveValidators: (data: Array<any>) => void;
     setInactiveValidators: (data: Array<any>) => void;
 }>({
@@ -36,7 +36,7 @@ export const AppStateContext = React.createContext<{
     setCurrentPrice: (data: number) => {
         console.log("not implemented");
     },
-    setChains: (data: Object) => {
+    setChainInfo: (data: Object) => {
         console.log("not implemented");
     },
     setActiveValidators: (data: Array<any>) => {
@@ -62,7 +62,7 @@ const reducer = (appState: AppState, action: any) => {
         case "HANDLE_CHAINS_CONFIG":
             return {
                 ...appState,
-                chains: action.payload,
+                chainInfo: action.payload,
             };
         case "HANDLE_ACTIVE_VALIDATOR_LIST":
             return {
@@ -90,7 +90,7 @@ const AppStateProvider: FunctionComponent = ({children}) => {
         dispatch({type: "HANDLE_CURRENT_PRICE", payload: data || 0});
     }, [appState]);
 
-    const setChains = useCallback((data: Object) => {
+    const setChainInfo = useCallback((data: Object) => {
         dispatch({type: "HANDLE_CHAINS_CONFIG", payload: data || {}});
     }, [appState]);
 
@@ -109,7 +109,7 @@ const AppStateProvider: FunctionComponent = ({children}) => {
                 dispatch,
                 setLanguage,
                 setCurrentPrice,
-                setChains,
+                setChainInfo,
                 setActiveValidators,
                 setInactiveValidators
             }}

@@ -23,13 +23,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import clsx from "clsx";
 import logo from '../../logo.svg';
 import {AccountBalanceWalletRounded, Email, Instagram, LogoutRounded, Telegram, Twitter} from "@mui/icons-material";
-import {useGlobalPreloader} from "../../context/GlobalPreloaderProvider";
+import {useGlobalPreloader} from "../../hooks/useGlobalPreloader";
 import {getAllBalances, initializeChain} from "../../services/cosmos";
 import {encode} from 'js-base64';
 import allActions from "../../action";
 import {useSnackbar} from "notistack";
-import {useAppDispatch, useAppSelector} from '../../customHooks/hook';
-import {useAppState} from "../../context/AppStateContext";
+import {useAppDispatch, useAppSelector} from '../../hooks/hook';
+import {useAppState} from "../../hooks/useAppState";
 import {CopyAddressButton} from "./CopyAddressButton";
 
 const drawerWidth = 220;
@@ -97,7 +97,7 @@ export default function SideBar(props: SideBarProps) {
     const {
         appState: {
             currentPrice,
-            chains
+            chainInfo
         }
     } = useAppState();
 
@@ -113,10 +113,10 @@ export default function SideBar(props: SideBarProps) {
     }
 
     const handleConnectButtonClick = () => {
-        if (!chains || Object.keys(chains).length === 0)
+        if (!chainInfo || Object.keys(chainInfo).length === 0)
             return;
         activate();
-        initializeChain(chains, (error, addressList) => {
+        initializeChain(chainInfo, (error, addressList) => {
             passivate();
             if (error) {
                 localStorage.removeItem('goat_wl_addr');
@@ -128,7 +128,7 @@ export default function SideBar(props: SideBarProps) {
             dispatch(allActions.fetchRewards(addressList[0] && addressList[0].address));
             dispatch(allActions.getDelegations(addressList[0] && addressList[0].address));
             //@ts-ignore
-            getAllBalances(chains?.chain_id, addressList[0] && addressList[0].address, (err, data) => dispatch(allActions.getBalance(err, data)));
+            getAllBalances(chainInfo?.chain_id, addressList[0] && addressList[0].address, (err, data) => dispatch(allActions.getBalance(err, data)));
             dispatch(allActions.fetchVestingBalance(addressList[0] && addressList[0].address));
             dispatch(allActions.getDelegatedValidatorsDetails(addressList[0] && addressList[0].address));
             localStorage.setItem('goat_wl_addr', encode(addressList[0] && addressList[0].address));
@@ -173,11 +173,11 @@ export default function SideBar(props: SideBarProps) {
                     <Stack direction="row" justifyContent="space-between" alignItems={"center"} mb={1.5}>
                         <Stack direction="row" alignItems={"center"} spacing={0.5}>
                             {//@ts-ignore
-                                chains?.image && <Avatar src={chains?.image} sx={{width: 24, height: 24}}/>
+                                chainInfo?.image && <Avatar src={chainInfo?.image} sx={{width: 24, height: 24}}/>
                             }
                             <Typography variant={"body2"}>{
                                 //@ts-ignore
-                                chains?.symbol?.toUpperCase()
+                                chainInfo?.symbol?.toUpperCase()
                             }</Typography>
                         </Stack>
                         <Typography variant={"body2"} color={"secondary"}>${currentPrice}</Typography>
@@ -217,7 +217,7 @@ export default function SideBar(props: SideBarProps) {
                                 () => {
                                     const coingeckoUrl =
                                         //@ts-ignore
-                                        chains?.coingecko_id ? "https://www.coingecko.com/coins/" + chains?.coingecko_id :
+                                        chainInfo?.coingecko_id ? "https://www.coingecko.com/coins/" + chainInfo?.coingecko_id :
                                             "https://www.coingecko.com"
                                     //@ts-ignore
                                     window.open(coingeckoUrl, '_blank').focus()

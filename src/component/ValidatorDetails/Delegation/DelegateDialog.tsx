@@ -12,15 +12,15 @@ import {
 import {useSnackbar} from "notistack";
 import {useTranslation} from "react-i18next";
 import {makeStyles} from "@mui/styles";
-import {useDialog} from "../../../context/DialogContext/DialogContext";
+import {useDialog} from "../../../hooks/use-dialog/DialogContext";
 import SelectValidator from "./SelectValidator";
-import {useAppDispatch, useAppSelector} from "../../../customHooks/hook";
+import {useAppDispatch, useAppSelector} from "../../../hooks/hook";
 import {gas} from "../../../constants/defaultGasFees";
 import {getAllBalances, signTxAndBroadcast} from "../../../services/cosmos";
 import allActions from "../../../action";
-import {useGlobalPreloader} from "../../../context/GlobalPreloaderProvider";
+import {useGlobalPreloader} from "../../../hooks/useGlobalPreloader";
 import {snackbarTxAction} from "../../Snackbar/action";
-import {useAppState} from "../../../context/AppStateContext";
+import {useAppState} from "../../../hooks/useAppState";
 import {config} from "../../../constants/networkConfig";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -44,7 +44,7 @@ export default function DelegateDialog({initialValidator}) {
     const dispatch = useAppDispatch();
     const {
         appState: {
-            chains,
+            chainInfo,
             activeValidators,
             inactiveValidators
         }
@@ -57,9 +57,9 @@ export default function DelegateDialog({initialValidator}) {
 
     const handleBalance = () => {
         //@ts-ignore
-        const decimals = chains?.decimals | 6;
+        const decimals = chainInfo?.decimals | 6;
         //@ts-ignore
-        const bal = balance && balance.length && balance.find((val) => val.denom === chains?.denom);
+        const bal = balance && balance.length && balance.find((val) => val.denom === chainInfo?.denom);
         return bal?.amount / (10 ** decimals) || 0;
     }
 
@@ -68,21 +68,21 @@ export default function DelegateDialog({initialValidator}) {
 
     const getValueObject = () => {
         //@ts-ignore
-        const decimals = chains?.decimals | 6;
+        const decimals = chainInfo?.decimals | 6;
         return {
             delegatorAddress: address,
             validatorAddress: validator?.operator_address,
             amount: {
                 amount: String(delegateAmount * (10 ** decimals)),
                 //@ts-ignore
-                denom: chains?.denom,
+                denom: chainInfo?.denom,
             },
         };
     };
 
     const updateBalance = () => {
         //@ts-ignore
-        getAllBalances(chains?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
+        getAllBalances(chainInfo?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.getDelegations(address));
         dispatch(allActions.getUnBondingDelegations(address));
@@ -104,14 +104,14 @@ export default function DelegateDialog({initialValidator}) {
                 amount: [{
                     amount: String(gasValue * config.GAS_PRICE_STEP_AVERAGE),
                     //@ts-ignore
-                    denom: chains?.denom,
+                    denom: chainInfo?.denom,
                 }],
                 gas: String(gasValue),
             },
             memo: '',
         };
         //@ts-ignore
-        signTxAndBroadcast(chains?.chain_id, updatedTx, address, (error, result) => {
+        signTxAndBroadcast(chainInfo?.chain_id, updatedTx, address, (error, result) => {
             passivate();
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});

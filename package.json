@@ -37,7 +37,10 @@
     "cosmjs-types": "^0.5.0",
     "@types/react": "17.0.45",
     "react-chartjs-2": "^4.0.0",
-    "chart.js": "^3.6.0"
+    "chart.js": "^3.6.0",
+    "@walletconnect/browser-utils": "^1.7.8",
+    "@walletconnect/client": "^1.7.8",
+    "@walletconnect/types": "^1.7.8"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.1",

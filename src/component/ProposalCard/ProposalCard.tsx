@@ -5,7 +5,7 @@ import {Card, CardActionArea, CardContent, Stack, Tooltip} from "@mui/material";
 import {makeStyles, useTheme} from "@mui/styles";
 import CircleIcon from '@mui/icons-material/Circle';
 import {useTranslation} from "react-i18next";
-import {useAppSelector} from "../../customHooks/hook";
+import {useAppSelector} from "../../hooks/hook";
 import {
     Cancel as RejectedStatusIcon,
     CheckCircle as ApprovedStatusIcon,

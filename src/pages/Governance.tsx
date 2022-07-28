@@ -5,7 +5,7 @@ import {Theme} from "@mui/material/styles";
 import {GeneralConstants} from "../constants/general";
 import {useTranslation} from "react-i18next";
 import ProposalCard from "../component/ProposalCard/ProposalCard";
-import {useAppSelector} from "../customHooks/hook";
+import {useAppSelector} from "../hooks/hook";
 import {useNavigate} from "react-router-dom";
 
 interface TabPanelProps {

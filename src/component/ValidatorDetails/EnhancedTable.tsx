@@ -23,12 +23,12 @@ import {
 } from '@mui/icons-material';
 import SearchTextField from "./SearchTextField";
 import {useTranslation} from "react-i18next";
-import {useAppSelector} from "../../customHooks/hook";
-import {useDialog} from "../../context/DialogContext/DialogContext";
+import {useAppSelector} from "../../hooks/hook";
+import {useDialog} from "../../hooks/use-dialog/DialogContext";
 import DelegateDialog from "./Delegation/DelegateDialog";
 import RedelegateDialog from "./Delegation/RedelegateDialog";
 import UndelegateDialog from "./Delegation/UndelegateDialog";
-import {useAppState} from "../../context/AppStateContext";
+import {useAppState} from "../../hooks/useAppState";
 
 const useStyles = makeStyles((theme: Theme) => ({
     tableHead: {
@@ -243,7 +243,7 @@ export default function EnhancedTable(props: TableProps) {
     const {t} = useTranslation();
     const {
         appState: {
-            chains
+            chainInfo
         }
     } = useAppState();
 
@@ -251,7 +251,7 @@ export default function EnhancedTable(props: TableProps) {
 
     const getStakeAmount = (row) => {
         //@ts-ignore
-        const decimals = chains?.decimals | 6;
+        const decimals = chainInfo?.decimals | 6;
         let value = delegations.find((val) =>
             (val.delegation && val.delegation.validator_address) === row.operator_address);
         return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** decimals : 0;
@@ -369,7 +369,7 @@ export default function EnhancedTable(props: TableProps) {
                                                    className={classes.tableCell}>
                                             {
                                                 //@ts-ignore
-                                                formatCount(parseFloat((Number(row.tokens) / (10 ** (chains?.decimal | 6))).toFixed(1)))
+                                                formatCount(parseFloat((Number(row.tokens) / (10 ** (chainInfo?.decimal | 6))).toFixed(1)))
                                             }
                                         </TableCell>
                                         <TableCell align="center"

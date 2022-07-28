@@ -6,8 +6,8 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import {Box, Button, FormControlLabel, Stack, Switch, Typography} from "@mui/material";
-import {useAppSelector} from "../../../customHooks/hook";
-import {useAppState} from "../../../context/AppStateContext";
+import {useAppSelector} from "../../../hooks/hook";
+import {useAppState} from "../../../hooks/useAppState";
 import Grid from "@mui/material/Grid";
 import {useTranslation} from "react-i18next";
 
@@ -71,7 +71,7 @@ function MobileTable(props: TableProps) {
     const {
         appState: {
             currentPrice,
-            chains
+            chainInfo
         }
     } = useAppState();
 
@@ -92,7 +92,7 @@ function MobileTable(props: TableProps) {
 
     const getStakeAmount = (row) => {
         //@ts-ignore
-        const decimals = chains?.decimals | 6;
+        const decimals = chainInfo?.decimals | 6;
         let value = delegations.find((val) =>
             (val.delegation && val.delegation.validator_address) === row.operator_address);
         return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** decimals : 0;
