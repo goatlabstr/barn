@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 
-import { Theme } from "@mui/material/styles";
+import {Theme} from "@mui/material/styles";
 
 import {
     Button,
@@ -22,9 +22,10 @@ import {useGlobalPreloader} from "../../../hooks/useGlobalPreloader";
 import {snackbarTxAction} from "../../Snackbar/action";
 import {useAppState} from "../../../hooks/useAppState";
 import {config} from "../../../constants/networkConfig";
+import {useKeplr} from "../../../hooks/use-keplr/hook";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    button:{
+    button: {
         marginLeft: theme.spacing(2)
     },
     content: {
@@ -37,8 +38,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export default function RedelegateDialog({initialValidator}) {
     const classes = useStyles();
-    const { closeDialog } = useDialog();
-    const { enqueueSnackbar } = useSnackbar();
+    const {closeDialog} = useDialog();
+    const {enqueueSnackbar} = useSnackbar();
     const {activate, passivate} = useGlobalPreloader();
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
@@ -50,13 +51,13 @@ export default function RedelegateDialog({initialValidator}) {
         }
     } = useAppState();
 
+    const {getKeplr} = useKeplr();
     const [fromValidator, setFromValidator] = useState<any>(initialValidator);
     const [toValidator, setToValidator] = useState<any>();
     const [redelegateAmount, setRedelegateAmount] = useState<number>(0);
     const [validatorRedelegateAmount, setValidatorRedelegateAmount] = useState<number>(0);
 
     const delegatedValidatorList = useAppSelector(state => state.stake.delegatedValidators.list);
-    const validatorImages = useAppSelector(state => state.stake.validators.images);
     const address = useAppSelector(state => state.accounts.address.value);
     const delegations = useAppSelector(state => state.accounts.delegations.result);
 
@@ -70,9 +71,9 @@ export default function RedelegateDialog({initialValidator}) {
         //@ts-ignore
         const decimals = chainInfo?.decimals | 6;
         const found = delegations.find(el => el?.delegation?.validator_address === fromValidator?.operator_address);
-        if(found !== undefined)
+        if (found !== undefined)
             setValidatorRedelegateAmount(found?.balance?.amount / (10 ** decimals));
-    },[fromValidator])
+    }, [fromValidator])
 
 
     const getValueObject = () => {
@@ -90,9 +91,10 @@ export default function RedelegateDialog({initialValidator}) {
         };
     };
 
-    const updateBalance = () => {
+    const updateBalance = async () => {
+        const keplr = await getKeplr();
         //@ts-ignore
-        getAllBalances(chainInfo?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
+        getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.getDelegations(address));
         dispatch(allActions.getUnBondingDelegations(address));
@@ -101,7 +103,7 @@ export default function RedelegateDialog({initialValidator}) {
     }
 
 
-    const handleApplyButton = () => {
+    const handleApplyButton = async () => {
         activate();
         let gasValue = gas.delegate;
 
@@ -120,8 +122,10 @@ export default function RedelegateDialog({initialValidator}) {
             },
             memo: '',
         };
+
+        const keplr = await getKeplr();
         //@ts-ignore
-        signTxAndBroadcast(chainInfo?.chain_id, updatedTx, address, (error, result) => {
+        signTxAndBroadcast(keplr, chainInfo?.chain_id, updatedTx, address, (error, result) => {
             passivate();
             if (error) {
                 /*if (error.indexOf('not yet found on the chain') > -1) {

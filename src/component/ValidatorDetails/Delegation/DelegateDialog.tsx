@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 
-import { Theme } from "@mui/material/styles";
+import {Theme} from "@mui/material/styles";
 
 import {
     Button,
@@ -22,9 +22,10 @@ import {useGlobalPreloader} from "../../../hooks/useGlobalPreloader";
 import {snackbarTxAction} from "../../Snackbar/action";
 import {useAppState} from "../../../hooks/useAppState";
 import {config} from "../../../constants/networkConfig";
+import {useKeplr} from "../../../hooks/use-keplr/hook";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    button:{
+    button: {
         marginLeft: theme.spacing(2)
     },
     content: {
@@ -37,8 +38,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export default function DelegateDialog({initialValidator}) {
     const classes = useStyles();
-    const { closeDialog } = useDialog();
-    const { enqueueSnackbar } = useSnackbar();
+    const {closeDialog} = useDialog();
+    const {enqueueSnackbar} = useSnackbar();
     const {activate, passivate} = useGlobalPreloader();
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
@@ -50,7 +51,7 @@ export default function DelegateDialog({initialValidator}) {
         }
     } = useAppState();
 
-    const validatorImages = useAppSelector(state => state.stake.validators.images);
+    const {getKeplr} = useKeplr();
     const balance = useAppSelector(state => state.accounts.balance.result);
     const address = useAppSelector(state => state.accounts.address.value);
 
@@ -80,9 +81,10 @@ export default function DelegateDialog({initialValidator}) {
         };
     };
 
-    const updateBalance = () => {
+    const updateBalance = async () => {
+        const keplr = await getKeplr();
         //@ts-ignore
-        getAllBalances(chainInfo?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
+        getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.getDelegations(address));
         dispatch(allActions.getUnBondingDelegations(address));
@@ -91,7 +93,7 @@ export default function DelegateDialog({initialValidator}) {
     }
 
 
-    const handleApplyButton = () => {
+    const handleApplyButton = async () => {
         activate();
         let gasValue = gas.delegate;
 
@@ -110,8 +112,10 @@ export default function DelegateDialog({initialValidator}) {
             },
             memo: '',
         };
+
+        const keplr = await getKeplr();
         //@ts-ignore
-        signTxAndBroadcast(chainInfo?.chain_id, updatedTx, address, (error, result) => {
+        signTxAndBroadcast(keplr, chainInfo?.chain_id, updatedTx, address, (error, result) => {
             passivate();
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});

@@ -71,11 +71,11 @@ const chainConfig = (chainId,
     walletUrlForStaking: stakingUrl,
 });
 
-const getSignStargateClient = async (chainId) => {
+const getSignStargateClient = async (chainId, keplr) => {
     //@ts-ignore
-    await window.keplr && window.keplr.enable();
+    await keplr && keplr.enable();
     //@ts-ignore
-    const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId);
+    const offlineSigner = keplr.getOfflineSigner(chainId);
     return await SigningStargateClient.connectWithSigner(
         rpcUrl,
         offlineSigner,
@@ -137,9 +137,9 @@ export const initializeChain = (chain, keplr, connectionType, cb) => {
 };
 
 
-export const signTxAndBroadcast = (chainId, tx, address, cb) => {
+export const signTxAndBroadcast = (keplr, chainId, tx, address, cb) => {
     (async () => {
-        const client = await getSignStargateClient(chainId);
+        const client = await getSignStargateClient(chainId, keplr);
         client.signAndBroadcast(
             address,
             tx.msgs ? tx.msgs : [tx.msg],
@@ -158,20 +158,21 @@ export const signTxAndBroadcast = (chainId, tx, address, cb) => {
     })();
 };
 
-export const getStakedBalance = (chainId, address, cb) => {
+export const getStakedBalance = (keplr, chainId, address, cb) => {
     (async () => {
-        const client = await getSignStargateClient(chainId);
+        const client = await getSignStargateClient(chainId, keplr);
         client.getBalanceStaked(address).then((result) => {
             cb(null, result);
         }).catch((error) => {
             cb(error && error.message);
         });
     })();
+
 }
 
-export const getAllBalances = (chainId, address, cb) => {
+export const getAllBalances = (keplr, chainId, address, cb) => {
     (async () => {
-        const client = await getSignStargateClient(chainId);
+        const client = await getSignStargateClient(chainId, keplr);
         client.getAllBalances(address).then((result) => {
             cb(null, result);
         }).catch((error) => {
@@ -212,6 +213,7 @@ export const getKeplrFromWindow: () => Promise<any> = async () => {
     });
 };
 
+/*
 export const aminoSignTx = (chainId, tx, address, cb) => {
     (async () => {
         //@ts-ignore
@@ -255,4 +257,4 @@ export const aminoSignTx = (chainId, tx, address, cb) => {
             cb(error && error.message);
         });
     })();
-};
+};*/

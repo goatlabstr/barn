@@ -20,6 +20,7 @@ import {useSnackbar} from "notistack";
 import allActions from "../../action";
 import {snackbarTxAction} from "../Snackbar/action";
 import {config} from "../../constants/networkConfig";
+import {useKeplr} from "../../hooks/use-keplr/hook";
 
 const useStyles = makeStyles((theme: Theme) => ({
     icon: {
@@ -42,6 +43,7 @@ export default function Index() {
     } = useAppState();
 
     const [inTxProgress, setInTxProgress] = useState(false);
+    const {getKeplr} = useKeplr();
 
     const rewards = useAppSelector(state => state.accounts.rewards.result);
     const address = useAppSelector(state => state.accounts.address.value);
@@ -98,20 +100,21 @@ export default function Index() {
         return 0;
     }
 
-    const updateBalance = () => {
+    const updateBalance = async () => {
         //@ts-ignore
         const decimals = chainInfo?.decimals | 6;
         const tokens = rewards && rewards.length && rewards[0] && rewards[0].reward &&
         rewards[0].reward.length && rewards[0].reward[0] && rewards[0].reward[0].amount
             ? rewards[0].reward[0].amount / 10 ** decimals : 0;
+        const keplr = await getKeplr();
         //@ts-ignore
-        getAllBalances(chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+        getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.fetchRewards(address));
         dispatch(allActions.setTokens(tokens));
     }
 
-    const handleClaimAll = () => {
+    const handleClaimAll = async () => {
         setInTxProgress(true);
         let gasValue = gas.claim_reward;
         if (rewards && rewards.rewards && rewards.rewards.length > 1) {
@@ -147,8 +150,9 @@ export default function Index() {
             });
         }
 
+        const keplr = await getKeplr();
         //@ts-ignore
-        signTxAndBroadcast(chainInfo?.chain_id, updatedTx, address, (error, result) => {
+        signTxAndBroadcast(keplr, chainInfo?.chain_id, updatedTx, address, (error, result) => {
             setInTxProgress(false);
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});

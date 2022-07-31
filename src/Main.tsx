@@ -197,11 +197,12 @@ function Main() {
         }
     }
 
-    const handleFetchDetails = (address) => {
+    const handleFetchDetails = async (address) => {
         if (balance && !balance.length &&
             !balanceInProgress) {
+            const keplr = await getKeplr();
             //@ts-ignore
-            getAllBalances(chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+            getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         }
         if (vestingBalance && !vestingBalance.value &&
             !vestingBalanceInProgress) {

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 
-import { Theme } from "@mui/material/styles";
+import {Theme} from "@mui/material/styles";
 
 import {
     Button,
@@ -22,9 +22,10 @@ import {useGlobalPreloader} from "../../../hooks/useGlobalPreloader";
 import {snackbarTxAction} from "../../Snackbar/action";
 import {useAppState} from "../../../hooks/useAppState";
 import {config} from "../../../constants/networkConfig";
+import {useKeplr} from "../../../hooks/use-keplr/hook";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    button:{
+    button: {
         marginLeft: theme.spacing(2)
     },
     content: {
@@ -37,8 +38,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export default function UndelegateDialog({initialValidator}) {
     const classes = useStyles();
-    const { closeDialog } = useDialog();
-    const { enqueueSnackbar } = useSnackbar();
+    const {closeDialog} = useDialog();
+    const {enqueueSnackbar} = useSnackbar();
     const {activate, passivate} = useGlobalPreloader();
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
@@ -49,6 +50,7 @@ export default function UndelegateDialog({initialValidator}) {
         }
     } = useAppState();
 
+    const {getKeplr} = useKeplr();
     const [validatorUndelegateAmount, setValidatorUndelegateAmount] = useState<number>(0);
     const [undelegateAmount, setUndelegateAmount] = useState<number>(0);
     const [validator, setValidator] = useState<any>(initialValidator);
@@ -77,9 +79,10 @@ export default function UndelegateDialog({initialValidator}) {
         };
     };
 
-    const updateBalance = () => {
+    const updateBalance = async () => {
+        const keplr = await getKeplr();
         //@ts-ignore
-        getAllBalances(chainInfo?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
+        getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.getDelegations(address));
         dispatch(allActions.getUnBondingDelegations(address));
@@ -88,7 +91,7 @@ export default function UndelegateDialog({initialValidator}) {
     }
 
 
-    const handleApplyButton = () => {
+    const handleApplyButton = async () => {
         activate();
         let gasValue = gas.delegate;
 
@@ -108,8 +111,9 @@ export default function UndelegateDialog({initialValidator}) {
             memo: '',
         };
 
+        const keplr = await getKeplr();
         //@ts-ignore
-        signTxAndBroadcast(chainInfo?.chain_id, updatedTx, address, (error, result) => {
+        signTxAndBroadcast(keplr, chainInfo?.chain_id, updatedTx, address, (error, result) => {
             passivate();
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});
@@ -131,10 +135,9 @@ export default function UndelegateDialog({initialValidator}) {
         //@ts-ignore
         const decimals = chainInfo?.decimals | 6;
         const found = delegations.find(el => el?.delegation?.validator_address === validator?.operator_address);
-        if(found !== undefined)
+        if (found !== undefined)
             setValidatorUndelegateAmount(found?.balance?.amount / (10 ** decimals));
-    },[validator])
-
+    }, [validator])
 
 
     return (
@@ -142,10 +145,10 @@ export default function UndelegateDialog({initialValidator}) {
             <Divider/>
             <DialogContent className={classes.content}>
                 <Stack direction="column">
-                <SelectValidator title={t("undelegateSelectValidator")}
-                                 validators={getDelegatedValidators()}
-                                 onChange={val => setValidator(val)}
-                                 initialValue={initialValidator}/>
+                    <SelectValidator title={t("undelegateSelectValidator")}
+                                     validators={getDelegatedValidators()}
+                                     onChange={val => setValidator(val)}
+                                     initialValue={initialValidator}/>
                     <TextField
                         id="outlined-number"
                         label={t("enterDelegateTokens")}

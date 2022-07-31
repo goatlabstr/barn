@@ -132,7 +132,7 @@ export default function SideBar(props: SideBarProps) {
                 dispatch(allActions.fetchRewards(addressList[0] && addressList[0].address));
                 dispatch(allActions.getDelegations(addressList[0] && addressList[0].address));
                 //@ts-ignore
-                getAllBalances(chainInfo?.chain_id, addressList[0] && addressList[0].address, (err, data) => dispatch(allActions.getBalance(err, data)));
+                getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
                 dispatch(allActions.fetchVestingBalance(addressList[0] && addressList[0].address));
                 dispatch(allActions.getDelegatedValidatorsDetails(addressList[0] && addressList[0].address));
                 localStorage.setItem('goat_wl_addr', encode(addressList[0] && addressList[0].address));

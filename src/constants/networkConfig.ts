@@ -15,7 +15,7 @@ type NetworkConfig = {
 const getSubdomain = () => {
     let subdomain = window.location.hostname.split(".goatlabs.zone")[0];
     if (!window.location.hostname.includes(".goatlabs.zone"))
-        subdomain = "cosmoshub";
+        subdomain = "juno";
     return subdomain;
 }
 
@@ -29,8 +29,8 @@ export const config: NetworkConfig = {
     "EXPLORER_URL": "https://www.mintscan.io/" + subdomain,
     "STAKING_URL": "https://" + subdomain + ".goatlabs.zone/stake",
     "DEFAULT_GAS": 200000,
-    "GAS_PRICE_STEP_LOW": 0.01,
-    "GAS_PRICE_STEP_AVERAGE": 0.025,
+    "GAS_PRICE_STEP_LOW": 0.02,
+    "GAS_PRICE_STEP_AVERAGE": 0.03,
     "GAS_PRICE_STEP_HIGH": 0.04,
     "FEATURES": [
         "ibc-transfer",
