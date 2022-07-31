@@ -32,9 +32,11 @@ function Index(props) {
     const handleRewards = () => {
         //@ts-ignore
         const decimals = chainInfo?.decimals | 6;
-        return rewards && rewards.total && rewards.total.length &&
-        rewards.total[0] && rewards.total[0].amount
-            ? rewards.total[0].amount / 10 ** decimals : 0;
+        const mainRewards = rewards && rewards.total && rewards.total.length &&
+            //@ts-ignore
+            rewards.total.filter(r => r?.denom === chainInfo?.denom);
+        return mainRewards && mainRewards.length && mainRewards[0] && mainRewards[0].amount
+            ? mainRewards[0].amount / 10 ** decimals : 0;
     }
 
     const getStakedAmount = () => {
