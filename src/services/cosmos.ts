@@ -75,7 +75,7 @@ const getSignStargateClient = async (chainId, keplr) => {
     //@ts-ignore
     await keplr && keplr.enable();
     //@ts-ignore
-    const offlineSigner = keplr.getOfflineSigner(chainId);
+    const offlineSigner = keplr.getOfflineSignerOnlyAmino(chainId);
     return await SigningStargateClient.connectWithSigner(
         rpcUrl,
         offlineSigner,
@@ -100,7 +100,7 @@ export const initializeChain = (chain, keplr, connectionType, cb) => {
             cb(error);
         } else {
             //@ts-ignore
-            if(connectionType === "extension"){
+            if (connectionType === "extension") {
                 if (keplr.experimentalSuggestChain) {
                     try {
                         //@ts-ignore
@@ -129,7 +129,7 @@ export const initializeChain = (chain, keplr, connectionType, cb) => {
             //@ts-ignore
             await keplr.enable(chain_id);
             //@ts-ignore
-            const offlineSigner = keplr.getOfflineSigner(chain_id);
+            const offlineSigner = keplr.getOfflineSignerOnlyAmino(chain_id);
             const accounts = await offlineSigner.getAccounts();
             cb(null, accounts);
         }
@@ -213,12 +213,11 @@ export const getKeplrFromWindow: () => Promise<any> = async () => {
     });
 };
 
-/*
-export const aminoSignTx = (chainId, tx, address, cb) => {
+export const aminoSignTx = (keplr, chainId, tx, address, cb) => {
     (async () => {
         //@ts-ignore
-        const offlineSigner = window.getOfflineSignerOnlyAmino && window.getOfflineSignerOnlyAmino(chainId);
-        const client = await getSignStargateClient(chainId);
+        const offlineSigner = keplr.getOfflineSignerOnlyAmino && keplr.getOfflineSignerOnlyAmino(chainId);
+        const client = await getSignStargateClient(chainId, keplr);
 
         const account = {};
         try {
@@ -257,4 +256,4 @@ export const aminoSignTx = (chainId, tx, address, cb) => {
             cb(error && error.message);
         });
     })();
-};*/
+};
