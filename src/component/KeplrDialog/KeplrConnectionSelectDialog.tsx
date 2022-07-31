@@ -30,7 +30,13 @@ export const KeplrConnectionSelectDialog: FunctionComponent<{
     };
 
     return (
-        <Dialog onClose={handleClose} open={isOpen} fullWidth maxWidth={"xs"}>
+        <Dialog onClose={handleClose}
+                open={isOpen}
+                fullWidth
+                maxWidth={"xs"}
+                PaperProps={{
+                    style: {borderRadius: 10}
+                }}>
             <DialogTitle>Connect Wallet</DialogTitle>
             <Box sx={{
                 display: 'flex',
@@ -53,7 +59,7 @@ export const KeplrConnectionSelectDialog: FunctionComponent<{
                                 window.open(overrideWithKeplrInstallLink, "_blank");
                             }} key={"keplr-extension"}>
                             <ListItemAvatar>
-                                <Avatar src={"/keplr-logo.png"} sx={{ width: 50, height: 50 }}>
+                                <Avatar src={"/keplr-logo.png"} sx={{width: 50, height: 50}}>
                                     <PersonIcon/>
                                 </Avatar>
                             </ListItemAvatar>
@@ -73,7 +79,7 @@ export const KeplrConnectionSelectDialog: FunctionComponent<{
                                 onSelectExtension();
                             }} key={"keplr-extension"}>
                             <ListItemAvatar>
-                                <Avatar src={"/keplr-logo.png"} sx={{ width: 50, height: 50 }}>
+                                <Avatar src={"/keplr-logo.png"} sx={{width: 50, height: 50}}>
                                     <PersonIcon/>
                                 </Avatar>
                             </ListItemAvatar>
@@ -94,7 +100,7 @@ export const KeplrConnectionSelectDialog: FunctionComponent<{
                             onSelectWalletConnect();
                         }} key={"keplr-wallet-connect"}>
                         <ListItemAvatar>
-                            <Avatar src={"/wallet-connect-logo.png"} sx={{ width: 50, height: 50 }}>
+                            <Avatar src={"/wallet-connect-logo.png"} sx={{width: 50, height: 50}}>
                                 <PersonIcon/>
                             </Avatar>
                         </ListItemAvatar>

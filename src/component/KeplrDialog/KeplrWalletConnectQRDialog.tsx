@@ -10,10 +10,10 @@ export const KeplrWalletConnectQRDialog: FunctionComponent<{
     isOpen: boolean;
     onRequestClose: () => void;
     uri: string;
-}> = ({ isOpen, onRequestClose, uri }) => {
+}> = ({isOpen, onRequestClose, uri}) => {
     // Below is used for styling for mobile device.
     // Check the size of window.
-    const { isMobile } = useWindowSize();
+    const {isMobile} = useWindowSize();
 
     // Below is used for real mobile environment.
     // Check the user agent.
@@ -57,14 +57,18 @@ export const KeplrWalletConnectQRDialog: FunctionComponent<{
     };
 
     return (
-        <Dialog onClose={handleClose} open={isOpen}>
+        <Dialog onClose={handleClose}
+                open={isOpen}
+                PaperProps={{
+                    style: {borderRadius: 10}
+                }}>
             <DialogTitle>{checkMobile ? "Open App" : "Scan QR Code"}</DialogTitle>
             {uri ? (
                 !checkMobile ? (
                     (() => {
                         return (
                             <Box sx={{p: 5}}>
-                                <QRCode size={isMobile ? 290 : 400} value={uri} />
+                                <QRCode size={isMobile ? 290 : 400} value={uri}/>
                             </Box>
                         );
                     })()

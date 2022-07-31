@@ -18,6 +18,9 @@ const SimpleDialog: FunctionComponent<DialogPropTypes> = (props) => {
             maxWidth={"sm"}
             open={open}
             onClose={handleClose}
+            PaperProps={{
+                style: {borderRadius: 10}
+            }}
         >
             <DialogTitle id="simple-dialog-title">{title}</DialogTitle>
             {content}

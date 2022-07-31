@@ -216,7 +216,7 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
 }
 
 const DelegationButtonGroup = ({stakeAmount, rowData}) => {
-    const {openDialog, closeDialog} = useDialog();
+    const {openDialog} = useDialog();
     const {t} = useTranslation();
 
     if (typeof stakeAmount !== "number" || stakeAmount <= 0)

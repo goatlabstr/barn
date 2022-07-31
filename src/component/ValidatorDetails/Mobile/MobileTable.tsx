@@ -11,6 +11,7 @@ import {useAppState} from "../../../hooks/useAppState";
 import Grid from "@mui/material/Grid";
 import {useTranslation} from "react-i18next";
 import SearchTextField from "../SearchTextField";
+import {MobileDelegationDialog} from "./MobileDelegationDialog";
 
 interface TableProps {
     rows: Array<any>;
@@ -79,6 +80,8 @@ const MobileToolbar = (props) => {
 function MobileTable(props: TableProps) {
     const {rows, title, buttonTitle, onClickToolbarButton, viewStakedValidators, search} = props;
     const [viewOnlyStakedVal, setViewOnlyStakedVal] = useState(false);
+    const [selectedValidator, setSelectedValidator] = useState();
+    const [delegationDialogOpen, setDelegationDialogOpen] = useState(false);
     const [data, setData] = useState<Array<any>>([]);
     const [filterValue, setFilterValue] = useState<string>("");
     const {
@@ -146,6 +149,10 @@ function MobileTable(props: TableProps) {
                                     borderRadius: 1,
                                     mb: 1
                                 }}
+                                onClick={() => {
+                                    setSelectedValidator(row)
+                                    setDelegationDialogOpen(true)
+                                }}
                                 key={row?.rank}>
                                 <Typography sx={{pr: 1}}>#{row?.rank}</Typography>
                                 <ListItemAvatar>
@@ -175,6 +182,9 @@ function MobileTable(props: TableProps) {
                     )
                 }
             </List>
+            <MobileDelegationDialog isOpen={delegationDialogOpen}
+                                    onRequestClose={() => setDelegationDialogOpen(false)}
+                                    data={selectedValidator}/>
         </Box>
     );
 }
