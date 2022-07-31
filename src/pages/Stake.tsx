@@ -68,7 +68,7 @@ function Index() {
                         </Box>
                     </Box>
                     <Box sx={{display: {xs: "block", md: 'none'}}}>
-                        <MobileTable rows={activeValidators} viewStakedValidators title={t("staking.allValidators")}/>
+                        <MobileTable rows={activeValidators} viewStakedValidators search title={t("staking.allValidators")}/>
                     </Box>
                 </Grid>
             </Grid>

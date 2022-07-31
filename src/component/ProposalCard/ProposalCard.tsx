@@ -122,52 +122,55 @@ export default function ProposalCard(props: ProposalCardType) {
                         </Stack>
                         <Typography
                             sx={{
-                                display: 'inline'
+                                display: 'inline',
+                                mb: 1,
+                                mt: 1,
+                                whiteSpace: "pre-wrap"
                             }}
                             component="span"
                             variant="body2"
                             color="text.secondary"
                         >
-                            {description && description.length >= 200 ? description.slice(0, 200) + "..." : description}
+                            {description && description.length >= 100 ? description.slice(0, 100) + "..." : description}
                         </Typography>
-                        <Stack direction="row" sx={{justifyContent: "space-between"}}>
-                            <Stack direction="column">
+                        <Stack direction="column" sx={{justifyContent: "space-between"}}>
+                            <Stack direction="row" sx={{mb:1}}>
                                 {getVoteTypo('yes', proposal)}
                                 {getVoteTypo('no', proposal)}
-                            </Stack>
-                            <Stack direction="column">
                                 {getVoteTypo('no_with_veto', proposal)}
                                 {getVoteTypo('abstain', proposal)}
                             </Stack>
-                            <Stack direction={"column"}>
-                                <Typography variant={"body2"}
-                                            className={classes.typo}
-                                            sx={{
-                                                pr: 1,
-                                                //@ts-ignore
-                                                color: theme.palette.secondary.main
-                                            }}>{t("governance.votingStartTime")}</Typography>
-                                <Typography variant={"body2"}
-                                            className={classes.typo}
-                                            sx={{
-                                                //@ts-ignore
-                                                color: theme.palette.primary.main
-                                            }}>{new Date(startTime).toLocaleString()}</Typography>
-                            </Stack>
-                            <Stack direction={"column"}>
-                                <Typography variant={"body2"}
-                                            className={classes.typo}
-                                            sx={{
-                                                pr: 1,
-                                                //@ts-ignore
-                                                color: theme.palette.secondary.main
-                                            }}>{t("governance.votingEndTime")}</Typography>
-                                <Typography variant={"body2"}
-                                            className={classes.typo}
-                                            sx={{
-                                                //@ts-ignore
-                                                color: theme.palette.primary.main
-                                            }}>{new Date(endingTime).toLocaleString()}</Typography>
+                            <Stack direction={"row"} sx={{justifyContent: "space-between"}}>
+                                <Stack direction={"column"}>
+                                    <Typography variant={"body2"}
+                                                className={classes.typo}
+                                                sx={{
+                                                    pr: 1,
+                                                    //@ts-ignore
+                                                    color: theme.palette.secondary.main
+                                                }}>{t("governance.votingStartTime")}</Typography>
+                                    <Typography variant={"body2"}
+                                                className={classes.typo}
+                                                sx={{
+                                                    //@ts-ignore
+                                                    color: theme.palette.primary.main
+                                                }}>{new Date(startTime).toLocaleString()}</Typography>
+                                </Stack>
+                                <Stack direction={"column"}>
+                                    <Typography variant={"body2"}
+                                                className={classes.typo}
+                                                sx={{
+                                                    pr: 1,
+                                                    //@ts-ignore
+                                                    color: theme.palette.secondary.main
+                                                }}>{t("governance.votingEndTime")}</Typography>
+                                    <Typography variant={"body2"}
+                                                className={classes.typo}
+                                                sx={{
+                                                    //@ts-ignore
+                                                    color: theme.palette.primary.main
+                                                }}>{new Date(endingTime).toLocaleString()}</Typography>
+                                </Stack>
                             </Stack>
                         </Stack>
                     </Stack>
