@@ -28,11 +28,11 @@ function App() {
                             preventDuplicate
                             TransitionComponent={Collapse}
                         >
-                            <DialogProvider>
-                                <GetKeplrProvider>
+                            <GetKeplrProvider>
+                                <DialogProvider>
                                     <Main/>
-                                </GetKeplrProvider>
-                            </DialogProvider>
+                                </DialogProvider>
+                            </GetKeplrProvider>
                         </SnackbarProvider>
                     </GlobalPreloaderProvider>
                 </CustomThemeProvider>

@@ -1,5 +1,4 @@
 import React, {createContext, FunctionComponent, useCallback, useEffect, useRef, useState,} from "react";
-// import {KeplrConnectionSelectModal, KeplrWalletConnectQRModal,} from "../../modals";
 import EventEmitter from "eventemitter3";
 import Axios from "axios";
 import {Buffer} from "buffer";
