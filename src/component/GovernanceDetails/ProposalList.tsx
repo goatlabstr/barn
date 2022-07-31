@@ -4,7 +4,7 @@ import {useTheme} from "@mui/styles";
 import {useTranslation} from "react-i18next";
 import ProposalCard from "../ProposalCard/ProposalCard";
 import VotingDialog from "./VotingDetails";
-import {useDialog} from "../../context/DialogContext/DialogContext";
+import {useDialog} from "../../hooks/use-dialog/DialogContext";
 import {useNavigate} from "react-router-dom";
 
 type ProposalProps = {

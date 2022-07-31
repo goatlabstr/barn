@@ -6,10 +6,12 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import {Box, Button, FormControlLabel, Stack, Switch, Typography} from "@mui/material";
-import {useAppSelector} from "../../../customHooks/hook";
-import {useAppState} from "../../../context/AppStateContext";
+import {useAppSelector} from "../../../hooks/hook";
+import {useAppState} from "../../../hooks/useAppState";
 import Grid from "@mui/material/Grid";
 import {useTranslation} from "react-i18next";
+import SearchTextField from "../SearchTextField";
+import {MobileDelegationDialog} from "./MobileDelegationDialog";
 
 interface TableProps {
     rows: Array<any>;
@@ -17,6 +19,7 @@ interface TableProps {
     buttonTitle?: String;
     onClickToolbarButton?: Function;
     viewStakedValidators?: boolean;
+    search?: Boolean;
 }
 
 const MobileToolbar = (props) => {
@@ -27,37 +30,47 @@ const MobileToolbar = (props) => {
         onClickToolbarButton,
         viewStakedValidators,
         viewOnlyStakedVal,
-        handleViewOnlyStakedVal
+        handleViewOnlyStakedVal,
+        onChangeSearchValue, searchActive
     } = props;
 
+    const [value, setValue] = useState("");
+
+    const handleValueChange = (event) => {
+        if (onChangeSearchValue && typeof onChangeSearchValue === 'function')
+            onChangeSearchValue(event.target.value);
+        setValue(event.target.value);
+    }
+
     return (
-        <Grid container justifyContent={"space-between"} sx={{mb: 0.5}}>
-            <Grid item>
-                <Typography
-                    sx={{flex: '1 1 100%'}}
-                    variant="h6"
-                    id="tableTitle"
-                    component="div"
-                >
-                    {title}
-                </Typography>
-            </Grid>
-            <Grid item>
-                <Stack direction={"row"} alignItems={"center"} justifyContent={"center"}>
-                    {//@ts-ignore
-                        buttonTitle && <Button variant="outlined"
-                                               color="secondary"
-                                               onClick={onClickToolbarButton}>{buttonTitle}</Button>}
-                    {viewStakedValidators &&
-                        <FormControlLabel sx={{mr: 1}}
-                                          control={<Switch
-                                              color="secondary"
-                                              size="small"
-                                              checked={viewOnlyStakedVal}
-                                              onChange={handleViewOnlyStakedVal}
-                                          />}
-                                          label={t("viewStakedValidators")}/>
-                    }
+        <Grid container sx={{mb: 0.5}}>
+            {searchActive && <Grid item xs={12}><SearchTextField value={value} onChange={handleValueChange}
+                                                                 style={{marginRight: 2}}/></Grid>}
+            <Grid item xs={12}>
+                <Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"}>
+                    <Typography
+                        sx={{flex: '1 1 100%'}}
+                        variant="h6"
+                        id="tableTitle"
+                        component="div"
+                    >
+                        {title}
+                    </Typography>
+                    <Stack direction={"row"} alignItems={"center"} justifyContent={"flex-end"} sx={{width: "100%"}}>
+                        {//@ts-ignore
+                            buttonTitle && <Button variant="outlined"
+                                                   color="secondary"
+                                                   onClick={onClickToolbarButton}>{buttonTitle}</Button>}
+                        {viewStakedValidators &&
+                            <FormControlLabel sx={{mr: 1}}
+                                              control={<Switch
+                                                  color="secondary"
+                                                  checked={viewOnlyStakedVal}
+                                                  onChange={handleViewOnlyStakedVal}
+                                              />}
+                                              label={t("viewStakedValidators")}/>
+                        }
+                    </Stack>
                 </Stack>
             </Grid>
         </Grid>
@@ -65,13 +78,16 @@ const MobileToolbar = (props) => {
 };
 
 function MobileTable(props: TableProps) {
-    const {rows, title, buttonTitle, onClickToolbarButton, viewStakedValidators} = props;
+    const {rows, title, buttonTitle, onClickToolbarButton, viewStakedValidators, search} = props;
     const [viewOnlyStakedVal, setViewOnlyStakedVal] = useState(false);
+    const [selectedValidator, setSelectedValidator] = useState();
+    const [delegationDialogOpen, setDelegationDialogOpen] = useState(false);
     const [data, setData] = useState<Array<any>>([]);
+    const [filterValue, setFilterValue] = useState<string>("");
     const {
         appState: {
             currentPrice,
-            chains
+            chainInfo
         }
     } = useAppState();
 
@@ -79,12 +95,17 @@ function MobileTable(props: TableProps) {
 
     useEffect(() => {
         rows.sort((a, b) => a?.rank - b?.rank)
+    }, []);
+
+    useEffect(() => {
         if (viewOnlyStakedVal) {
             setData(rows.filter(row => getStakeAmount(row) > 0))
-        } else {
+        } else if (!filterValue || /^\s*$/.test(filterValue)) {
             setData(rows);
-        }
-    }, [rows, viewOnlyStakedVal]);
+        } else
+            //@ts-ignore
+            setData(rows.filter(x => x?.description?.moniker?.toLowerCase().includes(filterValue.toLowerCase())))
+    }, [rows, filterValue, viewOnlyStakedVal]);
 
     const handleViewOnlyStakedVal = (event: React.ChangeEvent<HTMLInputElement>) => {
         setViewOnlyStakedVal(event.target.checked);
@@ -92,7 +113,7 @@ function MobileTable(props: TableProps) {
 
     const getStakeAmount = (row) => {
         //@ts-ignore
-        const decimals = chains?.decimals | 6;
+        const decimals = chainInfo?.decimals | 6;
         let value = delegations.find((val) =>
             (val.delegation && val.delegation.validator_address) === row.operator_address);
         return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** decimals : 0;
@@ -113,6 +134,8 @@ function MobileTable(props: TableProps) {
                                viewOnlyStakedVal={viewOnlyStakedVal}
                                handleViewOnlyStakedVal={handleViewOnlyStakedVal}
                                buttonTitle={buttonTitle}
+                               onChangeSearchValue={setFilterValue}
+                               searchActive={search}
                                onClickToolbarButton={onClickToolbarButton}/>}
             <List sx={{width: '100%'}}>
                 {
@@ -125,6 +148,10 @@ function MobileTable(props: TableProps) {
                                     borderColor: "rgb(131 157 170)",
                                     borderRadius: 1,
                                     mb: 1
+                                }}
+                                onClick={() => {
+                                    setSelectedValidator(row)
+                                    setDelegationDialogOpen(true)
                                 }}
                                 key={row?.rank}>
                                 <Typography sx={{pr: 1}}>#{row?.rank}</Typography>
@@ -155,6 +182,9 @@ function MobileTable(props: TableProps) {
                     )
                 }
             </List>
+            <MobileDelegationDialog isOpen={delegationDialogOpen}
+                                    onRequestClose={() => setDelegationDialogOpen(false)}
+                                    data={selectedValidator}/>
         </Box>
     );
 }

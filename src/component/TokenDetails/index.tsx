@@ -10,8 +10,8 @@ import {
     StarsRounded
 } from '@mui/icons-material';
 import {useTranslation} from "react-i18next";
-import {useAppDispatch, useAppSelector} from "../../customHooks/hook";
-import {useAppState} from "../../context/AppStateContext";
+import {useAppDispatch, useAppSelector} from "../../hooks/hook";
+import {useAppState} from "../../hooks/useAppState";
 import {makeStyles} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
 import {gas} from "../../constants/defaultGasFees";
@@ -20,6 +20,7 @@ import {useSnackbar} from "notistack";
 import allActions from "../../action";
 import {snackbarTxAction} from "../Snackbar/action";
 import {config} from "../../constants/networkConfig";
+import {useKeplr} from "../../hooks/use-keplr/hook";
 
 const useStyles = makeStyles((theme: Theme) => ({
     icon: {
@@ -36,12 +37,13 @@ export default function Index() {
     const classes = useStyles();
     const {
         appState: {
-            chains,
+            chainInfo,
             currentPrice
         }
     } = useAppState();
 
     const [inTxProgress, setInTxProgress] = useState(false);
+    const {getKeplr} = useKeplr();
 
     const rewards = useAppSelector(state => state.accounts.rewards.result);
     const address = useAppSelector(state => state.accounts.address.value);
@@ -51,23 +53,25 @@ export default function Index() {
 
     const handleBalance = () => {
         //@ts-ignore
-        const decimals = chains?.decimals | 6;
+        const decimals = chainInfo?.decimals | 6;
         //@ts-ignore
-        const bal = balance && balance.length && balance.find((val) => val.denom === chains?.denom);
+        const bal = balance && balance.length && balance.find((val) => val.denom === chainInfo?.denom);
         return bal?.amount / (10 ** decimals) || 0;
     }
 
     const handleRewards = () => {
         //@ts-ignore
-        const decimals = chains?.decimals | 6;
-        return rewards && rewards.total && rewards.total.length &&
-        rewards.total[0] && rewards.total[0].amount
-            ? rewards.total[0].amount / 10 ** decimals : 0;
+        const decimals = chainInfo?.decimals | 6;
+        const mainRewards = rewards && rewards.total && rewards.total.length &&
+            //@ts-ignore
+            rewards.total.filter(r => r?.denom === chainInfo?.denom);
+        return mainRewards && mainRewards.length && mainRewards[0] && mainRewards[0].amount
+            ? mainRewards[0].amount / 10 ** decimals : 0;
     }
 
     const handleStakedAmount = () => {
         //@ts-ignore
-        const decimals = chains?.decimals | 6;
+        const decimals = chainInfo?.decimals | 6;
         const staked = delegations.reduce((accumulator, currentValue) => {
             return accumulator + Number(currentValue.balance.amount);
         }, 0);
@@ -76,7 +80,7 @@ export default function Index() {
 
     const handleUnstakedAmount = () => {
         //@ts-ignore
-        const decimals = chains?.decimals | 6;
+        const decimals = chainInfo?.decimals | 6;
         let unStaked = 0;
         unBondingDelegations.map((delegation) => {
             delegation.entries && delegation.entries.length &&
@@ -96,20 +100,21 @@ export default function Index() {
         return 0;
     }
 
-    const updateBalance = () => {
+    const updateBalance = async () => {
         //@ts-ignore
-        const decimals = chains?.decimals | 6;
+        const decimals = chainInfo?.decimals | 6;
         const tokens = rewards && rewards.length && rewards[0] && rewards[0].reward &&
         rewards[0].reward.length && rewards[0].reward[0] && rewards[0].reward[0].amount
             ? rewards[0].reward[0].amount / 10 ** decimals : 0;
+        const keplr = await getKeplr();
         //@ts-ignore
-        getAllBalances(chains?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+        getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.fetchRewards(address));
         dispatch(allActions.setTokens(tokens));
     }
 
-    const handleClaimAll = () => {
+    const handleClaimAll = async () => {
         setInTxProgress(true);
         let gasValue = gas.claim_reward;
         if (rewards && rewards.rewards && rewards.rewards.length > 1) {
@@ -122,7 +127,7 @@ export default function Index() {
                 amount: [{
                     amount: String(gasValue * config.GAS_PRICE_STEP_AVERAGE),
                     //@ts-ignore
-                    denom: chains?.denom,
+                    denom: chainInfo?.denom,
                 }],
                 gas: String(gasValue),
             },
@@ -145,8 +150,9 @@ export default function Index() {
             });
         }
 
+        const keplr = await getKeplr();
         //@ts-ignore
-        signTxAndBroadcast(chains?.chain_id, updatedTx, address, (error, result) => {
+        signTxAndBroadcast(keplr, chainInfo?.chain_id, updatedTx, address, (error, result) => {
             setInTxProgress(false);
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});
@@ -166,15 +172,15 @@ export default function Index() {
     return (
         <React.Fragment>
             <Grid container rowSpacing={3}>
-                <Grid item xs={12} lg={12}>
+                <Grid item xs={12} md={12}>
                     <Stack direction="row" justifyContent="space-between">
                         <Stack direction="row" alignItems={"center"} spacing={1}>
                             {//@ts-ignore
-                                chains?.image && <Avatar src={chains?.image}/>
+                                chainInfo?.image && <Avatar src={chainInfo?.image}/>
                             }
                             <Typography
                                 //@ts-ignore
-                                variant={"h6"}>{t("dashboard.networkBalances", {"name": chains?.pretty_name})}</Typography>
+                                variant={"h6"}>{t("dashboard.networkBalances", {"name": chainInfo?.pretty_name})}</Typography>
                         </Stack>
                         <Button variant="outlined"
                                 color="secondary"
@@ -187,7 +193,7 @@ export default function Index() {
                                 {t("claimReward", {
                                     "value": handleRewards().toFixed(3),
                                     //@ts-ignore
-                                    "name": chains?.symbol
+                                    "name": chainInfo?.symbol
                                 })}
                             </Box>
                             <Box sx={{display: {xs: "block", md: 'none'}}}>
@@ -196,23 +202,23 @@ export default function Index() {
                         </Button>
                     </Stack>
                 </Grid>
-                <Grid item xs={6} lg={2}>
+                <Grid item xs={6} md={2}>
                     <DetailViewer title={t("dashboard.totalBalances")} amount={handleTotalBalance()} prefix={"$"}
                                   icon={<AccountBalanceWalletRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
-                <Grid item xs={6} lg={3}>
+                <Grid item xs={6} md={3}>
                     <DetailViewer title={t("dashboard.availableAmount")} amount={handleBalance().toFixed(3)}
                                   icon={<CurrencyExchangeRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
-                <Grid item xs={6} lg={3}>
+                <Grid item xs={6} md={3}>
                     <DetailViewer title={t("dashboard.stakedAmount")} amount={handleStakedAmount().toFixed(3)}
                                   icon={<AssuredWorkloadRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
-                <Grid item xs={6} lg={2}>
+                <Grid item xs={6} md={2}>
                     <DetailViewer title={t("dashboard.rewards")} amount={handleRewards().toFixed(3)}
                                   icon={<StarsRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
-                <Grid item xs={6} lg={2}>
+                <Grid item xs={6} md={2}>
                     <DetailViewer title={t("dashboard.unstakedAmount")} amount={handleUnstakedAmount().toFixed(3)}
                                   icon={<HourglassTopRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>

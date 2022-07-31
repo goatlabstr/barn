@@ -1,7 +1,7 @@
 import React, {FunctionComponent, useCallback, useEffect, useState} from "react";
 
 import {ThemeProvider, createTheme} from "@mui/material/styles";
-import {useAppState} from "../AppStateContext";
+import {useAppState} from "../useAppState";
 import {useTranslation} from "react-i18next";
 import { create } from "jss"; // npm install jss-rtl
 import rtl from "jss-rtl";// npm install jss-rtl

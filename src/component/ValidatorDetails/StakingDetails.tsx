@@ -2,15 +2,16 @@ import * as React from 'react';
 import {Box, Button, CircularProgress, Grid, IconButton, Stack, Typography} from "@mui/material";
 import SummaryTable from "./SummaryTable";
 import {useTranslation} from "react-i18next";
-import {useAppDispatch, useAppSelector} from "../../customHooks/hook";
+import {useAppDispatch, useAppSelector} from "../../hooks/hook";
 import allActions from "../../action";
 import {gas} from "../../constants/defaultGasFees";
 import {getAllBalances, signTxAndBroadcast} from "../../services/cosmos";
 import {useState} from "react";
 import {useSnackbar} from "notistack";
 import {snackbarTxAction} from "../Snackbar/action";
-import {useAppState} from "../../context/AppStateContext";
+import {useAppState} from "../../hooks/useAppState";
 import {config} from "../../constants/networkConfig";
+import {useKeplr} from "../../hooks/use-keplr/hook";
 
 function Index(props) {
     const {rows} = props;
@@ -19,11 +20,12 @@ function Index(props) {
     const {enqueueSnackbar} = useSnackbar();
     const {
         appState: {
-            chains
+            chainInfo
         }
     } = useAppState();
 
     const [inTxProgress, setInTxProgress] = useState(false);
+    const {getKeplr} = useKeplr();
 
     const rewards = useAppSelector(state => state.accounts.rewards.result);
     const address = useAppSelector(state => state.accounts.address.value);
@@ -31,15 +33,17 @@ function Index(props) {
 
     const handleRewards = () => {
         //@ts-ignore
-        const decimals = chains?.decimals | 6;
-        return rewards && rewards.total && rewards.total.length &&
-        rewards.total[0] && rewards.total[0].amount
-            ? rewards.total[0].amount / 10 ** decimals : 0;
+        const decimals = chainInfo?.decimals | 6;
+        const mainRewards = rewards && rewards.total && rewards.total.length &&
+            //@ts-ignore
+            rewards.total.filter(r => r?.denom === chainInfo?.denom);
+        return mainRewards && mainRewards.length && mainRewards[0] && mainRewards[0].amount
+            ? mainRewards[0].amount / 10 ** decimals : 0;
     }
 
     const getStakedAmount = () => {
         //@ts-ignore
-        const decimals = chains?.decimals | 6;
+        const decimals = chainInfo?.decimals | 6;
         const staked = delegations.reduce((accumulator, currentValue) => {
             return accumulator + Number(currentValue.balance.amount);
         }, 0);
@@ -47,20 +51,21 @@ function Index(props) {
     }
 
 
-    const updateBalance = () => {
+    const updateBalance = async () => {
         //@ts-ignore
-        const decimals = chains?.decimals | 6;
+        const decimals = chainInfo?.decimals | 6;
         const tokens = rewards && rewards.length && rewards[0] && rewards[0].reward &&
         rewards[0].reward.length && rewards[0].reward[0] && rewards[0].reward[0].amount
             ? rewards[0].reward[0].amount / 10 ** decimals : 0;
+        const keplr = await getKeplr();
         //@ts-ignore
-        getAllBalances(chains?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+        getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.fetchRewards(address));
         dispatch(allActions.setTokens(tokens));
     }
 
-    const handleClaimAll = () => {
+    const handleClaimAll = async () => {
         setInTxProgress(true);
         let gasValue = gas.claim_reward;
         if (rewards && rewards.rewards && rewards.rewards.length > 1) {
@@ -73,7 +78,7 @@ function Index(props) {
                 amount: [{
                     amount: String(gasValue * config.GAS_PRICE_STEP_AVERAGE),
                     //@ts-ignore
-                    denom: chains?.denom,
+                    denom: chainInfo?.denom,
                 }],
                 gas: String(gasValue),
             },
@@ -96,8 +101,9 @@ function Index(props) {
             });
         }
 
+        const keplr = await getKeplr();
         //@ts-ignore
-        signTxAndBroadcast(chains?.chain_id, updatedTx, address, (error, result) => {
+        signTxAndBroadcast(keplr, chainInfo?.chain_id, updatedTx, address, (error, result) => {
             setInTxProgress(false);
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});
@@ -122,7 +128,7 @@ function Index(props) {
                         <div>
                             <Typography variant={"h6"}>{
                                 //@ts-ignore
-                                t("staking.name", {"name": chains?.pretty_name})
+                                t("staking.name", {"name": chainInfo?.pretty_name})
                             }</Typography>
                             <Typography variant={"body1"}
                                         style={{color: "rgb(131 157 170)"}}>{t("staking.totalStaked", {
@@ -140,7 +146,7 @@ function Index(props) {
                                 {t("claimReward", {
                                     "value": handleRewards().toFixed(3),
                                     //@ts-ignore
-                                    "name": chains?.denom
+                                    "name": chainInfo?.denom
                                 })}
                             </Box>
                             <Box sx={{display: {xs: "block", md: 'none'}}}>

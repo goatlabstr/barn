@@ -12,14 +12,15 @@ import {
 import {useSnackbar} from "notistack";
 import {useTranslation} from "react-i18next";
 import {makeStyles} from "@mui/styles";
-import {useDialog} from "../../context/DialogContext/DialogContext";
-import {useAppDispatch, useAppSelector} from "../../customHooks/hook";
-import {useGlobalPreloader} from "../../context/GlobalPreloaderProvider";
+import {useDialog} from "../../hooks/use-dialog/DialogContext";
+import {useAppDispatch, useAppSelector} from "../../hooks/hook";
+import {useGlobalPreloader} from "../../hooks/useGlobalPreloader";
 import {getAllBalances, signTxAndBroadcast} from "../../services/cosmos";
 import {gas} from "../../constants/defaultGasFees";
 import allActions from "../../action";
 import {config} from "../../constants/networkConfig";
-import {useAppState} from "../../context/AppStateContext";
+import {useAppState} from "../../hooks/useAppState";
+import {useKeplr} from "../../hooks/use-keplr/hook";
 
 const useStyles = makeStyles((theme: Theme) => ({
     button: {
@@ -43,25 +44,28 @@ export default function VotingDialog({proposal}) {
     const [voteValue, setVoteValue] = useState(null);
     const {
         appState: {
-            chains
+            chainInfo
         }
     } = useAppState();
+    const {getKeplr} = useKeplr();
 
     const address = useAppSelector(state => state.accounts.address.value);
 
     const updateBalance = (id) => {
-        //@ts-ignore
-        getAllBalances(chains?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
-        dispatch(allActions.fetchVestingBalance(id));
-        dispatch(allActions.fetchVoteDetails(id, address));
-        dispatch(allActions.fetchProposalTally(id));
+        getKeplr().then(keplr => {
+            //@ts-ignore
+            getAllBalances(keplr, chainInfo?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
+            dispatch(allActions.fetchVestingBalance(id));
+            dispatch(allActions.fetchVoteDetails(id, address));
+            dispatch(allActions.fetchProposalTally(id));
+        })
     }
 
     const handleChange = (event) => {
         setVoteValue(event.target.value);
     };
 
-    const handleApplyButton = () => {
+    const handleApplyButton = async () => {
         activate();
 
         const option = voteValue === 'Yes' ? 1
@@ -82,15 +86,16 @@ export default function VotingDialog({proposal}) {
                 amount: [{
                     amount: String(gas.vote * config.GAS_PRICE_STEP_AVERAGE),
                     //@ts-ignore
-                    denom: chains?.denom,
+                    denom: chainInfo?.denom,
                 }],
                 gas: String(gas.vote),
             },
             memo: '',
         };
 
+        const keplr = await getKeplr();
         //@ts-ignore
-        signTxAndBroadcast(chains?.chain_id, tx, address, (error, result) => {
+        signTxAndBroadcast(keplr, chainInfo?.chain_id, tx, address, (error, result) => {
             passivate();
             if (error) {
                 enqueueSnackbar(error, {variant: "error"});

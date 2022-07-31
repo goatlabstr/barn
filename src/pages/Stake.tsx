@@ -7,8 +7,8 @@ import {GeneralConstants} from "../constants/general";
 import EnhancedTable from '../component/ValidatorDetails/EnhancedTable';
 import {Done as ActiveIcon} from "@mui/icons-material";
 import {useTranslation} from "react-i18next";
-import {useAppSelector} from "../customHooks/hook";
-import {useAppState} from "../context/AppStateContext";
+import {useAppSelector} from "../hooks/hook";
+import {useAppState} from "../hooks/useAppState";
 import MobileTable from "../component/ValidatorDetails/Mobile/MobileTable";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -68,7 +68,7 @@ function Index() {
                         </Box>
                     </Box>
                     <Box sx={{display: {xs: "block", md: 'none'}}}>
-                        <MobileTable rows={activeValidators} viewStakedValidators title={t("staking.allValidators")}/>
+                        <MobileTable rows={activeValidators} viewStakedValidators search title={t("staking.allValidators")}/>
                     </Box>
                 </Grid>
             </Grid>
