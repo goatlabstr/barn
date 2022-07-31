@@ -13,7 +13,7 @@ function Index() {
             const data = res.data;
             setSupportedNetworkUrls(data);
             Common.getAllChainsInfo().then(resp => {
-                const chainsData = resp.data?.chainInfo;
+                const chainsData = resp?.data?.chains;
                 setSupportedChainConfigs(chainsData.filter(conf => Object.keys(data).includes(conf.name)));
             })
         })

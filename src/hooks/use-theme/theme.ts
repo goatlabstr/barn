@@ -1,6 +1,14 @@
 import {createTheme} from '@mui/material/styles';
 import {grey} from '@mui/material/colors';
 
+export const enum Breakpoint {
+    SM = 600,
+    MD = 900,
+    LG = 1450,
+    XL = 1770,
+    XXL = 2000,
+}
+
 const rawTheme = createTheme({
     palette: {
         mode: 'dark'
@@ -8,10 +16,10 @@ const rawTheme = createTheme({
     breakpoints: {
         values: {
             xs: 0,
-            sm: 600,
-            md: 900,
-            lg: 1450,
-            xl: 1770,
+            sm: Breakpoint.SM,
+            md: Breakpoint.MD,
+            lg: Breakpoint.LG,
+            xl: Breakpoint.XL,
         },
     },
     typography: {

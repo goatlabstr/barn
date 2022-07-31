@@ -5,7 +5,8 @@ import {Theme} from "@mui/material/styles";
 import {useTranslation} from "react-i18next";
 import {makeStyles} from "@mui/styles";
 import {
-    alpha, Avatar,
+    alpha,
+    Avatar,
     Box,
     Button,
     Drawer,
@@ -19,7 +20,6 @@ import {
     Toolbar,
     Typography
 } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
 import clsx from "clsx";
 import logo from '../../logo.svg';
 import {AccountBalanceWalletRounded, Email, Instagram, LogoutRounded, Telegram, Twitter} from "@mui/icons-material";
@@ -31,6 +31,7 @@ import {useSnackbar} from "notistack";
 import {useAppDispatch, useAppSelector} from '../../hooks/hook';
 import {useAppState} from "../../hooks/useAppState";
 import {CopyAddressButton} from "./CopyAddressButton";
+import {useKeplr} from "../../hooks/use-keplr/hook";
 
 const drawerWidth = 220;
 
@@ -100,6 +101,7 @@ export default function SideBar(props: SideBarProps) {
             chainInfo
         }
     } = useAppState();
+    const {getKeplr, connectionType, clearLastUsedKeplr} = useKeplr();
 
     const address = useAppSelector(state => state.accounts.address.value);
 
@@ -109,6 +111,7 @@ export default function SideBar(props: SideBarProps) {
 
     const handleDisconnectButtonClick = () => {
         localStorage.removeItem('goat_wl_addr');
+        clearLastUsedKeplr();
         dispatch(allActions.disconnectSet());
     }
 
@@ -116,23 +119,25 @@ export default function SideBar(props: SideBarProps) {
         if (!chainInfo || Object.keys(chainInfo).length === 0)
             return;
         activate();
-        initializeChain(chainInfo, (error, addressList) => {
-            passivate();
-            if (error) {
-                localStorage.removeItem('goat_wl_addr');
-                enqueueSnackbar(error, {variant: "error"});
-                return;
-            }
-            dispatch(allActions.setAccountAddress(addressList[0]?.address));
-            dispatch(allActions.getUnBondingDelegations(addressList[0] && addressList[0].address));
-            dispatch(allActions.fetchRewards(addressList[0] && addressList[0].address));
-            dispatch(allActions.getDelegations(addressList[0] && addressList[0].address));
-            //@ts-ignore
-            getAllBalances(chainInfo?.chain_id, addressList[0] && addressList[0].address, (err, data) => dispatch(allActions.getBalance(err, data)));
-            dispatch(allActions.fetchVestingBalance(addressList[0] && addressList[0].address));
-            dispatch(allActions.getDelegatedValidatorsDetails(addressList[0] && addressList[0].address));
-            localStorage.setItem('goat_wl_addr', encode(addressList[0] && addressList[0].address));
-        });
+        getKeplr().then(keplr => {
+            initializeChain(chainInfo, keplr, connectionType, (error, addressList) => {
+                passivate();
+                if (error) {
+                    localStorage.removeItem('goat_wl_addr');
+                    enqueueSnackbar(error, {variant: "error"});
+                    return;
+                }
+                dispatch(allActions.setAccountAddress(addressList[0]?.address));
+                dispatch(allActions.getUnBondingDelegations(addressList[0] && addressList[0].address));
+                dispatch(allActions.fetchRewards(addressList[0] && addressList[0].address));
+                dispatch(allActions.getDelegations(addressList[0] && addressList[0].address));
+                //@ts-ignore
+                getAllBalances(chainInfo?.chain_id, addressList[0] && addressList[0].address, (err, data) => dispatch(allActions.getBalance(err, data)));
+                dispatch(allActions.fetchVestingBalance(addressList[0] && addressList[0].address));
+                dispatch(allActions.getDelegatedValidatorsDetails(addressList[0] && addressList[0].address));
+                localStorage.setItem('goat_wl_addr', encode(addressList[0] && addressList[0].address));
+            });
+        })
     }
 
     const drawer = (

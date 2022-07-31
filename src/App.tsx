@@ -10,6 +10,7 @@ import {DialogProvider} from "./hooks/use-dialog/DialogContext";
 import GlobalPreloaderProvider, {useGlobalPreloader} from "./hooks/useGlobalPreloader";
 import {Collapse} from "@mui/material";
 import Common from "./services/axios/common";
+import {GetKeplrProvider} from "./hooks/use-keplr/context";
 
 function App() {
     return (
@@ -28,7 +29,9 @@ function App() {
                             TransitionComponent={Collapse}
                         >
                             <DialogProvider>
-                                <Main/>
+                                <GetKeplrProvider>
+                                    <Main/>
+                                </GetKeplrProvider>
                             </DialogProvider>
                         </SnackbarProvider>
                     </GlobalPreloaderProvider>

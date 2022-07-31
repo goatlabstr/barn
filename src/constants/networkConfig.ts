@@ -19,7 +19,7 @@ const getSubdomain = () => {
     return subdomain;
 }
 
-const subdomain = getSubdomain();
+export const subdomain = getSubdomain();
 
 export const config: NetworkConfig = {
     "RPC_URL": "https://rpc.cosmos.directory/" + subdomain,

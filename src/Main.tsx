@@ -27,6 +27,7 @@ import Common from "./services/axios/common";
 import SupportedNetworks from "./pages/SupportedNetworks";
 import logo from "./logo.svg";
 import MenuIcon from "@mui/icons-material/Menu";
+import {useKeplr} from "./hooks/use-keplr/hook";
 
 const menuItems = (t) => [
     {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
@@ -51,6 +52,7 @@ function Main() {
         setActiveValidators,
         setInactiveValidators
     } = useAppState();
+    const {getKeplr, connectionType} = useKeplr();
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -158,23 +160,25 @@ function Main() {
     const handleChain = (chain, fetch) => {
         if (!chain || Object.keys(chain).length === 0)
             return;
-        initializeChain(chain, (error, addressList) => {
-            if (error) {
-                enqueueSnackbar(error, {variant: "error"});
-                localStorage.removeItem('goat_wl_addr');
-                return;
-            }
+        getKeplr().then(keplr => {
+            initializeChain(chain, keplr, connectionType, (error, addressList) => {
+                if (error) {
+                    enqueueSnackbar(error, {variant: "error"});
+                    localStorage.removeItem('goat_wl_addr');
+                    return;
+                }
 
-            const previousAddress = decode(localStorage.getItem('goat_wl_addr') || "");
+                const previousAddress = decode(localStorage.getItem('goat_wl_addr') || "");
 
-            dispatch(allActions.setAccountAddress(addressList[0]?.address));
-            if (previousAddress !== addressList[0]?.address) {
-                localStorage.setItem('goat_wl_addr', encode(addressList[0]?.address));
-            }
-            if (fetch && chain) {
-                handleFetchDetails(addressList[0]?.address);
-            }
-        });
+                dispatch(allActions.setAccountAddress(addressList[0]?.address));
+                if (previousAddress !== addressList[0]?.address) {
+                    localStorage.setItem('goat_wl_addr', encode(addressList[0]?.address));
+                }
+                if (fetch && chain) {
+                    handleFetchDetails(addressList[0]?.address);
+                }
+            });
+        })
     }
 
     const getProposalDetails = (data) => {

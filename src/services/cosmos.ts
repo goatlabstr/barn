@@ -7,6 +7,15 @@ const rpcUrl = config.RPC_URL;
 const stakingUrl = config.STAKING_URL;
 const features = config.FEATURES;
 
+export enum BroadcastMode {
+    /** Return after tx commit */
+    Block = "block",
+    /** Return afer CheckTx */
+    Sync = "sync",
+    /** Return right away */
+    Async = "async",
+}
+
 const chainConfig = (chainId,
                      chainName,
                      coinDenom,
@@ -73,50 +82,54 @@ const getSignStargateClient = async (chainId) => {
     );
 }
 
-export const initializeChain = (chains, cb) => {
+export const initializeChain = (chain, keplr, connectionType, cb) => {
     (async () => {
-        const {chain_id,
+        const {
+            chain_id,
             chain_name,
             symbol,
             denom,
             decimals,
             slip44,
             bech32_prefix,
-            coingecko_id} = chains;
+            coingecko_id
+        } = chain;
         //@ts-ignore
-        if (!window.getOfflineSignerOnlyAmino || !window.keplr) {
+        if (!keplr) {
             const error = 'Please install keplr extension';
             cb(error);
         } else {
             //@ts-ignore
-            if (window.keplr.experimentalSuggestChain) {
-                try {
-                    //@ts-ignore
-                    await window.keplr.experimentalSuggestChain(chainConfig(
-                        chain_id,
-                        chain_name,
-                        symbol,
-                        denom,
-                        decimals,
-                        slip44,
-                        bech32_prefix,
-                        coingecko_id));
-                } catch (error) {
-                    const chainError = 'Failed to suggest the chain';
-                    cb(chainError);
+            if(connectionType === "extension"){
+                if (keplr.experimentalSuggestChain) {
+                    try {
+                        //@ts-ignore
+                        await keplr.experimentalSuggestChain(chainConfig(
+                            chain_id,
+                            chain_name,
+                            symbol,
+                            denom,
+                            decimals,
+                            slip44,
+                            bech32_prefix,
+                            coingecko_id));
+                    } catch (error) {
+                        const chainError = 'Failed to suggest the chain';
+                        cb(chainError);
+                    }
+                } else {
+                    const versionError = 'Please use the recent version of keplr extension';
+                    cb(versionError);
                 }
-            } else {
-                const versionError = 'Please use the recent version of keplr extension';
-                cb(versionError);
             }
         }
 
         //@ts-ignore
-        if (window.keplr) {
+        if (keplr) {
             //@ts-ignore
-            await window.keplr.enable(chain_id);
+            await keplr.enable(chain_id);
             //@ts-ignore
-            const offlineSigner = window.getOfflineSignerOnlyAmino(chain_id);
+            const offlineSigner = keplr.getOfflineSigner(chain_id);
             const accounts = await offlineSigner.getAccounts();
             cb(null, accounts);
         }
@@ -166,6 +179,38 @@ export const getAllBalances = (chainId, address, cb) => {
         });
     })();
 }
+
+export const getKeplrFromWindow: () => Promise<any> = async () => {
+    if (typeof window === "undefined") {
+        return undefined;
+    }
+
+    //@ts-ignore
+    if (window.keplr) {
+        //@ts-ignore
+        return window.keplr;
+    }
+
+    if (document.readyState === "complete") {
+        //@ts-ignore
+        return window.keplr;
+    }
+
+    return new Promise((resolve) => {
+        const documentStateChange = (event: Event) => {
+            if (
+                event.target &&
+                (event.target as Document).readyState === "complete"
+            ) {
+                //@ts-ignore
+                resolve(window.keplr);
+                document.removeEventListener("readystatechange", documentStateChange);
+            }
+        };
+
+        document.addEventListener("readystatechange", documentStateChange);
+    });
+};
 
 export const aminoSignTx = (chainId, tx, address, cb) => {
     (async () => {
