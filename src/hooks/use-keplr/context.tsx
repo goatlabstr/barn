@@ -108,7 +108,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
         let callbackClosed: (() => void) | undefined;
 
         const createWalletConnect = (): WalletConnect => {
-            const wcLogoURI = require("/logo192.png")?.default?.src;
+            const wcLogoURI = require("../../logo.png")?.default?.src;
 
             const wc = new WalletConnect({
                 bridge: "https://bridge.walletconnect.org", // Required
