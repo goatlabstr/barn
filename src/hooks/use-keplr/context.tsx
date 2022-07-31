@@ -77,8 +77,17 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
 
     const lastUsedKeplrRef = useRef<any>();
     const defaultConnectionTypeRef = useRef<"extension" | "wallet-connect" | undefined>();
+    //@ts-ignore
     const [connectionType, setConnectionType] = useState<"extension" | "wallet-connect" | undefined>();
     const [eventListener] = useState(() => new EventEmitter());
+
+    const handleConnectionType = (type) => {
+        if (type === undefined)
+            localStorage.removeItem('connection_type');
+        else
+            localStorage.setItem('connection_type', type);
+        setConnectionType(type);
+    }
 
     const [getKeplr] = useState(() => (): Promise<any> => {
         if (typeof window === "undefined") {
@@ -92,7 +101,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
         if (defaultConnectionTypeRef.current === "extension") {
             return getKeplrFromWindow().then((keplr) => {
                 lastUsedKeplrRef.current = keplr;
-                setConnectionType("extension");
+                handleConnectionType("extension");
                 return keplr;
             });
         }
@@ -116,9 +125,6 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                     close: () => setWCUri(""),
                 },
             });
-
-            console.log(wc)
-            debugger
 
             // XXX: I don't know why they designed that the client meta options in the constructor should be always ignored...
             // @ts-ignore
@@ -145,7 +151,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                     sendTx: sendTxWC,
                 });
                 lastUsedKeplrRef.current = keplr;
-                setConnectionType("wallet-connect");
+                handleConnectionType("wallet-connect");
                 return Promise.resolve(keplr);
             }
         }
@@ -154,7 +160,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
             // First, try to get keplr from window.
             const keplrFromWindow = await getKeplrFromWindow();
 
-            if (!isMobile()) {
+            if (!isMobile() && !localStorage.getItem('goat_wl_addr')) {
                 // If on mobile browser environment,
                 // no need to open select modal.
                 setIsExtensionSelectionModalOpen(true);
@@ -187,7 +193,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
 
                     getKeplrFromWindow().then((keplr) => {
                         lastUsedKeplrRef.current = keplr;
-                        setConnectionType("extension");
+                        handleConnectionType("extension");
                         resolve(keplr);
                         cleanUp();
                     });
@@ -218,7 +224,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                                 });
                                 setIsExtensionSelectionModalOpen(false);
                                 lastUsedKeplrRef.current = keplr;
-                                setConnectionType("wallet-connect");
+                                handleConnectionType("wallet-connect");
                                 resolve(keplr);
                             }
                         });
@@ -228,7 +234,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                         });
                         setIsExtensionSelectionModalOpen(false);
                         lastUsedKeplrRef.current = keplr;
-                        setConnectionType("wallet-connect");
+                        handleConnectionType("wallet-connect");
                         resolve(keplr);
                         cleanUp();
                     }
@@ -262,7 +268,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                 getKeplr,
                 clearLastUsedKeplr: useCallback(() => {
                     lastUsedKeplrRef.current = undefined;
-                    setConnectionType(undefined);
+                    handleConnectionType(undefined);
                 }, []),
                 setDefaultConnectionType: useCallback(
                     (type: "extension" | "wallet-connect" | undefined) => {

@@ -52,7 +52,7 @@ function Main() {
         setActiveValidators,
         setInactiveValidators
     } = useAppState();
-    const {getKeplr, connectionType} = useKeplr();
+    const {getKeplr, connectionType, setDefaultConnectionType} = useKeplr();
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -160,6 +160,11 @@ function Main() {
     const handleChain = (chain, fetch) => {
         if (!chain || Object.keys(chain).length === 0)
             return;
+        if (localStorage.getItem('connection_type')) {
+            //@ts-ignore
+            setDefaultConnectionType(localStorage.getItem('connection_type'));
+        }
+
         getKeplr().then(keplr => {
             initializeChain(chain, keplr, connectionType, (error, addressList) => {
                 if (error) {
