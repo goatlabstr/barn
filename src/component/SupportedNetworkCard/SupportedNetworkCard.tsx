@@ -45,7 +45,7 @@ export default function SupportedNetworkCard(props) {
                             <Typography
                                 sx={{display: 'inline'}}
                                 component="span"
-                                color="text.primary">
+                                color="secondary">
                                 {getCalculatedApr(calculated_apr)}%
                             </Typography>
                         </Stack>
