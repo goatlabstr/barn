@@ -108,8 +108,6 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
         let callbackClosed: (() => void) | undefined;
 
         const createWalletConnect = (): WalletConnect => {
-            const wcLogoURI = require("../../logo.png")?.default?.src;
-
             const wc = new WalletConnect({
                 bridge: "https://bridge.walletconnect.org", // Required
                 signingMethods: [
@@ -128,15 +126,13 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
             // XXX: I don't know why they designed that the client meta options in the constructor should be always ignored...
             // @ts-ignore
             wc._clientMeta = {
-                name: subdomain.toUpperCase() +" | Goatlabs Barn",
+                name: subdomain.toUpperCase() + " | Goatlabs Barn",
                 description: "Goatlabs Barn manages all delegation and governance process of a Cosmos SDK Networks",
                 url: "https://" + subdomain + ".goatlabs.zone",
-                icons: wcLogoURI
-                    ? [
-                        // Keplr mobile app can't show svg image.
-                        window.location.origin + wcLogoURI,
-                    ]
-                    : [],
+                icons: [
+                    // Keplr mobile app can't show svg image.
+                    window.location.origin + "/logo.png",
+                ]
             };
 
             return wc;

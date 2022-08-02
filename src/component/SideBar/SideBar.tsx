@@ -187,7 +187,7 @@ export default function SideBar(props: SideBarProps) {
                         </Stack>
                         <Typography variant={"body2"} color={"secondary"}>${currentPrice}</Typography>
                     </Stack>
-                    <CopyAddressButton address={address}/>
+                    {address && <CopyAddressButton address={address}/>}
                     {localStorage.getItem('goat_wl_addr') || address ?
                         <Button variant="outlined"
                                 sx={{"color": "rgb(131 157 170)", "borderColor": "rgb(131 157 170)"}}

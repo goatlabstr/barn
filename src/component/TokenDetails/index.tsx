@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Avatar, Box, Button, CircularProgress, Grid, Stack, TextField, Typography} from "@mui/material";
 import DetailViewer from "./DetailViewer";
 import {
@@ -34,6 +34,7 @@ export default function Index() {
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
     const {enqueueSnackbar} = useSnackbar();
+    const [walletName, setWalletName] = useState("");
     const classes = useStyles();
     const {
         appState: {
@@ -50,6 +51,13 @@ export default function Index() {
     const balance = useAppSelector(state => state.accounts.balance.result);
     const delegations = useAppSelector(state => state.accounts.delegations.result);
     const unBondingDelegations = useAppSelector(state => state.accounts.unBondingDelegations.result);
+
+    useEffect(() => {
+        getKeplr().then(keplr => {
+            //@ts-ignore
+            keplr.getKey(chainInfo?.chain_id).then(walletData => setWalletName(walletData?.name));
+        })
+    }, [address])
 
     const handleBalance = () => {
         //@ts-ignore
@@ -174,13 +182,19 @@ export default function Index() {
             <Grid container rowSpacing={3}>
                 <Grid item xs={12} md={12}>
                     <Stack direction="row" justifyContent="space-between">
-                        <Stack direction="row" alignItems={"center"} spacing={1}>
+                        <Stack direction="row" alignItems={"center"} spacing={1.25}>
                             {//@ts-ignore
                                 chainInfo?.image && <Avatar src={chainInfo?.image}/>
                             }
-                            <Typography
-                                //@ts-ignore
-                                variant={"h6"}>{t("dashboard.networkBalances", {"name": chainInfo?.pretty_name})}</Typography>
+                            <Stack direction="column">
+                                <Typography
+                                    //@ts-ignore
+                                    variant={"h6"}>{t("dashboard.networkBalances", {"name": chainInfo?.pretty_name})}</Typography>
+                                <Stack direction="row" spacing={0.5} alignItems={"center"} sx={{mt: -0.5}}>
+                                    <img src={"/keplr-logo.png"} style={{height: 14}}/>
+                                    <Typography variant={"body1"} color={"secondary"}>{walletName}</Typography>
+                                </Stack>
+                            </Stack>
                         </Stack>
                         <Button variant="outlined"
                                 color="secondary"
