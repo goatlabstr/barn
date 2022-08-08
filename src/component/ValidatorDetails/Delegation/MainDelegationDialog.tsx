@@ -12,9 +12,9 @@ import {useAppSelector} from "../../../hooks/hook";
 import {useAppState} from "../../../hooks/useAppState";
 import {useDialog} from "../../../hooks/use-dialog/DialogContext";
 import {useTranslation} from "react-i18next";
-import DelegateDialog from "../Delegation/DelegateDialog";
-import RedelegateDialog from "../Delegation/RedelegateDialog";
-import UndelegateDialog from "../Delegation/UndelegateDialog";
+import DelegateDialog from "./DelegateDialog";
+import RedelegateDialog from "./RedelegateDialog";
+import UndelegateDialog from "./UndelegateDialog";
 import DetailViewer from "../../TokenDetails/DetailViewer";
 import {AssuredWorkloadRounded, CurrencyExchangeRounded} from "@mui/icons-material";
 import {makeStyles} from "@mui/styles";
@@ -37,16 +37,16 @@ export const DelegationButtons = ({stakeAmount, rowData}) => {
             <DelegateDialog initialValidator={rowData}/>, t("delegateTitle"))}>Delegate</Button></>
     else
         return <>
-            <Button variant={"outlined"} color="warning" onClick={() => openDialog(
+            <Button variant={"outlined"} color="warning" size={"small"} onClick={() => openDialog(
                 <RedelegateDialog initialValidator={rowData}/>, t("redelegateTitle"))}>Redelegate</Button>
-            <Button variant={"outlined"} color="success" onClick={() => openDialog(
+            <Button variant={"outlined"} color="success" size={"small"} onClick={() => openDialog(
                 <DelegateDialog initialValidator={rowData}/>, t("delegateTitle"))}>Delegate</Button>
-            <Button variant={"outlined"} color="error" onClick={() => openDialog(
+            <Button variant={"outlined"} color="error" size={"small"} onClick={() => openDialog(
                 <UndelegateDialog initialValidator={rowData}/>, t("undelegateTitle"))}>Undelegate</Button>
         </>
 }
 
-export const MobileDelegationDialog = ({
+export const MainDelegationDialog = ({
                                            isOpen,
                                            onRequestClose,
                                            data
@@ -120,16 +120,16 @@ export const MobileDelegationDialog = ({
                     </IconButton>
                 ) : null}
             </DialogTitle>
-            <DialogContent sx={{bgcolor: 'background.paper'}}>
-                <Stack direction={"row"} justifyContent={"space-between"} 
-                       sx={{bgcolor: 'background.paper', mt: 2, mb: 2, ml: 5}}>
+            <DialogContent sx={{bgcolor: 'background.paper', justifyContent: "center"}}>
+                <Stack direction={"row"} justifyContent={"space-between"} spacing={3}
+                       sx={{bgcolor: 'background.paper', mt: 2, mb: 2, justifyContent: "center"}}>
                     <DetailViewer title={t("dashboard.availableAmount")} amount={handleBalance().toFixed(3)}
                                   icon={<CurrencyExchangeRounded className={classes.icon} color={"secondary"}/>}/>
                     <DetailViewer title={t("dashboard.stakedAmount")} amount={getStakeAmount(data).toFixed(3)}
                                   icon={<AssuredWorkloadRounded className={classes.icon} color={"secondary"}/>}/>
                 </Stack>
             </DialogContent>
-            <DialogActions sx={{bgcolor: 'background.paper', justifyContent: "center"}}>
+            <DialogActions sx={{bgcolor: 'background.paper', justifyContent: "center", pb: 3}}>
                 <DelegationButtons
                     stakeAmount={getStakeAmount(data)}
                     rowData={data}/>

@@ -29,6 +29,7 @@ import DelegateDialog from "./Delegation/DelegateDialog";
 import RedelegateDialog from "./Delegation/RedelegateDialog";
 import UndelegateDialog from "./Delegation/UndelegateDialog";
 import {useAppState} from "../../hooks/useAppState";
+import {MainDelegationDialog} from "./Delegation/MainDelegationDialog";
 
 const useStyles = makeStyles((theme: Theme) => ({
     tableHead: {
@@ -240,6 +241,8 @@ export default function EnhancedTable(props: TableProps) {
     const [orderBy, setOrderBy] = React.useState<any>('validator');
     const [filterValue, setFilterValue] = useState<string>("");
     const [data, setData] = useState<any>([]);
+    const [selectedValidator, setSelectedValidator] = useState<any>();
+    const [delegationDialogOpen, setDelegationDialogOpen] = useState(false);
     const {t} = useTranslation();
     const {
         appState: {
@@ -385,9 +388,11 @@ export default function EnhancedTable(props: TableProps) {
                                             [classes.tablePassiveCell]: getStakeAmount(row) <= 0
                                         })}>{handleStakeAmount(row)}</TableCell>
                                         <TableCell align="center"
-                                                   className={classes.tableCell}>{<DelegationButtonGroup
-                                            stakeAmount={getStakeAmount(row)}
-                                            rowData={row}/>}</TableCell>
+                                                   className={classes.tableCell}>{<Button variant={"outlined"}
+                                                                                          onClick={() => {
+                                                                                              setSelectedValidator(row)
+                                                                                              setDelegationDialogOpen(true)
+                                                                                          }}>{t("manage")}</Button>}</TableCell>
                                     </TableRow>
                                 );
                             })}
@@ -400,6 +405,9 @@ export default function EnhancedTable(props: TableProps) {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <MainDelegationDialog isOpen={delegationDialogOpen}
+                                  onRequestClose={() => setDelegationDialogOpen(false)}
+                                  data={selectedValidator}/>
         </Box>
     );
 }

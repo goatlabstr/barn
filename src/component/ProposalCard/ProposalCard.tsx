@@ -103,10 +103,10 @@ export default function ProposalCard(props: ProposalCardType) {
     }
 
     return (
-        <Card>
-            <CardActionArea onClick={onClick}>
-                <CardContent>
-                    <Stack direction={"column"}>
+        <CardActionArea onClick={onClick}>
+            <Card sx={{minHeight: 200}}>
+                <CardContent sx={{height: "100%"}}>
+                    <Stack direction={"column"} spacing={2}>
                         <Stack direction={"row"} spacing={2} sx={{alignItems: "center"}}
                                justifyContent={"space-between"}>
                             <Avatar>{id}</Avatar>
@@ -124,8 +124,7 @@ export default function ProposalCard(props: ProposalCardType) {
                             sx={{
                                 display: 'inline',
                                 mb: 1,
-                                mt: 1,
-                                whiteSpace: "pre-wrap"
+                                mt: 1
                             }}
                             component="span"
                             variant="body2"
@@ -134,7 +133,7 @@ export default function ProposalCard(props: ProposalCardType) {
                             {description && description.length >= 100 ? description.slice(0, 100) + "..." : description}
                         </Typography>
                         <Stack direction="column" sx={{justifyContent: "space-between"}}>
-                            <Stack direction="row" sx={{mb:1}}>
+                            <Stack direction="row" sx={{mb: 1, justifyContent: "space-between"}}>
                                 {getVoteTypo('yes', proposal)}
                                 {getVoteTypo('no', proposal)}
                                 {getVoteTypo('no_with_veto', proposal)}
@@ -175,7 +174,7 @@ export default function ProposalCard(props: ProposalCardType) {
                         </Stack>
                     </Stack>
                 </CardContent>
-            </CardActionArea>
-        </Card>
+            </Card>
+        </CardActionArea>
     );
 }

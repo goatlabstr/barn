@@ -100,7 +100,7 @@ function Index() {
                     }} className={classes.centerBox}>
                         <Box className={classes.centerInnerBox}>
                             <Stack direction="row" justifyContent={"space-between"} spacing={1} mb={1.5}>
-                                <Typography variant={"subtitle1"}>{t("dashboard.activeProposal")}</Typography>
+                                <Typography variant={"h6"}>{t("dashboard.activeProposal")}</Typography>
                                 <Button variant="outlined"
                                         color="secondary"
                                         onClick={() => navigate("/governance")}>{t("dashboard.viewAll")}</Button>
