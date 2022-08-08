@@ -29,22 +29,16 @@ function Index(props: DetailViewerProps) {
     const amountText = prefix ? prefix + "" + amount : amount;
 
     return (
-        <React.Fragment>
-            <Grid container rowSpacing={0.5}>
-                <Grid item xs={12}>
-                    <Typography variant={"subtitle2"} className={classes.title}>{title}</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <Stack direction="row" spacing={1} style={{
-                        alignItems: "center",
-                        display: "flex"
-                    }}>
-                        {icon}
-                        <Typography variant={"h2"} className={classes.details}>{amountText}</Typography>
-                    </Stack>
-                </Grid>
-            </Grid>
-        </React.Fragment>
+        <Stack direction="column" spacing={1}>
+            <Typography variant={"subtitle2"} className={classes.title}>{title}</Typography>
+            <Stack direction="row" spacing={1} sx={{
+                alignItems: "center",
+                display: "flex"
+            }}>
+                {icon}
+                <Typography variant={"h2"} className={classes.details}>{amountText}</Typography>
+            </Stack>
+        </Stack>
     );
 }
 

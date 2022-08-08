@@ -11,7 +11,7 @@ import {useAppState} from "../../../hooks/useAppState";
 import Grid from "@mui/material/Grid";
 import {useTranslation} from "react-i18next";
 import SearchTextField from "../SearchTextField";
-import {MobileDelegationDialog} from "./MobileDelegationDialog";
+import {MainDelegationDialog} from "../Delegation/MainDelegationDialog";
 
 interface TableProps {
     rows: Array<any>;
@@ -182,9 +182,9 @@ function MobileTable(props: TableProps) {
                     )
                 }
             </List>
-            <MobileDelegationDialog isOpen={delegationDialogOpen}
-                                    onRequestClose={() => setDelegationDialogOpen(false)}
-                                    data={selectedValidator}/>
+            <MainDelegationDialog isOpen={delegationDialogOpen}
+                                  onRequestClose={() => setDelegationDialogOpen(false)}
+                                  data={selectedValidator}/>
         </Box>
     );
 }

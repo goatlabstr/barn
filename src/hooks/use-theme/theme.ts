@@ -81,15 +81,15 @@ const theme = {
         h2: {
             ...rawTheme.typography.h2,
             ...fontHeader,
-            fontSize: 35,
+            fontSize: 33,
             [rawTheme.breakpoints.down('xl')]: {
-                fontSize: 30,
+                fontSize: 28,
             },
             [rawTheme.breakpoints.down('lg')]: {
-                fontSize: 25,
+                fontSize: 23,
             },
             [rawTheme.breakpoints.down('sm')]: {
-                fontSize: 20,
+                fontSize: 18,
             },
         },
         h3: {
@@ -125,12 +125,12 @@ const theme = {
         h6: {
             ...rawTheme.typography.h6,
             ...fontHeader,
-            fontSize: 20,
+            fontSize: 18,
             [rawTheme.breakpoints.down('xl')]: {
-                fontSize: 18,
+                fontSize: 16,
             },
             [rawTheme.breakpoints.down('sm')]: {
-                fontSize: 15,
+                fontSize: 14,
             }
         },
         subtitle1: {

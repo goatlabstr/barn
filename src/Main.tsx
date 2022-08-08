@@ -170,6 +170,7 @@ function Main() {
                 if (error) {
                     enqueueSnackbar(error, {variant: "error"});
                     localStorage.removeItem('goat_wl_addr');
+                    localStorage.removeItem('auto_connect_active');
                     return;
                 }
 
@@ -275,9 +276,9 @@ function Main() {
                 >
                     <Routes>
                         <Route path="/" element={<Dashboard/>}/>
-                        <Route path="/stake" element={<Stake/>}/>
+                        <Route path="/stake/*" element={<Stake/>}/>
                         <Route path="/governance" element={<Governance/>}/>
-                        <Route path="/governance/:id" element={<VotingDetails/>}/>
+                        <Route path="/governance-:id" element={<VotingDetails/>}/>
                         <Route path="/networks" element={<SupportedNetworks/>}/>
                         <Route path="*" element={<Dashboard/>}/>
                     </Routes>

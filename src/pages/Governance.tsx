@@ -127,7 +127,7 @@ function Index() {
                             startTime={proposal?.voting_start_time}
                             endingTime={proposal?.voting_end_time}
                             proposal={proposal}
-                            onClick={() => navigate("/governance/" + proposal?.id)}
+                            onClick={() => navigate("/governance-" + proposal?.id)}
                         />
                     </Grid>)}
             </>

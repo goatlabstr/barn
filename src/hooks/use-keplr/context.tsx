@@ -155,7 +155,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
             // First, try to get keplr from window.
             const keplrFromWindow = await getKeplrFromWindow();
 
-            if (!isMobile() && !localStorage.getItem('goat_wl_addr')) {
+            if (!isMobile() && !localStorage.getItem('goat_wl_addr') && localStorage.getItem("auto_connect_active") === "true") {
                 // If on mobile browser environment,
                 // no need to open select modal.
                 setIsExtensionSelectionModalOpen(true);
