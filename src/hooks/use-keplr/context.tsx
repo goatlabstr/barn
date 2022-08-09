@@ -7,9 +7,8 @@ import WalletConnect from "@walletconnect/client";
 import {KeplrWalletConnectV1} from "@keplr-wallet/wc-client";
 import {isMobile} from "@walletconnect/browser-utils";
 import {StdTx} from "@cosmjs/amino";
-import {config} from "../../constants/networkConfig";
+import {config, subdomain} from "../../constants/networkConfig";
 import {BroadcastMode, getKeplrFromWindow} from "../../services/cosmos";
-import {subdomain} from "../../constants/networkConfig";
 import {KeplrConnectionSelectDialog} from "../../component/KeplrDialog/KeplrConnectionSelectDialog";
 import {KeplrWalletConnectQRDialog} from "../../component/KeplrDialog/KeplrWalletConnectQRDialog";
 
@@ -120,7 +119,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                         callbackClosed = cb;
                     },
                     close: () => setWCUri(""),
-                },
+                }
             });
 
             // XXX: I don't know why they designed that the client meta options in the constructor should be always ignored...
@@ -280,6 +279,8 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                     isExtentionNotInstalled ? "https://www.keplr.app/" : undefined
                 }
                 onRequestClose={() => {
+                    localStorage.removeItem('auto_connect_active');
+                    localStorage.removeItem('connection_type');
                     eventListener.emit("extension_selection_modal_close");
                 }}
                 onSelectExtension={() => {
@@ -290,8 +291,10 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                 }}
             />
             <KeplrWalletConnectQRDialog
-                isOpen={wcUri.length > 0}
+                isOpen={wcUri.length > 0 && localStorage.getItem("auto_connect_active") === "true"}
                 onRequestClose={() => {
+                    localStorage.removeItem('connection_type');
+                    localStorage.removeItem('auto_connect_active');
                     eventListener.emit("wc_modal_close");
                 }}
                 uri={wcUri}

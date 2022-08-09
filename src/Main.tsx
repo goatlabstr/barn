@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Route, Routes, useLocation} from "react-router-dom";
+import {Route, Routes, useLocation, useNavigate} from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
 import {useTranslation} from "react-i18next";
@@ -42,6 +42,7 @@ function Main() {
     const {activate, passivate} = useGlobalPreloader();
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const {enqueueSnackbar} = useSnackbar();
     const {
         appState: {

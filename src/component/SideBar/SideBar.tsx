@@ -112,6 +112,7 @@ export default function SideBar(props: SideBarProps) {
     const handleDisconnectButtonClick = () => {
         localStorage.removeItem('goat_wl_addr');
         localStorage.removeItem('auto_connect_active');
+        localStorage.removeItem('connection_type');
         clearLastUsedKeplr();
         dispatch(allActions.disconnectSet());
     }
@@ -148,13 +149,15 @@ export default function SideBar(props: SideBarProps) {
             <Stack direction="column" justifyContent={"space-between"} alignItems={"center"} spacing={1}
                    sx={{height: "95%"}}>
                 <Toolbar style={{marginTop: 15}}>
-                    <img style={{
-                        width: 47,
-                        marginLeft: "-15px",
-                        marginRight: 17,
-                        filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
-                    }} src={logo}/>
-                    <Typography variant={"h6"} className={classes.goatlabs}>GOATLABS</Typography>
+                    <Stack direction={"row"}>
+                        <img style={{
+                            width: 47,
+                            marginLeft: "-15px",
+                            marginRight: 17,
+                            filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
+                        }} src={logo}/>
+                        <Typography variant={"h6"} className={classes.goatlabs}>GOATLABS</Typography>
+                    </Stack>
                 </Toolbar>
                 <List>
                     {menuItems.map((data, index) => (
