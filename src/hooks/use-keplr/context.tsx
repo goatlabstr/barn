@@ -235,7 +235,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                     }
                 });
 
-                if (isMobile() && localStorage.getItem("auto_connect_active") !== "true") {
+                if (isMobile()) {
                     if (keplrFromWindow && keplrFromWindow.mode === "mobile-web") {
                         // If mobile with `keplr` in `window`, it means that user enters frontend from keplr app's in app browser.
                         // So, their is no need to use wallet connect, and it resembles extension's usages.
@@ -292,8 +292,10 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                 }}
             />
             <KeplrWalletConnectQRDialog
-                isOpen={wcUri.length > 0}
+                isOpen={wcUri.length > 0 && localStorage.getItem("auto_connect_active") === "true"}
                 onRequestClose={() => {
+                    localStorage.removeItem('connection_type');
+                    localStorage.removeItem('auto_connect_active');
                     eventListener.emit("wc_modal_close");
                 }}
                 uri={wcUri}
