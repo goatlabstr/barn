@@ -112,6 +112,7 @@ export default function SideBar(props: SideBarProps) {
     const handleDisconnectButtonClick = () => {
         localStorage.removeItem('goat_wl_addr');
         localStorage.removeItem('auto_connect_active');
+        localStorage.removeItem('connection_type');
         clearLastUsedKeplr();
         dispatch(allActions.disconnectSet());
     }
