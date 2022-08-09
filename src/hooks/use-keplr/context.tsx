@@ -7,9 +7,8 @@ import WalletConnect from "@walletconnect/client";
 import {KeplrWalletConnectV1} from "@keplr-wallet/wc-client";
 import {isMobile} from "@walletconnect/browser-utils";
 import {StdTx} from "@cosmjs/amino";
-import {config} from "../../constants/networkConfig";
+import {config, subdomain} from "../../constants/networkConfig";
 import {BroadcastMode, getKeplrFromWindow} from "../../services/cosmos";
-import {subdomain} from "../../constants/networkConfig";
 import {KeplrConnectionSelectDialog} from "../../component/KeplrDialog/KeplrConnectionSelectDialog";
 import {KeplrWalletConnectQRDialog} from "../../component/KeplrDialog/KeplrWalletConnectQRDialog";
 
@@ -222,6 +221,14 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                                 handleConnectionType("wallet-connect");
                                 resolve(keplr);
                             }
+                        });
+
+                        connector.on("disconnect", (error, payload) => {
+                            if (error) {
+                                console.error(error);
+                            }
+
+                            // Delete connector here
                         });
                     } else {
                         const keplr = new KeplrWalletConnectV1(connector, {

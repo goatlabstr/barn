@@ -244,7 +244,7 @@ function Main() {
                         bgcolor: "transparent"
                     }} enableColorOnDark>
                         <Toolbar sx={{justifyContent: "space-between"}}>
-                            <Box sx={{display: "flex"}} onClick={() => navigate("/")}>
+                            <Box sx={{display: "flex"}}>
                                 <img style={{
                                     width: 48,
                                     filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"

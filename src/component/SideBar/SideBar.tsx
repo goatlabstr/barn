@@ -149,9 +149,7 @@ export default function SideBar(props: SideBarProps) {
             <Stack direction="column" justifyContent={"space-between"} alignItems={"center"} spacing={1}
                    sx={{height: "95%"}}>
                 <Toolbar style={{marginTop: 15}}>
-                    <Stack direction={"row"}
-                           sx={{cursor: "pointer"}}
-                           onClick={() => navigate("/")}>
+                    <Stack direction={"row"}>
                         <img style={{
                             width: 47,
                             marginLeft: "-15px",
