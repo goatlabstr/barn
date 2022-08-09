@@ -119,29 +119,20 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                         callbackClosed = cb;
                     },
                     close: () => setWCUri(""),
-                },
-                clientMeta: {
-                    name: subdomain.toUpperCase() + " | Goatlabs Barn",
-                    description: "Goatlabs Barn manages all delegation and governance process of a Cosmos SDK Networks",
-                    url: "https://" + subdomain + ".goatlabs.zone",
-                    icons: [
-                        // Keplr mobile app can't show svg image.
-                        window.location.origin + "/logo.png",
-                    ]
                 }
             });
 
             // XXX: I don't know why they designed that the client meta options in the constructor should be always ignored...
             // @ts-ignore
-            // wc._clientMeta = {
-            //     name: subdomain.toUpperCase() + " | Goatlabs Barn",
-            //     description: "Goatlabs Barn manages all delegation and governance process of a Cosmos SDK Networks",
-            //     url: "https://" + subdomain + ".goatlabs.zone",
-            //     icons: [
-            //         // Keplr mobile app can't show svg image.
-            //         window.location.origin + "/logo.png",
-            //     ]
-            // };
+            wc._clientMeta = {
+                name: subdomain.toUpperCase() + " | Goatlabs Barn",
+                description: "Goatlabs Barn manages all delegation and governance process of a Cosmos SDK Networks",
+                url: "https://" + subdomain + ".goatlabs.zone",
+                icons: [
+                    // Keplr mobile app can't show svg image.
+                    window.location.origin + "/logo.png",
+                ]
+            };
 
             return wc;
         };
@@ -230,14 +221,6 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                                 handleConnectionType("wallet-connect");
                                 resolve(keplr);
                             }
-                        });
-
-                        connector.on("disconnect", (error, payload) => {
-                            if (error) {
-                                console.error(error);
-                            }
-
-                            // Delete connector here
                         });
                     } else {
                         const keplr = new KeplrWalletConnectV1(connector, {
