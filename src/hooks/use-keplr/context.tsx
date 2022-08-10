@@ -219,7 +219,17 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                                 setIsExtensionSelectionModalOpen(false);
                                 lastUsedKeplrRef.current = keplr;
                                 handleConnectionType("wallet-connect");
+                                setWCUri("");
                                 resolve(keplr);
+                            }
+                        });
+
+                        connector.on("disconnect", (error, payload) => {
+                            if (error) {
+                                console.error("WalletConnect disconnect process could not be completed. Details: " + error)
+                            } else {
+                                connector.killSession();
+                                localStorage.clear();
                             }
                         });
                     } else {
@@ -279,8 +289,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                     isExtentionNotInstalled ? "https://www.keplr.app/" : undefined
                 }
                 onRequestClose={() => {
-                    localStorage.removeItem('auto_connect_active');
-                    localStorage.removeItem('connection_type');
+                    localStorage.clear();
                     eventListener.emit("extension_selection_modal_close");
                 }}
                 onSelectExtension={() => {
@@ -293,8 +302,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
             <KeplrWalletConnectQRDialog
                 isOpen={wcUri.length > 0 && localStorage.getItem("auto_connect_active") === "true"}
                 onRequestClose={() => {
-                    localStorage.removeItem('connection_type');
-                    localStorage.removeItem('auto_connect_active');
+                    localStorage.clear();
                     eventListener.emit("wc_modal_close");
                 }}
                 uri={wcUri}

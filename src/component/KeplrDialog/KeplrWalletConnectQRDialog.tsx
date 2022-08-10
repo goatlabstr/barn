@@ -62,7 +62,7 @@ export const KeplrWalletConnectQRDialog: FunctionComponent<{
                 PaperProps={{
                     style: {borderRadius: 10}
                 }}>
-            <DialogTitle>{checkMobile ? "Open Keplr App" : "Scan QR Code"}</DialogTitle>
+            <DialogTitle>{checkMobile ? "Open Keplr app to connect the wallet" : "Scan QR Code"}</DialogTitle>
             {uri ? (
                 !checkMobile ? (
                     (() => {
@@ -80,7 +80,7 @@ export const KeplrWalletConnectQRDialog: FunctionComponent<{
                             }
                         }}
                     >
-                        Open Keplr App
+                        Open App
                     </Button>
                 )
             ) : undefined}
