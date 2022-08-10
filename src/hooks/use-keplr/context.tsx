@@ -126,7 +126,8 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
             wc._clientMeta = {
                 name: subdomain.charAt(0).toUpperCase() + subdomain.slice(1) + " | Goatlabs Barn",
                 description: "Goatlabs Barn manages all delegation and governance process of a Cosmos SDK Networks",
-                url: "https://" + subdomain + ".goatlabs.zone",
+                // url: "https://" + subdomain + ".goatlabs.zone",
+                url: "https://192.168.68.109:3000",
                 icons: [
                     // Keplr mobile app can't show svg image.
                     window.location.origin + "/logo.png",
@@ -216,7 +217,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                         cleanUp();
                     }
 
-                    connector.on("connect", (error) => {
+                    connector.on("connect", (error,payload) => {
                         cleanUp();
                         if (error) {
                             reject(error);
