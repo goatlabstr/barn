@@ -64,7 +64,7 @@ export default function DelegateDialog({initialValidator}) {
         return bal?.amount / (10 ** decimals) || 0;
     }
 
-    const [delegateAmount, setDelegateAmount] = useState<number>(0);
+    const [delegateAmount, setDelegateAmount] = useState<number>(1);
     const [validator, setValidator] = useState<any>(initialValidator);
 
     const getValueObject = () => {
@@ -149,6 +149,7 @@ export default function DelegateDialog({initialValidator}) {
                         value={delegateAmount}
                         onChange={(e) =>
                             setDelegateAmount(parseFloat(e.target.value))}
+                        InputProps={{ inputProps: { min: 1, max: handleBalance() } }}
                         InputLabelProps={{
                             shrink: true,
                         }}

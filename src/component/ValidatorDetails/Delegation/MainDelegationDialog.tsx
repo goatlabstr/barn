@@ -19,6 +19,7 @@ import DetailViewer from "../../TokenDetails/DetailViewer";
 import {AssuredWorkloadRounded, CurrencyExchangeRounded} from "@mui/icons-material";
 import {makeStyles} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
+import {formatCount} from "../CommonTable";
 
 const useStyles = makeStyles((theme: Theme) => ({
     icon: {
@@ -67,6 +68,14 @@ export const MainDelegationDialog = ({
     const delegations = useAppSelector(state => state.accounts.delegations.result);
     const balance = useAppSelector(state => state.accounts.balance.result);
 
+    const getStakeAmountText = (row) => {
+        const val = getStakeAmount(row);
+        if(val > 10000)
+            return formatCount(val);
+        else
+            return val.toFixed(3);
+    }
+
     const getStakeAmount = (row) => {
         //@ts-ignore
         const decimals = chainInfo?.decimals | 6;
@@ -80,7 +89,11 @@ export const MainDelegationDialog = ({
         const decimals = chainInfo?.decimals | 6;
         //@ts-ignore
         const bal = balance && balance.length && balance.find((val) => val.denom === chainInfo?.denom);
-        return bal?.amount / (10 ** decimals) || 0;
+        const val = bal?.amount / (10 ** decimals) || 0;
+        if(val > 10000)
+            return formatCount(val);
+        else
+            return val.toFixed(3);
     }
 
     return (
@@ -123,9 +136,9 @@ export const MainDelegationDialog = ({
             <DialogContent sx={{bgcolor: 'background.paper', justifyContent: "center"}}>
                 <Stack direction={"row"} justifyContent={"space-between"} spacing={3}
                        sx={{bgcolor: 'background.paper', mt: 2, mb: 2, justifyContent: "center"}}>
-                    <DetailViewer title={t("dashboard.availableAmount")} amount={handleBalance().toFixed(3)}
+                    <DetailViewer title={t("dashboard.availableAmount")} amount={handleBalance()}
                                   icon={<CurrencyExchangeRounded className={classes.icon} color={"secondary"}/>}/>
-                    <DetailViewer title={t("dashboard.stakedAmount")} amount={getStakeAmount(data).toFixed(3)}
+                    <DetailViewer title={t("dashboard.stakedAmount")} amount={getStakeAmountText(data)}
                                   icon={<AssuredWorkloadRounded className={classes.icon} color={"secondary"}/>}/>
                 </Stack>
             </DialogContent>

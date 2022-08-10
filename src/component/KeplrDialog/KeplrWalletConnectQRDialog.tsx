@@ -32,7 +32,6 @@ export const KeplrWalletConnectQRDialog: FunctionComponent<{
                     name: "Keplr",
                     href: "intent://wcV1#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;",
                 });
-
                 return `intent://wcV1?${uri}#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;`;
             } else {
                 // Save the mobile link.
@@ -62,7 +61,7 @@ export const KeplrWalletConnectQRDialog: FunctionComponent<{
                 PaperProps={{
                     style: {borderRadius: 10}
                 }}>
-            <DialogTitle>{checkMobile ? "Open Keplr App" : "Scan QR Code"}</DialogTitle>
+            <DialogTitle>{checkMobile ? "Open Keplr app to connect the wallet" : "Scan QR Code"}</DialogTitle>
             {uri ? (
                 !checkMobile ? (
                     (() => {
@@ -80,7 +79,7 @@ export const KeplrWalletConnectQRDialog: FunctionComponent<{
                             }
                         }}
                     >
-                        Open Keplr App
+                        Open App
                     </Button>
                 )
             ) : undefined}

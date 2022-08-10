@@ -42,7 +42,6 @@ function Main() {
     const {activate, passivate} = useGlobalPreloader();
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
     const {enqueueSnackbar} = useSnackbar();
     const {
         appState: {
@@ -58,6 +57,11 @@ function Main() {
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
+
+    useEffect(() => {
+        if (!localStorage.getItem('goat_wl_addr'))
+            localStorage.clear();
+    }, [])
 
     useEffect(() => {
         activate();
@@ -170,8 +174,7 @@ function Main() {
             initializeChain(chain, keplr, connectionType, (error, addressList) => {
                 if (error) {
                     enqueueSnackbar(error, {variant: "error"});
-                    localStorage.removeItem('goat_wl_addr');
-                    localStorage.removeItem('auto_connect_active');
+                    localStorage.clear();
                     return;
                 }
 

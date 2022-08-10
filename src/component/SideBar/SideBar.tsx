@@ -110,11 +110,9 @@ export default function SideBar(props: SideBarProps) {
     }
 
     const handleDisconnectButtonClick = () => {
-        localStorage.removeItem('goat_wl_addr');
-        localStorage.removeItem('auto_connect_active');
-        localStorage.removeItem('connection_type');
-        clearLastUsedKeplr();
         dispatch(allActions.disconnectSet());
+        clearLastUsedKeplr();
+        localStorage.clear();
     }
 
     const handleConnectButtonClick = () => {
@@ -126,8 +124,7 @@ export default function SideBar(props: SideBarProps) {
             initializeChain(chainInfo, keplr, connectionType, (error, addressList) => {
                 passivate();
                 if (error) {
-                    localStorage.removeItem('goat_wl_addr');
-                    localStorage.removeItem('auto_connect_active');
+                    localStorage.clear();
                     enqueueSnackbar(error, {variant: "error"});
                     return;
                 }

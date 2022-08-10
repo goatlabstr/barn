@@ -52,7 +52,7 @@ export default function UndelegateDialog({initialValidator}) {
 
     const {getKeplr} = useKeplr();
     const [validatorUndelegateAmount, setValidatorUndelegateAmount] = useState<number>(0);
-    const [undelegateAmount, setUndelegateAmount] = useState<number>(0);
+    const [undelegateAmount, setUndelegateAmount] = useState<number>(1);
     const [validator, setValidator] = useState<any>(initialValidator);
 
     const delegatedValidatorList = useAppSelector(state => state.stake.delegatedValidators.list);
@@ -154,6 +154,7 @@ export default function UndelegateDialog({initialValidator}) {
                         label={t("enterDelegateTokens")}
                         type="number"
                         value={undelegateAmount}
+                        InputProps={{ inputProps: { min: 1, max: validatorUndelegateAmount } }}
                         onChange={(e) =>
                             setUndelegateAmount(parseFloat(e.target.value))}
                         InputLabelProps={{
