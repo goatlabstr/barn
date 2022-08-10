@@ -73,7 +73,7 @@ const chainConfig = (chainId,
 
 const getSignStargateClient = async (chainId, keplr) => {
     //@ts-ignore
-    await keplr && keplr.enable();
+    keplr && keplr.enable(chainId);
     //@ts-ignore
     const offlineSigner = keplr.getOfflineSignerOnlyAmino(chainId);
     return await SigningStargateClient.connectWithSigner(
@@ -84,23 +84,23 @@ const getSignStargateClient = async (chainId, keplr) => {
 
 export const initializeChain = (chain, keplr, connectionType, cb) => {
     (async () => {
-        const {
-            chain_id,
-            chain_name,
-            symbol,
-            denom,
-            decimals,
-            slip44,
-            bech32_prefix,
-            coingecko_id
-        } = chain;
-        //@ts-ignore
-        if (!keplr) {
-            const error = 'Please install keplr extension';
-            cb(error);
-        } else {
+            const {
+                chain_id,
+                chain_name,
+                symbol,
+                denom,
+                decimals,
+                slip44,
+                bech32_prefix,
+                coingecko_id
+            } = chain;
+
             //@ts-ignore
-            if (connectionType === "extension") {
+            if (!keplr) {
+                const error = 'Please install keplr extension';
+                cb(error);
+                //@ts-ignore
+            } else if (connectionType === "extension") {
                 if (keplr.experimentalSuggestChain) {
                     try {
                         //@ts-ignore
@@ -122,18 +122,17 @@ export const initializeChain = (chain, keplr, connectionType, cb) => {
                     cb(versionError);
                 }
             }
-        }
 
-        //@ts-ignore
-        if (keplr) {
-            //@ts-ignore
-            await keplr.enable(chain_id);
-            //@ts-ignore
-            const offlineSigner = keplr.getOfflineSignerOnlyAmino(chain_id);
-            const accounts = await offlineSigner.getAccounts();
-            cb(null, accounts);
+            if (keplr) {
+                //@ts-ignore
+                keplr.enable(chain_id);
+                //@ts-ignore
+                const offlineSigner = keplr.getOfflineSignerOnlyAmino(chain_id);
+                const accounts = await offlineSigner.getAccounts();
+                cb(null, accounts);
+            }
         }
-    })();
+    )();
 };
 
 

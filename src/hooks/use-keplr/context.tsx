@@ -119,21 +119,17 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                         callbackClosed = cb;
                     },
                     close: () => setWCUri(""),
+                },
+                clientMeta : {
+                    name: subdomain.toUpperCase() + " | Goatlabs Barn",
+                    description: "Goatlabs Barn manages all delegation and governance process of a Cosmos SDK Networks",
+                    url: "https://" + subdomain + ".goatlabs.zone",
+                    icons: [
+                        // Keplr mobile app can't show svg image.
+                        window.location.origin + "/logo.png",
+                    ]
                 }
             });
-
-            // XXX: I don't know why they designed that the client meta options in the constructor should be always ignored...
-            // @ts-ignore
-            wc._clientMeta = {
-                name: subdomain.toUpperCase() + " | Goatlabs Barn",
-                description: "Goatlabs Barn manages all delegation and governance process of a Cosmos SDK Networks",
-                url: "https://" + subdomain + ".goatlabs.zone",
-                icons: [
-                    // Keplr mobile app can't show svg image.
-                    window.location.origin + "/logo.png",
-                ]
-            };
-
             return wc;
         };
 
@@ -207,31 +203,6 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                     if (!connector.connected) {
                         // create new session
                         connector.createSession();
-
-                        connector.on("connect", (error) => {
-                            cleanUp();
-                            if (error) {
-                                reject(error);
-                            } else {
-                                const keplr = new KeplrWalletConnectV1(connector, {
-                                    sendTx: sendTxWC,
-                                });
-                                setIsExtensionSelectionModalOpen(false);
-                                lastUsedKeplrRef.current = keplr;
-                                handleConnectionType("wallet-connect");
-                                setWCUri("");
-                                resolve(keplr);
-                            }
-                        });
-
-                        connector.on("disconnect", (error, payload) => {
-                            if (error) {
-                                console.error("WalletConnect disconnect process could not be completed. Details: " + error)
-                            } else {
-                                connector.killSession();
-                                localStorage.clear();
-                            }
-                        });
                     } else {
                         const keplr = new KeplrWalletConnectV1(connector, {
                             sendTx: sendTxWC,
@@ -242,6 +213,31 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                         resolve(keplr);
                         cleanUp();
                     }
+
+                    connector.on("connect", (error) => {
+                        cleanUp();
+                        if (error) {
+                            reject(error);
+                        } else {
+                            const keplr = new KeplrWalletConnectV1(connector, {
+                                sendTx: sendTxWC,
+                            });
+                            setIsExtensionSelectionModalOpen(false);
+                            setWCUri("");
+                            lastUsedKeplrRef.current = keplr;
+                            handleConnectionType("wallet-connect");
+                            resolve(keplr);
+                        }
+                    });
+
+                    connector.on("disconnect", (error, payload) => {
+                        if (error) {
+                            console.error("WalletConnect disconnect process could not be completed. Details: " + error)
+                        } else {
+                            connector.killSession();
+                            localStorage.clear();
+                        }
+                    });
                 });
 
                 if (isMobile()) {

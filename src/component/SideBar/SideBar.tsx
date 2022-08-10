@@ -110,9 +110,9 @@ export default function SideBar(props: SideBarProps) {
     }
 
     const handleDisconnectButtonClick = () => {
-        localStorage.clear();
-        clearLastUsedKeplr();
         dispatch(allActions.disconnectSet());
+        clearLastUsedKeplr();
+        localStorage.clear();
     }
 
     const handleConnectButtonClick = () => {

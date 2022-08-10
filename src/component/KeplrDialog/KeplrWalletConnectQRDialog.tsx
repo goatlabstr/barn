@@ -32,7 +32,6 @@ export const KeplrWalletConnectQRDialog: FunctionComponent<{
                     name: "Keplr",
                     href: "intent://wcV1#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;",
                 });
-
                 return `intent://wcV1?${uri}#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;`;
             } else {
                 // Save the mobile link.
