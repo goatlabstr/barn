@@ -59,8 +59,10 @@ function Main() {
     };
 
     useEffect(() => {
-        if (!localStorage.getItem('goat_wl_addr'))
-            localStorage.clear();
+        if (!localStorage.getItem('goat_wl_addr')){
+            localStorage.removeItem("auto_connect_active");
+            localStorage.removeItem("connection_type");
+        }
     }, [])
 
     useEffect(() => {
@@ -174,7 +176,9 @@ function Main() {
             initializeChain(chain, keplr, connectionType, (error, addressList) => {
                 if (error) {
                     enqueueSnackbar(error, {variant: "error"});
-                    localStorage.clear();
+                    localStorage.removeItem("auto_connect_active");
+                    localStorage.removeItem("connection_type");
+                    localStorage.removeItem("goat_wl_addr");
                     return;
                 }
 

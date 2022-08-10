@@ -73,7 +73,7 @@ const chainConfig = (chainId,
 
 const getSignStargateClient = async (chainId, keplr) => {
     //@ts-ignore
-    keplr && keplr.enable(chainId);
+    await keplr && keplr.enable(chainId);
     //@ts-ignore
     const offlineSigner = keplr.getOfflineSignerOnlyAmino(chainId);
     return await SigningStargateClient.connectWithSigner(
@@ -125,7 +125,7 @@ export const initializeChain = (chain, keplr, connectionType, cb) => {
 
             if (keplr) {
                 //@ts-ignore
-                keplr.enable(chain_id);
+                await keplr.enable(chain_id);
                 //@ts-ignore
                 const offlineSigner = keplr.getOfflineSignerOnlyAmino(chain_id);
                 const accounts = await offlineSigner.getAccounts();
@@ -170,14 +170,15 @@ export const getStakedBalance = (keplr, chainId, address, cb) => {
 }
 
 export const getAllBalances = (keplr, chainId, address, cb) => {
-    (async () => {
-        const client = await getSignStargateClient(chainId, keplr);
-        client.getAllBalances(address).then((result) => {
-            cb(null, result);
-        }).catch((error) => {
-            cb(error && error.message);
-        });
-    })();
+    if(localStorage.getItem("auto_connect_active") === "true")
+        (async () => {
+            const client = await getSignStargateClient(chainId, keplr);
+            client.getAllBalances(address).then((result) => {
+                cb(null, result);
+            }).catch((error) => {
+                cb(error && error.message);
+            });
+        })();
 }
 
 export const getKeplrFromWindow: () => Promise<any> = async () => {
