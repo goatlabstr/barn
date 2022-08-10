@@ -119,17 +119,19 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                         callbackClosed = cb;
                     },
                     close: () => setWCUri(""),
-                },
-                clientMeta : {
-                    name: subdomain.toUpperCase() + " | Goatlabs Barn",
-                    description: "Goatlabs Barn manages all delegation and governance process of a Cosmos SDK Networks",
-                    url: "https://" + subdomain + ".goatlabs.zone",
-                    icons: [
-                        // Keplr mobile app can't show svg image.
-                        window.location.origin + "/logo.png",
-                    ]
                 }
             });
+
+            //@ts-ignore
+            wc._clientMeta = {
+                name: subdomain.charAt(0).toUpperCase() + subdomain.slice(1) + " | Goatlabs Barn",
+                description: "Goatlabs Barn manages all delegation and governance process of a Cosmos SDK Networks",
+                url: "https://" + subdomain + ".goatlabs.zone",
+                icons: [
+                    // Keplr mobile app can't show svg image.
+                    window.location.origin + "/logo.png",
+                ]
+            }
             return wc;
         };
 
