@@ -54,7 +54,7 @@ export default function RedelegateDialog({initialValidator}) {
     const {getKeplr} = useKeplr();
     const [fromValidator, setFromValidator] = useState<any>(initialValidator);
     const [toValidator, setToValidator] = useState<any>();
-    const [redelegateAmount, setRedelegateAmount] = useState<number>(0);
+    const [redelegateAmount, setRedelegateAmount] = useState<number>(1);
     const [validatorRedelegateAmount, setValidatorRedelegateAmount] = useState<number>(0);
 
     const delegatedValidatorList = useAppSelector(state => state.stake.delegatedValidators.list);
@@ -165,6 +165,7 @@ export default function RedelegateDialog({initialValidator}) {
                         label={t("enterDelegateTokens")}
                         type="number"
                         value={redelegateAmount}
+                        InputProps={{ inputProps: { min: 1, max: validatorRedelegateAmount } }}
                         onChange={(e) =>
                             setRedelegateAmount(parseFloat(e.target.value))}
                         InputLabelProps={{
