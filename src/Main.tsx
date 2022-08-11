@@ -63,6 +63,8 @@ function Main() {
         if (!localStorage.getItem('goat_wl_addr')) {
             localStorage.removeItem("auto_connect_active");
             localStorage.removeItem("connection_type");
+            localStorage.removeItem("walletconnect");
+            indexedDB.deleteDatabase(kvStorePrefix); //@Todo will be removed after a while
         }
     }, [])
 
@@ -180,6 +182,7 @@ function Main() {
                         localStorage.removeItem("auto_connect_active");
                         localStorage.removeItem("connection_type");
                         localStorage.removeItem("goat_wl_addr");
+                        localStorage.removeItem("walletconnect");
                         localStorageClearWithPrefix(kvStorePrefix);
                         return;
                     }

@@ -128,6 +128,7 @@ export default function SideBar(props: SideBarProps) {
                     localStorage.removeItem("auto_connect_active");
                     localStorage.removeItem("connection_type");
                     localStorage.removeItem("goat_wl_addr");
+                    localStorage.removeItem("walletconnect");
                     localStorageClearWithPrefix(kvStorePrefix);
                     enqueueSnackbar(error, {variant: "error"});
                     return;
