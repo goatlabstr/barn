@@ -50,7 +50,7 @@ export default function UndelegateDialog({initialValidator}) {
         }
     } = useAppState();
 
-    const {getKeplr} = useKeplr();
+    const {keplr} = useKeplr();
     const [validatorUndelegateAmount, setValidatorUndelegateAmount] = useState<number>(0);
     const [undelegateAmount, setUndelegateAmount] = useState<number>(1);
     const [validator, setValidator] = useState<any>(initialValidator);
@@ -80,7 +80,6 @@ export default function UndelegateDialog({initialValidator}) {
     };
 
     const updateBalance = async () => {
-        const keplr = await getKeplr();
         //@ts-ignore
         getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         dispatch(allActions.fetchVestingBalance(address));
@@ -111,7 +110,6 @@ export default function UndelegateDialog({initialValidator}) {
             memo: '',
         };
 
-        const keplr = await getKeplr();
         //@ts-ignore
         signTxAndBroadcast(keplr, chainInfo?.chain_id, updatedTx, address, (error, result) => {
             passivate();

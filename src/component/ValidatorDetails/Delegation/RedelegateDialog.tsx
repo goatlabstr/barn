@@ -51,7 +51,7 @@ export default function RedelegateDialog({initialValidator}) {
         }
     } = useAppState();
 
-    const {getKeplr} = useKeplr();
+    const {keplr} = useKeplr();
     const [fromValidator, setFromValidator] = useState<any>(initialValidator);
     const [toValidator, setToValidator] = useState<any>();
     const [redelegateAmount, setRedelegateAmount] = useState<number>(1);
@@ -92,7 +92,6 @@ export default function RedelegateDialog({initialValidator}) {
     };
 
     const updateBalance = async () => {
-        const keplr = await getKeplr();
         //@ts-ignore
         getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         dispatch(allActions.fetchVestingBalance(address));
@@ -123,7 +122,6 @@ export default function RedelegateDialog({initialValidator}) {
             memo: '',
         };
 
-        const keplr = await getKeplr();
         //@ts-ignore
         signTxAndBroadcast(keplr, chainInfo?.chain_id, updatedTx, address, (error, result) => {
             passivate();

@@ -53,7 +53,7 @@ function Main() {
         setActiveValidators,
         setInactiveValidators
     } = useAppState();
-    const {getKeplr, connectionType, setDefaultConnectionType} = useKeplr();
+    const {getKeplr, keplr, connectionType, setDefaultConnectionType} = useKeplr();
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -111,7 +111,7 @@ function Main() {
     useEffect(() => {
         activate();
         if (chainInfo && Object.keys(chainInfo).length > 0 && localStorage.getItem('goat_wl_addr'))
-            initKeplr();
+            initializeKeplr();
 
         if (address && chainInfo && Object.keys(chainInfo).length > 0) {
             handleFetchDetails(address);
@@ -161,7 +161,7 @@ function Main() {
         return location.pathname === pathname;
     }
 
-    const initKeplr = () => {
+    const initializeKeplr = () => {
         handleChain(chainInfo, true);
     }
 
@@ -211,7 +211,6 @@ function Main() {
     const handleFetchDetails = async (address) => {
         if (balance && !balance.length &&
             !balanceInProgress) {
-            const keplr = await getKeplr();
             //@ts-ignore
             getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         }

@@ -25,7 +25,7 @@ function Index(props) {
     } = useAppState();
 
     const [inTxProgress, setInTxProgress] = useState(false);
-    const {getKeplr} = useKeplr();
+    const {keplr} = useKeplr();
 
     const rewards = useAppSelector(state => state.accounts.rewards.result);
     const address = useAppSelector(state => state.accounts.address.value);
@@ -57,7 +57,6 @@ function Index(props) {
         const tokens = rewards && rewards.length && rewards[0] && rewards[0].reward &&
         rewards[0].reward.length && rewards[0].reward[0] && rewards[0].reward[0].amount
             ? rewards[0].reward[0].amount / 10 ** decimals : 0;
-        const keplr = await getKeplr();
         //@ts-ignore
         getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         dispatch(allActions.fetchVestingBalance(address));
@@ -101,7 +100,6 @@ function Index(props) {
             });
         }
 
-        const keplr = await getKeplr();
         //@ts-ignore
         signTxAndBroadcast(keplr, chainInfo?.chain_id, updatedTx, address, (error, result) => {
             setInTxProgress(false);
