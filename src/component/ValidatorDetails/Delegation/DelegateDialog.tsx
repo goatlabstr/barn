@@ -51,7 +51,7 @@ export default function DelegateDialog({initialValidator}) {
         }
     } = useAppState();
 
-    const {getKeplr} = useKeplr();
+    const {keplr} = useKeplr();
     const balance = useAppSelector(state => state.accounts.balance.result);
     const address = useAppSelector(state => state.accounts.address.value);
 
@@ -82,7 +82,6 @@ export default function DelegateDialog({initialValidator}) {
     };
 
     const updateBalance = async () => {
-        const keplr = await getKeplr();
         //@ts-ignore
         getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         dispatch(allActions.fetchVestingBalance(address));
@@ -113,7 +112,6 @@ export default function DelegateDialog({initialValidator}) {
             memo: '',
         };
 
-        const keplr = await getKeplr();
         //@ts-ignore
         signTxAndBroadcast(keplr, chainInfo?.chain_id, updatedTx, address, (error, result) => {
             passivate();

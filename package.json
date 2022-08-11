@@ -8,6 +8,7 @@
     "@cosmjs/proto-signing": "0.28.4",
     "@cosmjs/stargate": "0.28.4",
     "@keplr-wallet/wc-client": "^0.10.13",
+    "@keplr-wallet/common": "^0.10.13",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.8.3",

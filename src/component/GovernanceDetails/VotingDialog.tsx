@@ -47,18 +47,18 @@ export default function VotingDialog({proposal}) {
             chainInfo
         }
     } = useAppState();
-    const {getKeplr} = useKeplr();
+    const {keplr} = useKeplr();
 
     const address = useAppSelector(state => state.accounts.address.value);
 
     const updateBalance = (id) => {
-        getKeplr().then(keplr => {
+        if (keplr) {
             //@ts-ignore
-            getAllBalances(keplr, chainInfo?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
+            getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
             dispatch(allActions.fetchVestingBalance(id));
             dispatch(allActions.fetchVoteDetails(id, address));
             dispatch(allActions.fetchProposalTally(id));
-        })
+        }
     }
 
     const handleChange = (event) => {
@@ -93,7 +93,6 @@ export default function VotingDialog({proposal}) {
             memo: '',
         };
 
-        const keplr = await getKeplr();
         //@ts-ignore
         signTxAndBroadcast(keplr, chainInfo?.chain_id, tx, address, (error, result) => {
             passivate();

@@ -73,7 +73,7 @@ const chainConfig = (chainId,
 
 const getSignStargateClient = async (chainId, keplr) => {
     //@ts-ignore
-    await keplr && keplr.enable(chainId);
+    // await keplr && keplr.enable(chainId);
     //@ts-ignore
     const offlineSigner = keplr.getOfflineSignerOnlyAmino(chainId);
     return await SigningStargateClient.connectWithSigner(

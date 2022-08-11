@@ -3,14 +3,16 @@ import EventEmitter from "eventemitter3";
 import Axios from "axios";
 import {Buffer} from "buffer";
 import WalletConnect from "@walletconnect/client";
-// @ts-ignore
 import {KeplrWalletConnectV1} from "@keplr-wallet/wc-client";
+import {LocalKVStore,} from "@keplr-wallet/common";
 import {isMobile} from "@walletconnect/browser-utils";
 import {StdTx} from "@cosmjs/amino";
 import {config, subdomain} from "../../constants/networkConfig";
 import {BroadcastMode, getKeplrFromWindow} from "../../services/cosmos";
 import {KeplrConnectionSelectDialog} from "../../component/KeplrDialog/KeplrConnectionSelectDialog";
 import {KeplrWalletConnectQRDialog} from "../../component/KeplrDialog/KeplrWalletConnectQRDialog";
+import {kvStorePrefix} from "../../constants/general";
+import {Keplr} from "@keplr-wallet/types";
 
 export async function sendTxWC(
     chainId: string,
@@ -60,6 +62,7 @@ export async function sendTxWC(
 
 export const GetKeplrContext = createContext<{
     getKeplr(): Promise<any>;
+    keplr: Keplr | undefined;
     clearLastUsedKeplr(): void;
     connectionType?: "extension" | "wallet-connect";
     setDefaultConnectionType(
@@ -73,7 +76,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
     const [isExtentionNotInstalled, setIsExtensionNotInstalled] = useState(false);
     const [wcUri, setWCUri] = useState("");
 
-    const lastUsedKeplrRef = useRef<any>();
+    const lastUsedKeplrRef = useRef<Keplr | undefined>();
     const defaultConnectionTypeRef = useRef<"extension" | "wallet-connect" | undefined>();
     //@ts-ignore
     const [connectionType, setConnectionType] = useState<"extension" | "wallet-connect" | undefined>();
@@ -107,7 +110,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
         let callbackClosed: (() => void) | undefined;
 
         const createWalletConnect = (): WalletConnect => {
-            const wc = new WalletConnect({
+            return new WalletConnect({
                 bridge: "https://bridge.walletconnect.org", // Required
                 signingMethods: [
                     "keplr_enable_wallet_connect_v1",
@@ -119,21 +122,17 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                         callbackClosed = cb;
                     },
                     close: () => setWCUri(""),
+                },
+                clientMeta: {
+                    name: subdomain.charAt(0).toUpperCase() + subdomain.slice(1) + " | Goatlabs Barn",
+                    description: "Goatlabs Barn manages all delegation and governance process of a Cosmos SDK Networks",
+                    url: "https://" + subdomain + ".goatlabs.zone",
+                    icons: [
+                        // Keplr mobile app can't show svg image.
+                        window.location.origin + "/logo.png",
+                    ]
                 }
             });
-
-            //@ts-ignore
-            wc._clientMeta = {
-                name: subdomain.charAt(0).toUpperCase() + subdomain.slice(1) + " | Goatlabs Barn",
-                description: "Goatlabs Barn manages all delegation and governance process of a Cosmos SDK Networks",
-                // url: "https://" + subdomain + ".goatlabs.zone",
-                url: "https://192.168.68.109:3000",
-                icons: [
-                    // Keplr mobile app can't show svg image.
-                    window.location.origin + "/logo.png",
-                ]
-            }
-            return wc;
         };
 
         if (defaultConnectionTypeRef.current === "wallet-connect") {
@@ -142,6 +141,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
             if (connector.connected) {
                 const keplr = new KeplrWalletConnectV1(connector, {
                     sendTx: sendTxWC,
+                    kvStore: new LocalKVStore(kvStorePrefix)
                 });
                 lastUsedKeplrRef.current = keplr;
                 handleConnectionType("wallet-connect");
@@ -209,6 +209,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                     } else {
                         const keplr = new KeplrWalletConnectV1(connector, {
                             sendTx: sendTxWC,
+                            kvStore: new LocalKVStore(kvStorePrefix)
                         });
                         setIsExtensionSelectionModalOpen(false);
                         lastUsedKeplrRef.current = keplr;
@@ -217,13 +218,15 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                         cleanUp();
                     }
 
-                    connector.on("connect", (error,payload) => {
+                    connector.on("connect", (error, payload) => {
                         cleanUp();
                         if (error) {
+                            console.error(error)
                             reject(error);
                         } else {
                             const keplr = new KeplrWalletConnectV1(connector, {
                                 sendTx: sendTxWC,
+                                kvStore: new LocalKVStore(kvStorePrefix)
                             });
                             setIsExtensionSelectionModalOpen(false);
                             setWCUri("");
@@ -237,8 +240,10 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                         if (error) {
                             console.error("WalletConnect disconnect process could not be completed. Details: " + error)
                         } else {
-                            connector.killSession();
+                            lastUsedKeplrRef.current = undefined;
+                            handleConnectionType(undefined);
                             localStorage.clear();
+                            connector.killSession();
                         }
                     });
                 });
@@ -269,6 +274,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
         <GetKeplrContext.Provider
             value={{
                 getKeplr,
+                keplr: lastUsedKeplrRef.current,
                 clearLastUsedKeplr: useCallback(() => {
                     lastUsedKeplrRef.current = undefined;
                     handleConnectionType(undefined);

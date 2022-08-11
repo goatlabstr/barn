@@ -28,6 +28,7 @@ import SupportedNetworks from "./pages/SupportedNetworks";
 import logo from "./logo.svg";
 import MenuIcon from "@mui/icons-material/Menu";
 import {useKeplr} from "./hooks/use-keplr/hook";
+import {kvStorePrefix, localStorageClearWithPrefix} from "./constants/general";
 
 const menuItems = (t) => [
     {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
@@ -52,16 +53,18 @@ function Main() {
         setActiveValidators,
         setInactiveValidators
     } = useAppState();
-    const {getKeplr, connectionType, setDefaultConnectionType} = useKeplr();
+    const {getKeplr, keplr, connectionType, setDefaultConnectionType} = useKeplr();
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
 
     useEffect(() => {
-        if (!localStorage.getItem('goat_wl_addr')){
+        if (!localStorage.getItem('goat_wl_addr')) {
             localStorage.removeItem("auto_connect_active");
             localStorage.removeItem("connection_type");
+            localStorage.removeItem("walletconnect");
+            indexedDB.deleteDatabase(kvStorePrefix); //@Todo will be removed after a while
         }
     }, [])
 
@@ -110,7 +113,7 @@ function Main() {
     useEffect(() => {
         activate();
         if (chainInfo && Object.keys(chainInfo).length > 0 && localStorage.getItem('goat_wl_addr'))
-            initKeplr();
+            initializeKeplr();
 
         if (address && chainInfo && Object.keys(chainInfo).length > 0) {
             handleFetchDetails(address);
@@ -160,7 +163,7 @@ function Main() {
         return location.pathname === pathname;
     }
 
-    const initKeplr = () => {
+    const initializeKeplr = () => {
         handleChain(chainInfo, true);
     }
 
@@ -171,28 +174,30 @@ function Main() {
             //@ts-ignore
             setDefaultConnectionType(localStorage.getItem('connection_type'));
         }
+        if (localStorage.getItem("goat_wl_addr"))
+            getKeplr().then(keplr => {
+                initializeChain(chain, keplr, connectionType, (error, addressList) => {
+                    if (error) {
+                        enqueueSnackbar(error, {variant: "error"});
+                        localStorage.removeItem("auto_connect_active");
+                        localStorage.removeItem("connection_type");
+                        localStorage.removeItem("goat_wl_addr");
+                        localStorage.removeItem("walletconnect");
+                        localStorageClearWithPrefix(kvStorePrefix);
+                        return;
+                    }
 
-        getKeplr().then(keplr => {
-            initializeChain(chain, keplr, connectionType, (error, addressList) => {
-                if (error) {
-                    enqueueSnackbar(error, {variant: "error"});
-                    localStorage.removeItem("auto_connect_active");
-                    localStorage.removeItem("connection_type");
-                    localStorage.removeItem("goat_wl_addr");
-                    return;
-                }
+                    const previousAddress = decode(localStorage.getItem('goat_wl_addr') || "");
 
-                const previousAddress = decode(localStorage.getItem('goat_wl_addr') || "");
-
-                dispatch(allActions.setAccountAddress(addressList[0]?.address));
-                if (previousAddress !== addressList[0]?.address) {
-                    localStorage.setItem('goat_wl_addr', encode(addressList[0]?.address));
-                }
-                if (fetch && chain) {
-                    handleFetchDetails(addressList[0]?.address);
-                }
-            });
-        })
+                    dispatch(allActions.setAccountAddress(addressList[0]?.address));
+                    if (previousAddress !== addressList[0]?.address) {
+                        localStorage.setItem('goat_wl_addr', encode(addressList[0]?.address));
+                    }
+                    if (fetch && chain) {
+                        handleFetchDetails(addressList[0]?.address);
+                    }
+                });
+            })
     }
 
     const getProposalDetails = (data) => {
@@ -209,7 +214,6 @@ function Main() {
     const handleFetchDetails = async (address) => {
         if (balance && !balance.length &&
             !balanceInProgress) {
-            const keplr = await getKeplr();
             //@ts-ignore
             getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
         }

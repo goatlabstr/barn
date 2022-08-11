@@ -32,6 +32,7 @@ import {useAppDispatch, useAppSelector} from '../../hooks/hook';
 import {useAppState} from "../../hooks/useAppState";
 import {CopyAddressButton} from "./CopyAddressButton";
 import {useKeplr} from "../../hooks/use-keplr/hook";
+import {kvStorePrefix, localStorageClearWithPrefix} from "../../constants/general";
 
 const drawerWidth = 220;
 
@@ -127,6 +128,8 @@ export default function SideBar(props: SideBarProps) {
                     localStorage.removeItem("auto_connect_active");
                     localStorage.removeItem("connection_type");
                     localStorage.removeItem("goat_wl_addr");
+                    localStorage.removeItem("walletconnect");
+                    localStorageClearWithPrefix(kvStorePrefix);
                     enqueueSnackbar(error, {variant: "error"});
                     return;
                 }
