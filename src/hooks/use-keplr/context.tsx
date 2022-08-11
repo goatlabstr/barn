@@ -3,14 +3,17 @@ import EventEmitter from "eventemitter3";
 import Axios from "axios";
 import {Buffer} from "buffer";
 import WalletConnect from "@walletconnect/client";
-// @ts-ignore
 import {KeplrWalletConnectV1} from "@keplr-wallet/wc-client";
+import {
+    LocalKVStore,
+} from "@keplr-wallet/common";
 import {isMobile} from "@walletconnect/browser-utils";
 import {StdTx} from "@cosmjs/amino";
 import {config, subdomain} from "../../constants/networkConfig";
 import {BroadcastMode, getKeplrFromWindow} from "../../services/cosmos";
 import {KeplrConnectionSelectDialog} from "../../component/KeplrDialog/KeplrConnectionSelectDialog";
 import {KeplrWalletConnectQRDialog} from "../../component/KeplrDialog/KeplrWalletConnectQRDialog";
+import {kvStorePrefix} from "../../constants/general";
 
 export async function sendTxWC(
     chainId: string,
@@ -119,11 +122,20 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                         callbackClosed = cb;
                     },
                     close: () => setWCUri(""),
+                },
+                clientMeta: {
+                    name: subdomain.charAt(0).toUpperCase() + subdomain.slice(1) + " | Goatlabs Barn",
+                    description: "Goatlabs Barn manages all delegation and governance process of a Cosmos SDK Networks",
+                    url: "https://" + subdomain + ".goatlabs.zone",
+                    icons: [
+                        // Keplr mobile app can't show svg image.
+                        window.location.origin + "/logo.png",
+                    ]
                 }
             });
 
             //@ts-ignore
-            wc._clientMeta = {
+            /*wc._clientMeta = {
                 name: subdomain.charAt(0).toUpperCase() + subdomain.slice(1) + " | Goatlabs Barn",
                 description: "Goatlabs Barn manages all delegation and governance process of a Cosmos SDK Networks",
                 // url: "https://" + subdomain + ".goatlabs.zone",
@@ -132,7 +144,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                     // Keplr mobile app can't show svg image.
                     window.location.origin + "/logo.png",
                 ]
-            }
+            }*/
             return wc;
         };
 
@@ -142,6 +154,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
             if (connector.connected) {
                 const keplr = new KeplrWalletConnectV1(connector, {
                     sendTx: sendTxWC,
+                    kvStore: new LocalKVStore(kvStorePrefix)
                 });
                 lastUsedKeplrRef.current = keplr;
                 handleConnectionType("wallet-connect");
@@ -209,6 +222,7 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                     } else {
                         const keplr = new KeplrWalletConnectV1(connector, {
                             sendTx: sendTxWC,
+                            kvStore: new LocalKVStore(kvStorePrefix)
                         });
                         setIsExtensionSelectionModalOpen(false);
                         lastUsedKeplrRef.current = keplr;
@@ -217,13 +231,14 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                         cleanUp();
                     }
 
-                    connector.on("connect", (error,payload) => {
+                    connector.on("connect", (error, payload) => {
                         cleanUp();
                         if (error) {
                             reject(error);
                         } else {
                             const keplr = new KeplrWalletConnectV1(connector, {
                                 sendTx: sendTxWC,
+                                kvStore: new LocalKVStore(kvStorePrefix)
                             });
                             setIsExtensionSelectionModalOpen(false);
                             setWCUri("");

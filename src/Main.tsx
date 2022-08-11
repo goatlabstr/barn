@@ -28,6 +28,7 @@ import SupportedNetworks from "./pages/SupportedNetworks";
 import logo from "./logo.svg";
 import MenuIcon from "@mui/icons-material/Menu";
 import {useKeplr} from "./hooks/use-keplr/hook";
+import {kvStorePrefix, localStorageClearWithPrefix} from "./constants/general";
 
 const menuItems = (t) => [
     {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
@@ -59,7 +60,7 @@ function Main() {
     };
 
     useEffect(() => {
-        if (!localStorage.getItem('goat_wl_addr')){
+        if (!localStorage.getItem('goat_wl_addr')) {
             localStorage.removeItem("auto_connect_active");
             localStorage.removeItem("connection_type");
         }
@@ -171,28 +172,29 @@ function Main() {
             //@ts-ignore
             setDefaultConnectionType(localStorage.getItem('connection_type'));
         }
+        if (localStorage.getItem("goat_wl_addr"))
+            getKeplr().then(keplr => {
+                initializeChain(chain, keplr, connectionType, (error, addressList) => {
+                    if (error) {
+                        enqueueSnackbar(error, {variant: "error"});
+                        localStorage.removeItem("auto_connect_active");
+                        localStorage.removeItem("connection_type");
+                        localStorage.removeItem("goat_wl_addr");
+                        localStorageClearWithPrefix(kvStorePrefix);
+                        return;
+                    }
 
-        getKeplr().then(keplr => {
-            initializeChain(chain, keplr, connectionType, (error, addressList) => {
-                if (error) {
-                    enqueueSnackbar(error, {variant: "error"});
-                    localStorage.removeItem("auto_connect_active");
-                    localStorage.removeItem("connection_type");
-                    localStorage.removeItem("goat_wl_addr");
-                    return;
-                }
+                    const previousAddress = decode(localStorage.getItem('goat_wl_addr') || "");
 
-                const previousAddress = decode(localStorage.getItem('goat_wl_addr') || "");
-
-                dispatch(allActions.setAccountAddress(addressList[0]?.address));
-                if (previousAddress !== addressList[0]?.address) {
-                    localStorage.setItem('goat_wl_addr', encode(addressList[0]?.address));
-                }
-                if (fetch && chain) {
-                    handleFetchDetails(addressList[0]?.address);
-                }
-            });
-        })
+                    dispatch(allActions.setAccountAddress(addressList[0]?.address));
+                    if (previousAddress !== addressList[0]?.address) {
+                        localStorage.setItem('goat_wl_addr', encode(addressList[0]?.address));
+                    }
+                    if (fetch && chain) {
+                        handleFetchDetails(addressList[0]?.address);
+                    }
+                });
+            })
     }
 
     const getProposalDetails = (data) => {

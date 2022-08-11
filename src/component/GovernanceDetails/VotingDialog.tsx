@@ -52,13 +52,14 @@ export default function VotingDialog({proposal}) {
     const address = useAppSelector(state => state.accounts.address.value);
 
     const updateBalance = (id) => {
-        getKeplr().then(keplr => {
-            //@ts-ignore
-            getAllBalances(keplr, chainInfo?.chain_id, address,(err, data) => dispatch(allActions.getBalance(err,data)));
-            dispatch(allActions.fetchVestingBalance(id));
-            dispatch(allActions.fetchVoteDetails(id, address));
-            dispatch(allActions.fetchProposalTally(id));
-        })
+        if (localStorage.getItem("goat_wl_addr"))
+            getKeplr().then(keplr => {
+                //@ts-ignore
+                getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+                dispatch(allActions.fetchVestingBalance(id));
+                dispatch(allActions.fetchVoteDetails(id, address));
+                dispatch(allActions.fetchProposalTally(id));
+            })
     }
 
     const handleChange = (event) => {

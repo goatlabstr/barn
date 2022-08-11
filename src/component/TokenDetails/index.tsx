@@ -53,10 +53,12 @@ export default function Index() {
     const unBondingDelegations = useAppSelector(state => state.accounts.unBondingDelegations.result);
 
     useEffect(() => {
-        getKeplr().then(keplr => {
-            //@ts-ignore
-            keplr.getKey(chainInfo?.chain_id).then(walletData => setWalletName(walletData?.name));
-        })
+        if (localStorage.getItem("goat_wl_addr"))
+            getKeplr().then(keplr => {
+                if (keplr)
+                    //@ts-ignore
+                    keplr.getKey(chainInfo?.chain_id).then(walletData => setWalletName(walletData?.name));
+            })
     }, [address])
 
     const handleBalance = () => {
