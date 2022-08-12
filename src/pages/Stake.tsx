@@ -5,7 +5,6 @@ import {Theme} from "@mui/material/styles";
 import StakingDetails from '../component/ValidatorDetails/StakingDetails';
 import {GeneralConstants} from "../constants/general";
 import EnhancedTable from '../component/ValidatorDetails/EnhancedTable';
-import {Done as ActiveIcon} from "@mui/icons-material";
 import {useTranslation} from "react-i18next";
 import {useAppSelector} from "../hooks/hook";
 import {useAppState} from "../hooks/useAppState";
