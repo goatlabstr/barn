@@ -29,7 +29,7 @@ function Index() {
                         <SupportedNetworkCard
                             data={config}
                             //@ts-ignore
-                            url={supportedNetworkUrls[config?.name]}/>
+                            rawData={supportedNetworkUrls[config?.name]}/>
                     </Grid>
                 ))}
             </Grid>

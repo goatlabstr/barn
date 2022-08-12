@@ -115,10 +115,6 @@ function Main() {
         if (chainInfo && Object.keys(chainInfo).length > 0 && localStorage.getItem('goat_wl_addr'))
             initializeKeplr();
 
-        if (address && chainInfo && Object.keys(chainInfo).length > 0) {
-            handleFetchDetails(address);
-        }
-
         if (proposals && !proposals.length && !governanceInProgress) {
             dispatch(allActions.getProposals((result) => {
                 if (result && result.length) {
@@ -138,7 +134,7 @@ function Main() {
                 }
             }));
         }
-    }, [chainInfo])
+    }, [chainInfo,keplr])
 
     useEffect(() => {
         i18n.changeLanguage(localStorage.getItem("lang") || "en");

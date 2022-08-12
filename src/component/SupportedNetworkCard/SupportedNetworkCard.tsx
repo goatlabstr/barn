@@ -1,9 +1,12 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-import {Card, CardActionArea, CardContent, CardHeader, Stack} from "@mui/material";
+import {Card, CardActionArea, CardActions, CardContent, CardHeader, Stack, Tooltip as MTooltip} from "@mui/material";
+import Phone from '@mui/icons-material/PhoneIphone';
+import {useTranslation} from "react-i18next";
 
 export default function SupportedNetworkCard(props) {
+    const {t} = useTranslation();
     const {
         data: {
             pretty_name,
@@ -12,7 +15,10 @@ export default function SupportedNetworkCard(props) {
                 calculated_apr
             }
         },
-        url
+        rawData: {
+            url,
+            mobileSupport
+        }
     } = props;
 
     const getCalculatedApr = (apr) => {
@@ -51,6 +57,10 @@ export default function SupportedNetworkCard(props) {
                         </Stack>
                     </Stack>
                 </CardContent>
+                <CardActions sx={{justifyContent: "end"}} >
+                    {mobileSupport && <MTooltip title={t("supportedNetwork.keplrMobileSupport")}><Phone sx={{height: 23}}/></MTooltip>}
+                    <MTooltip title={t("supportedNetwork.keplrSupport")}><img src={"/keplr-logo.png"} style={{height: 18}}/></MTooltip>
+                </CardActions>
             </CardActionArea>
         </Card>
     );

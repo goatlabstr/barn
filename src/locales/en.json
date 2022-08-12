@@ -82,5 +82,9 @@
   },
   "table": {
     "noTokens": "no tokens"
+  },
+  "supportedNetwork": {
+    "keplrSupport": "Keplr Support",
+    "keplrMobileSupport": "Keplr Mobile Support"
   }
 }
