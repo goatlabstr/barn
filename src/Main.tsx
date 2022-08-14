@@ -6,7 +6,7 @@ import {useTranslation} from "react-i18next";
 import {useAppState} from "./hooks/useAppState";
 
 import SideBar from "./component/Menu/SideBar/SideBar";
-import {AppBar, Box, Button, Slide, Toolbar, Typography, useScrollTrigger} from "@mui/material";
+import {AppBar, Box, Button, Slide, Stack, Toolbar, Typography, useScrollTrigger} from "@mui/material";
 import Stake from "./pages/Stake";
 import Governance from "./pages/Governance";
 import {
@@ -301,14 +301,14 @@ function Main() {
                                         filter: "drop-shadow(2px 3px 2px rgb(0 0 0 / 0.4))"
                                     }}>GOATLABS</Typography>
                                 </Box>
-                                <Box>
+                                <Stack direction="row">
                                     {!(localStorage.getItem('goat_wl_addr') || address) &&
                                         <Button variant="outlined" color="secondary"
                                                 startIcon={<AccountBalanceWalletRounded/>}
                                                 onClick={() => handleConnectButtonClick()}
                                         >{t("menu.connect")}</Button>}
                                     <MobileMenu />
-                                </Box>
+                                </Stack>
                             </Toolbar>
                         </AppBar>
                     </HideOnScroll>
