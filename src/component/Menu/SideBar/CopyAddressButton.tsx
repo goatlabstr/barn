@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-export const CopyAddressButton = ({address}) => {
+export const CopyAddressButton = ({address, width}) => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
@@ -42,7 +42,7 @@ export const CopyAddressButton = ({address}) => {
             open={open}
             title="Copied!">
             <Stack direction={"row"} className={classes.hashText} onClick={handleCopy}>
-                <Stack direction="row" sx={{maxWidth: 175}}>
+                <Stack direction="row" sx={{maxWidth: width}}>
                     <Typography paragraph className={classes.hashName}>{address}</Typography>
                     <Typography paragraph>{address &&
                         address.slice(address.length - 5, address.length)}</Typography>

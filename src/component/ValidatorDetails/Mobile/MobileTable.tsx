@@ -12,6 +12,7 @@ import Grid from "@mui/material/Grid";
 import {useTranslation} from "react-i18next";
 import SearchTextField from "../SearchTextField";
 import {MainDelegationDialog} from "../Delegation/MainDelegationDialog";
+import {formatCount} from "../CommonTable";
 
 interface TableProps {
     rows: Array<any>;
@@ -161,7 +162,11 @@ function MobileTable(props: TableProps) {
                                     }
                                 </ListItemAvatar>
                                 <ListItemText primary={row?.description?.moniker}
-                                              secondary={parseFloat((Number(row?.commission?.commission_rates?.rate) * 100).toFixed(2)) + "%"}/>
+                                              secondary={
+                                                  parseFloat((Number(row?.commission?.commission_rates?.rate) * 100).toFixed(2)) + "% - " +
+                                                  //@ts-ignore
+                                                  formatCount(parseFloat((Number(row?.tokens) / (10 ** (chainInfo?.decimal | 6))).toFixed(1)))
+                                              }/>
                                 <Stack direction="column">
                                     <Typography color={"secondary"}>{getStakeAmount(row)}</Typography>
                                     <Typography variant={"body2"}>{"$" + getPrice(row)}</Typography>

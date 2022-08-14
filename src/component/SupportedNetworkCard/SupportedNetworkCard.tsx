@@ -26,7 +26,7 @@ export default function SupportedNetworkCard(props) {
     }
 
     return (
-        <Card>
+        <Card sx={{background: "linear-gradient(135deg, rgba(136,14,79,1) 15%, rgba(26,35,126,1) 100%)"}}>
             <CardActionArea onClick={() => {
                 //@ts-ignore
                 window.open(url, '_blank').focus()
@@ -38,7 +38,7 @@ export default function SupportedNetworkCard(props) {
                 />
                 <CardContent>
                     <Stack direction={"column"} sx={{ml: 7}}>
-                        <Stack direction={"row"} spacing={2} sx={{alignItems: "center"}}
+                        <Stack direction={"row"} sx={{alignItems: "center"}}
                                justifyContent={"space-between"}>
                             <Typography
                                 sx={{display: 'inline'}}

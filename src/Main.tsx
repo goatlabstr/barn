@@ -1,19 +1,20 @@
 import React, {useEffect} from "react";
-import {Route, Routes, useLocation, useNavigate} from "react-router-dom";
+import {Route, Routes, useLocation} from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
 import {useTranslation} from "react-i18next";
 import {useAppState} from "./hooks/useAppState";
 
-import SideBar from "./component/SideBar/SideBar";
-import {AppBar, Box, IconButton, Toolbar, Typography} from "@mui/material";
+import SideBar from "./component/Menu/SideBar/SideBar";
+import {AppBar, Box, Button, Slide, Toolbar, Typography, useScrollTrigger} from "@mui/material";
 import Stake from "./pages/Stake";
 import Governance from "./pages/Governance";
 import {
     AccountBalanceRounded as DashboardIcon,
+    AccountBalanceWalletRounded,
+    Flare as NetworksIcon,
     HowToVoteRounded as GovernanceIcon,
-    MonetizationOnRounded as StakeIcon,
-    Flare as NetworksIcon
+    MonetizationOnRounded as StakeIcon
 } from "@mui/icons-material";
 import {useGlobalPreloader} from "./hooks/useGlobalPreloader";
 import {useAppDispatch, useAppSelector} from "./hooks/hook";
@@ -26,9 +27,10 @@ import VotingDetails from "./component/GovernanceDetails/VotingDetails";
 import Common from "./services/axios/common";
 import SupportedNetworks from "./pages/SupportedNetworks";
 import logo from "./logo.svg";
-import MenuIcon from "@mui/icons-material/Menu";
 import {useKeplr} from "./hooks/use-keplr/hook";
 import {kvStorePrefix, localStorageClearWithPrefix} from "./constants/general";
+import BottomBar from "./component/Menu/BottomBar/BottomBar";
+import MobileMenu from "./component/Menu/MobileMenu/MobileMenu";
 
 const menuItems = (t) => [
     {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
@@ -37,13 +39,24 @@ const menuItems = (t) => [
     {key: "networks", path: "/networks", title: t("menu.networks"), icon: <NetworksIcon/>}
 ];
 
+function HideOnScroll(props) {
+    const {children} = props;
+    const trigger = useScrollTrigger();
+
+    return (
+        <Slide appear={false} direction="down" in={!trigger}>
+            {children}
+        </Slide>
+    );
+}
+
 function Main() {
     const {i18n} = useTranslation();
     const location = useLocation();
     const {activate, passivate} = useGlobalPreloader();
-    const [mobileOpen, setMobileOpen] = React.useState(false);
     const dispatch = useAppDispatch();
     const {enqueueSnackbar} = useSnackbar();
+    const {t} = useTranslation();
     const {
         appState: {
             chainInfo
@@ -53,11 +66,7 @@ function Main() {
         setActiveValidators,
         setInactiveValidators
     } = useAppState();
-    const {getKeplr, keplr, connectionType, setDefaultConnectionType} = useKeplr();
-
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
+    const {getKeplr, keplr, connectionType, setDefaultConnectionType, clearLastUsedKeplr} = useKeplr();
 
     useEffect(() => {
         if (!localStorage.getItem('goat_wl_addr')) {
@@ -134,7 +143,7 @@ function Main() {
                 }
             }));
         }
-    }, [chainInfo,keplr])
+    }, [chainInfo, keplr])
 
     useEffect(() => {
         i18n.changeLanguage(localStorage.getItem("lang") || "en");
@@ -234,50 +243,77 @@ function Main() {
         }
     }
 
+    const handleConnectButtonClick = () => {
+        if (!chainInfo || Object.keys(chainInfo).length === 0)
+            return;
+        activate();
+        localStorage.setItem("auto_connect_active", "true");
+        getKeplr().then(keplr => {
+            initializeChain(chainInfo, keplr, connectionType, (error, addressList) => {
+                passivate();
+                if (error) {
+                    localStorage.removeItem("auto_connect_active");
+                    localStorage.removeItem("connection_type");
+                    localStorage.removeItem("goat_wl_addr");
+                    localStorage.removeItem("walletconnect");
+                    localStorageClearWithPrefix(kvStorePrefix);
+                    enqueueSnackbar(error, {variant: "error"});
+                    return;
+                }
+                dispatch(allActions.setAccountAddress(addressList[0]?.address));
+                dispatch(allActions.getUnBondingDelegations(addressList[0] && addressList[0].address));
+                dispatch(allActions.fetchRewards(addressList[0] && addressList[0].address));
+                dispatch(allActions.getDelegations(addressList[0] && addressList[0].address));
+                //@ts-ignore
+                getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+                dispatch(allActions.fetchVestingBalance(addressList[0] && addressList[0].address));
+                dispatch(allActions.getDelegatedValidatorsDetails(addressList[0] && addressList[0].address));
+                localStorage.setItem('goat_wl_addr', encode(addressList[0] && addressList[0].address));
+            });
+        })
+    }
+
     return (
         <Box sx={{display: 'flex'}}>
-            <SideBar menuItems={menuItems(i18n.t)} handleDrawerToggle={() => handleDrawerToggle()}
-                     mobileOpen={mobileOpen}/>
+            <SideBar menuItems={menuItems(i18n.t)}/>
             <Box sx={{flexGrow: 1}}>
                 <Box sx={{
                     flexGrow: 1,
                     display: {md: 'none'}
                 }}>
-                    <AppBar position="fixed" sx={{
-                        pt: 1,
-                        pb: 1,
-                        pl: 1,
-                        //@ts-ignore
-                        bgcolor: "transparent"
-                    }} enableColorOnDark>
-                        <Toolbar sx={{justifyContent: "space-between"}}>
-                            <Box sx={{display: "flex"}}>
-                                <img style={{
-                                    width: 48,
-                                    filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
-                                }} src={logo}/>
-                                <Typography variant={"h4"} sx={{
-                                    ml: "7px",
-                                    mt: "11px",
-                                    filter: "drop-shadow(2px 3px 2px rgb(0 0 0 / 0.4))"
-                                }}>GOATLABS</Typography>
-                            </Box>
-                            <IconButton
-                                color="inherit"
-                                aria-label="open drawer"
-                                onClick={handleDrawerToggle}
-                                sx={{
-                                    mr: 2,
-                                    display: {md: 'none'},
-                                    size: "large",
-                                    filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
-                                }}
-                            >
-                                <MenuIcon fontSize="large"/>
-                            </IconButton>
-                        </Toolbar>
-                    </AppBar>
+                    <HideOnScroll>
+                        <AppBar position="fixed" sx={{
+                            pt: 1,
+                            pb: 1,
+                            pl: 1,
+                            //@ts-ignore
+                            bgcolor: "transparent"
+                        }} enableColorOnDark>
+                            <Toolbar sx={{justifyContent: "space-between"}}>
+                                <Box sx={{display: "flex"}}>
+                                    <img style={{
+                                        width: 48,
+                                        filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
+                                    }} src={logo}/>
+                                    <Typography variant={"h4"} sx={{
+                                        ml: "7px",
+                                        mt: "11px",
+                                        filter: "drop-shadow(2px 3px 2px rgb(0 0 0 / 0.4))"
+                                    }}>GOATLABS</Typography>
+                                </Box>
+                                <Box>
+                                    {!(localStorage.getItem('goat_wl_addr') || address) &&
+                                        <Button variant="outlined" color="secondary"
+                                                startIcon={<AccountBalanceWalletRounded/>}
+                                                onClick={() => handleConnectButtonClick()}
+                                        >{t("menu.connect")}</Button>}
+                                    <MobileMenu />
+                                </Box>
+                            </Toolbar>
+                        </AppBar>
+                    </HideOnScroll>
                 </Box>
+                <BottomBar menuItems={menuItems(i18n.t)}/>
                 <Box
                     component="main"
                     sx={{flexGrow: 1, p: 0, pt: {xs: 9, md: 0}}}

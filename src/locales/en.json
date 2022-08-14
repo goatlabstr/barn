@@ -45,7 +45,8 @@
     "stakedAmount": "Staked Amount",
     "rewards": "Rewards",
     "unstakedAmount": "Unstaked Amount",
-    "stakedValidators": "Staked Validators"
+    "stakedValidators": "Staked Validators",
+    "tokenPrice": "{{name}} Price"
   },
   "governance": {
     "voted": {
