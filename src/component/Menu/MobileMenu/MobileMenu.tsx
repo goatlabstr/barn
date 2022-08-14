@@ -32,8 +32,8 @@ export default function MobileMenu() {
     const address = useAppSelector(state => state.accounts.address.value);
 
     const handleDisconnectButtonClick = () => {
-        localStorage.clear();
         clearLastUsedKeplr();
+        localStorage.clear();
         dispatch(allActions.disconnectSet());
     }
 

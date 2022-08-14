@@ -120,28 +120,30 @@ function Main() {
     }, [balanceInProgress, delegationsInProgress, governanceInProgress])
 
     useEffect(() => {
-        activate();
-        if (chainInfo && Object.keys(chainInfo).length > 0 && localStorage.getItem('goat_wl_addr'))
-            initializeKeplr();
+        if(localStorage.getItem("auto_connect_active") === "true"){
+            activate();
+            if (chainInfo && Object.keys(chainInfo).length > 0 && localStorage.getItem('goat_wl_addr'))
+                initializeKeplr();
 
-        if (proposals && !proposals.length && !governanceInProgress) {
-            dispatch(allActions.getProposals((result) => {
-                if (result && result.length) {
-                    const array = [];
-                    result.map((val) => {
-                        if (isActivePath("/") && val.status !== 2) {
+            if (proposals && !proposals.length && !governanceInProgress) {
+                dispatch(allActions.getProposals((result) => {
+                    if (result && result.length) {
+                        const array = [];
+                        result.map((val) => {
+                            if (isActivePath("/") && val.status !== 2) {
+                                return null;
+                            }
+                            //@ts-ignore
+                            array.push(val.id);
+                            if (val.status === 2) {
+                                dispatch(allActions.fetchProposalTally(val.id));
+                            }
                             return null;
-                        }
-                        //@ts-ignore
-                        array.push(val.id);
-                        if (val.status === 2) {
-                            dispatch(allActions.fetchProposalTally(val.id));
-                        }
-                        return null;
-                    });
-                    getProposalDetails(array && array.reverse());
-                }
-            }));
+                        });
+                        getProposalDetails(array && array.reverse());
+                    }
+                }));
+            }
         }
     }, [chainInfo, keplr])
 
