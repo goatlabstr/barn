@@ -109,7 +109,10 @@ export default function ProposalCard(props: ProposalCardType) {
                     <Stack direction={"column"} spacing={2}>
                         <Stack direction={"row"} spacing={2} sx={{alignItems: "center"}}
                                justifyContent={"space-between"}>
-                            <Avatar>{id}</Avatar>
+                            <Avatar sx={{
+                                color: "white",
+                                background: "linear-gradient(135deg, rgba(136,14,79,1) 15%, rgba(26,35,126,1) 100%)"
+                            }}>{id}</Avatar>
                             <Typography
                                 sx={{display: 'inline'}}
                                 component="span"

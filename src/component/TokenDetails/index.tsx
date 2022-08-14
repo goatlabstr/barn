@@ -6,7 +6,7 @@ import {
     AccountBalanceWalletRounded,
     AssuredWorkloadRounded,
     CurrencyExchangeRounded,
-    HourglassTopRounded,
+    HourglassTopRounded, MonetizationOnRounded,
     StarsRounded
 } from '@mui/icons-material';
 import {useTranslation} from "react-i18next";
@@ -212,6 +212,13 @@ export default function Index() {
                             </Box>
                         </Button>
                     </Stack>
+                </Grid>
+                <Grid item xs={6} sx={{display: {md: "none"}}}>
+                    <DetailViewer title={t("dashboard.tokenPrice", {
+                        //@ts-ignore
+                        name: chainInfo?.symbol
+                    })} amount={currentPrice} prefix={"$"}
+                                  icon={<MonetizationOnRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
                 <Grid item xs={6} md={2}>
                     <DetailViewer title={t("dashboard.totalBalances")} amount={handleTotalBalance()} prefix={"$"}

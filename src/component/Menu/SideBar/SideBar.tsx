@@ -21,18 +21,18 @@ import {
     Typography
 } from "@mui/material";
 import clsx from "clsx";
-import logo from '../../logo.svg';
+import logo from '../../../logo.svg';
 import {AccountBalanceWalletRounded, Email, Instagram, LogoutRounded, Telegram, Twitter} from "@mui/icons-material";
-import {useGlobalPreloader} from "../../hooks/useGlobalPreloader";
-import {getAllBalances, initializeChain} from "../../services/cosmos";
+import {useGlobalPreloader} from "../../../hooks/useGlobalPreloader";
+import {getAllBalances, initializeChain} from "../../../services/cosmos";
 import {encode} from 'js-base64';
-import allActions from "../../action";
+import allActions from "../../../action";
 import {useSnackbar} from "notistack";
-import {useAppDispatch, useAppSelector} from '../../hooks/hook';
-import {useAppState} from "../../hooks/useAppState";
+import {useAppDispatch, useAppSelector} from '../../../hooks/hook';
+import {useAppState} from "../../../hooks/useAppState";
 import {CopyAddressButton} from "./CopyAddressButton";
-import {useKeplr} from "../../hooks/use-keplr/hook";
-import {kvStorePrefix, localStorageClearWithPrefix} from "../../constants/general";
+import {useKeplr} from "../../../hooks/use-keplr/hook";
+import {kvStorePrefix, localStorageClearWithPrefix} from "../../../constants/general";
 
 const drawerWidth = 220;
 
@@ -82,13 +82,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 type SideBarProps = {
-    menuItems: any,
-    mobileOpen: boolean,
-    handleDrawerToggle: () => void
+    menuItems: any
 }
 
 export default function SideBar(props: SideBarProps) {
-    const {menuItems, handleDrawerToggle, mobileOpen} = props;
+    const {menuItems} = props;
     const classes = useStyles();
     const location = useLocation();
     const {t} = useTranslation();
@@ -195,7 +193,7 @@ export default function SideBar(props: SideBarProps) {
                         </Stack>
                         <Typography variant={"body2"} color={"secondary"}>${currentPrice}</Typography>
                     </Stack>
-                    {address && <CopyAddressButton address={address}/>}
+                    {address && <CopyAddressButton address={address} width={175}/>}
                     {localStorage.getItem('goat_wl_addr') || address ?
                         <Button variant="outlined"
                                 sx={{"color": "rgb(131 157 170)", "borderColor": "rgb(131 157 170)"}}
@@ -251,20 +249,6 @@ export default function SideBar(props: SideBarProps) {
                 sx={{width: {md: drawerWidth}, flexShrink: {xs: 0}}}
                 aria-label="goatlabs-menu"
             >
-                <Drawer
-                    variant="temporary"
-                    open={mobileOpen}
-                    onClose={handleDrawerToggle}
-                    ModalProps={{
-                        keepMounted: true, // Better open performance on mobile.
-                    }}
-                    sx={{
-                        display: {xs: 'block', md: 'none'},
-                        '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth}
-                    }}
-                >
-                    {drawer}
-                </Drawer>
                 <Drawer
                     variant="permanent"
                     sx={{
