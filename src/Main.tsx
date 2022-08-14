@@ -316,7 +316,7 @@ function Main() {
                 <BottomBar menuItems={menuItems(i18n.t)}/>
                 <Box
                     component="main"
-                    sx={{flexGrow: 1, p: 0, pt: {xs: 9, md: 0}}}
+                    sx={{flexGrow: 1, p: 0, pt: {xs: 9, md: 0}, pb: {xs: 9, md: 0}}}
                 >
                     <Routes>
                         <Route path="/" element={<Dashboard/>}/>
