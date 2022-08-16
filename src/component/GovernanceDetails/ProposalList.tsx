@@ -24,8 +24,8 @@ export default function ProposalList(props: ProposalProps) {
                     <Grid item xs={12} md={6} lg={12} key={proposal?.id}>
                         <ProposalCard
                             id={proposal?.id}
-                            title={proposal?.content?.value?.title}
-                            description={proposal?.content?.value?.description}
+                            title={proposal?.content?.value?.title || proposal?.content?.title}
+                            description={proposal?.content?.value?.description || proposal?.content?.description}
                             startTime={proposal?.voting_start_time}
                             endingTime={proposal?.voting_end_time}
                             proposal={proposal}

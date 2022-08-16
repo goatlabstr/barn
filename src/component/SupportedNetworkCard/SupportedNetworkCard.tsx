@@ -58,8 +58,8 @@ export default function SupportedNetworkCard(props) {
                     </Stack>
                 </CardContent>
                 <CardActions sx={{justifyContent: "end"}} >
-                    {mobileSupport && <MTooltip title={t("supportedNetwork.keplrMobileSupport")}><Phone sx={{height: 23}}/></MTooltip>}
-                    <MTooltip title={t("supportedNetwork.keplrSupport")}><img src={"/keplr-logo.png"} style={{height: 18}}/></MTooltip>
+                    {mobileSupport && <MTooltip title={t("supportedNetwork.keplrMobileSupport")}><Phone /></MTooltip>}
+                    <MTooltip title={t("supportedNetwork.keplrSupport")}><img src={"/keplr-logo.png"} style={{height: 23}}/></MTooltip>
                 </CardActions>
             </CardActionArea>
         </Card>
