@@ -58,7 +58,7 @@ export default function DelegateDialog({initialValidator}) {
 
     const handleBalance = () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         //@ts-ignore
         const bal = balance && balance.length && balance.find((val) => val.denom === chainInfo?.denom);
         return bal?.amount / (10 ** decimals) || 0;
@@ -69,7 +69,7 @@ export default function DelegateDialog({initialValidator}) {
 
     const getValueObject = () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         return {
             delegatorAddress: address,
             validatorAddress: validator?.operator_address,

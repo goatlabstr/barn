@@ -67,7 +67,7 @@ export default function UndelegateDialog({initialValidator}) {
 
     const getValueObject = () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         return {
             delegatorAddress: address,
             validatorAddress: validator?.operator_address,
@@ -131,7 +131,7 @@ export default function UndelegateDialog({initialValidator}) {
 
     useEffect(() => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         const found = delegations.find(el => el?.delegation?.validator_address === validator?.operator_address);
         if (found !== undefined)
             setValidatorUndelegateAmount(found?.balance?.amount / (10 ** decimals));

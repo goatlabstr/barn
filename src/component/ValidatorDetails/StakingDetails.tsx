@@ -33,7 +33,7 @@ function Index(props) {
 
     const handleRewards = () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         const mainRewards = rewards && rewards.total && rewards.total.length &&
             //@ts-ignore
             rewards.total.filter(r => r?.denom === chainInfo?.denom);
@@ -43,7 +43,7 @@ function Index(props) {
 
     const getStakedAmount = () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         const staked = delegations.reduce((accumulator, currentValue) => {
             return accumulator + Number(currentValue.balance.amount);
         }, 0);
@@ -53,7 +53,7 @@ function Index(props) {
 
     const updateBalance = async () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         const tokens = rewards && rewards.length && rewards[0] && rewards[0].reward &&
         rewards[0].reward.length && rewards[0].reward[0] && rewards[0].reward[0].amount
             ? rewards[0].reward[0].amount / 10 ** decimals : 0;

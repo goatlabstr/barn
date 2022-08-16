@@ -69,7 +69,7 @@ export default function RedelegateDialog({initialValidator}) {
 
     useEffect(() => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         const found = delegations.find(el => el?.delegation?.validator_address === fromValidator?.operator_address);
         if (found !== undefined)
             setValidatorRedelegateAmount(found?.balance?.amount / (10 ** decimals));
@@ -78,7 +78,7 @@ export default function RedelegateDialog({initialValidator}) {
 
     const getValueObject = () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         return {
             delegatorAddress: address,
             validatorSrcAddress: fromValidator?.operator_address,

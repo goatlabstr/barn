@@ -114,7 +114,7 @@ function MobileTable(props: TableProps) {
 
     const getStakeAmount = (row) => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         let value = delegations.find((val) =>
             (val.delegation && val.delegation.validator_address) === row.operator_address);
         return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** decimals : 0;
