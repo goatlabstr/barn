@@ -238,7 +238,7 @@ export default function EnhancedTable(props: TableProps) {
     const {rows, title, buttonTitle, onClickToolbarButton, search} = props;
     const classes = useStyles();
     const [order, setOrder] = React.useState<Order>('asc');
-    const [orderBy, setOrderBy] = React.useState<any>('validator');
+    const [orderBy, setOrderBy] = React.useState<any>();
     const [filterValue, setFilterValue] = useState<string>("");
     const [data, setData] = useState<any>([]);
     const [selectedValidator, setSelectedValidator] = useState<any>();
@@ -268,6 +268,11 @@ export default function EnhancedTable(props: TableProps) {
     }
 
     useEffect(() => {
+        const goatIndex = rows.findIndex(r => r?.description?.moniker?.toLowerCase().includes("goatlabs"));
+        if(goatIndex > 0){
+            const goatArray = rows.splice(goatIndex,1);
+            rows.unshift(goatArray[0]);
+        }
         if (!filterValue || /^\s*$/.test(filterValue))
             setData(rows);
         else

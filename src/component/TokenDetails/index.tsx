@@ -15,7 +15,7 @@ import {useAppState} from "../../hooks/useAppState";
 import {makeStyles} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
 import {gas} from "../../constants/defaultGasFees";
-import {getAllBalances, signTxAndBroadcast} from "../../services/cosmos";
+import {signTxAndBroadcast} from "../../services/cosmos";
 import {useSnackbar} from "notistack";
 import allActions from "../../action";
 import {snackbarTxAction} from "../Snackbar/action";
@@ -114,7 +114,8 @@ export default function Index() {
         rewards[0].reward.length && rewards[0].reward[0] && rewards[0].reward[0].amount
             ? rewards[0].reward[0].amount / 10 ** decimals : 0;
         //@ts-ignore
-        getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+        // getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+        dispatch(allActions.getAllBalance(address));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.fetchRewards(address));
         dispatch(allActions.setTokens(tokens));
