@@ -78,7 +78,7 @@ export const MainDelegationDialog = ({
 
     const getStakeAmount = (row) => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         let value = delegations.find((val) =>
             (val.delegation && val.delegation.validator_address) === row?.operator_address);
         return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** decimals : 0;
@@ -86,7 +86,7 @@ export const MainDelegationDialog = ({
 
     const handleBalance = () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         //@ts-ignore
         const bal = balance && balance.length && balance.find((val) => val.denom === chainInfo?.denom);
         const val = bal?.amount / (10 ** decimals) || 0;

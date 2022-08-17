@@ -16,7 +16,7 @@ import {useDialog} from "../../../hooks/use-dialog/DialogContext";
 import SelectValidator from "./SelectValidator";
 import {useAppDispatch, useAppSelector} from "../../../hooks/hook";
 import {gas} from "../../../constants/defaultGasFees";
-import {getAllBalances, signTxAndBroadcast} from "../../../services/cosmos";
+import {signTxAndBroadcast} from "../../../services/cosmos";
 import allActions from "../../../action";
 import {useGlobalPreloader} from "../../../hooks/useGlobalPreloader";
 import {snackbarTxAction} from "../../Snackbar/action";
@@ -58,7 +58,7 @@ export default function DelegateDialog({initialValidator}) {
 
     const handleBalance = () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         //@ts-ignore
         const bal = balance && balance.length && balance.find((val) => val.denom === chainInfo?.denom);
         return bal?.amount / (10 ** decimals) || 0;
@@ -69,7 +69,7 @@ export default function DelegateDialog({initialValidator}) {
 
     const getValueObject = () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         return {
             delegatorAddress: address,
             validatorAddress: validator?.operator_address,
@@ -83,7 +83,8 @@ export default function DelegateDialog({initialValidator}) {
 
     const updateBalance = async () => {
         //@ts-ignore
-        getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+        // getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+        dispatch(allActions.getAllBalance(address));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.getDelegations(address));
         dispatch(allActions.getUnBondingDelegations(address));

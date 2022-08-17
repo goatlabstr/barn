@@ -17,7 +17,7 @@ import SelectValidator from "./SelectValidator";
 import {useAppDispatch, useAppSelector} from "../../../hooks/hook";
 import allActions from "../../../action";
 import {gas} from "../../../constants/defaultGasFees";
-import {getAllBalances, signTxAndBroadcast} from "../../../services/cosmos";
+import {signTxAndBroadcast} from "../../../services/cosmos";
 import {useGlobalPreloader} from "../../../hooks/useGlobalPreloader";
 import {snackbarTxAction} from "../../Snackbar/action";
 import {useAppState} from "../../../hooks/useAppState";
@@ -69,7 +69,7 @@ export default function RedelegateDialog({initialValidator}) {
 
     useEffect(() => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         const found = delegations.find(el => el?.delegation?.validator_address === fromValidator?.operator_address);
         if (found !== undefined)
             setValidatorRedelegateAmount(found?.balance?.amount / (10 ** decimals));
@@ -78,7 +78,7 @@ export default function RedelegateDialog({initialValidator}) {
 
     const getValueObject = () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         return {
             delegatorAddress: address,
             validatorSrcAddress: fromValidator?.operator_address,
@@ -93,7 +93,8 @@ export default function RedelegateDialog({initialValidator}) {
 
     const updateBalance = async () => {
         //@ts-ignore
-        getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+        // getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+        dispatch(allActions.getAllBalance(address));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.getDelegations(address));
         dispatch(allActions.getUnBondingDelegations(address));

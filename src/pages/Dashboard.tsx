@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 
-function Index() {
+function Dashboard() {
     const {t} = useTranslation();
     const classes = useStyles();
     let navigate = useNavigate();
@@ -114,4 +114,4 @@ function Index() {
     );
 }
 
-export default Index;
+export default Dashboard;

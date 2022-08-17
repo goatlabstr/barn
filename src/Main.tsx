@@ -20,7 +20,7 @@ import {useGlobalPreloader} from "./hooks/useGlobalPreloader";
 import {useAppDispatch, useAppSelector} from "./hooks/hook";
 import {useSnackbar} from "notistack";
 import allActions from "./action";
-import {getAllBalances, initializeChain} from "./services/cosmos";
+import {initializeChain} from "./services/cosmos";
 import {decode, encode} from "js-base64";
 import CoinGecko from "./services/axios/coingecko";
 import VotingDetails from "./component/GovernanceDetails/VotingDetails";
@@ -222,7 +222,8 @@ function Main() {
         if (balance && !balance.length &&
             !balanceInProgress) {
             //@ts-ignore
-            getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+            // getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+            dispatch(allActions.getAllBalance(address));
         }
         if (vestingBalance && !vestingBalance.value &&
             !vestingBalanceInProgress) {
@@ -267,7 +268,8 @@ function Main() {
                 dispatch(allActions.fetchRewards(addressList[0] && addressList[0].address));
                 dispatch(allActions.getDelegations(addressList[0] && addressList[0].address));
                 //@ts-ignore
-                getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+                // getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+                dispatch(allActions.getAllBalance(address));
                 dispatch(allActions.fetchVestingBalance(addressList[0] && addressList[0].address));
                 dispatch(allActions.getDelegatedValidatorsDetails(addressList[0] && addressList[0].address));
                 localStorage.setItem('goat_wl_addr', encode(addressList[0] && addressList[0].address));

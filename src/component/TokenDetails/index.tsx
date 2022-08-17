@@ -15,7 +15,7 @@ import {useAppState} from "../../hooks/useAppState";
 import {makeStyles} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
 import {gas} from "../../constants/defaultGasFees";
-import {getAllBalances, signTxAndBroadcast} from "../../services/cosmos";
+import {signTxAndBroadcast} from "../../services/cosmos";
 import {useSnackbar} from "notistack";
 import allActions from "../../action";
 import {snackbarTxAction} from "../Snackbar/action";
@@ -60,7 +60,7 @@ export default function Index() {
 
     const handleBalance = () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         //@ts-ignore
         const bal = balance && balance.length && balance.find((val) => val.denom === chainInfo?.denom);
         return bal?.amount / (10 ** decimals) || 0;
@@ -68,7 +68,7 @@ export default function Index() {
 
     const handleRewards = () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         const mainRewards = rewards && rewards.total && rewards.total.length &&
             //@ts-ignore
             rewards.total.filter(r => r?.denom === chainInfo?.denom);
@@ -78,7 +78,7 @@ export default function Index() {
 
     const handleStakedAmount = () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         const staked = delegations.reduce((accumulator, currentValue) => {
             return accumulator + Number(currentValue.balance.amount);
         }, 0);
@@ -87,7 +87,7 @@ export default function Index() {
 
     const handleUnstakedAmount = () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         let unStaked = 0;
         unBondingDelegations.map((delegation) => {
             delegation.entries && delegation.entries.length &&
@@ -109,12 +109,13 @@ export default function Index() {
 
     const updateBalance = async () => {
         //@ts-ignore
-        const decimals = chainInfo?.decimals | 6;
+        const decimals = chainInfo?.decimals || 6;
         const tokens = rewards && rewards.length && rewards[0] && rewards[0].reward &&
         rewards[0].reward.length && rewards[0].reward[0] && rewards[0].reward[0].amount
             ? rewards[0].reward[0].amount / 10 ** decimals : 0;
         //@ts-ignore
-        getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+        // getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+        dispatch(allActions.getAllBalance(address));
         dispatch(allActions.fetchVestingBalance(address));
         dispatch(allActions.fetchRewards(address));
         dispatch(allActions.setTokens(tokens));

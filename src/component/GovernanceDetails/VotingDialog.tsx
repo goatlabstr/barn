@@ -15,7 +15,7 @@ import {makeStyles} from "@mui/styles";
 import {useDialog} from "../../hooks/use-dialog/DialogContext";
 import {useAppDispatch, useAppSelector} from "../../hooks/hook";
 import {useGlobalPreloader} from "../../hooks/useGlobalPreloader";
-import {getAllBalances, signTxAndBroadcast} from "../../services/cosmos";
+import {signTxAndBroadcast} from "../../services/cosmos";
 import {gas} from "../../constants/defaultGasFees";
 import allActions from "../../action";
 import {config} from "../../constants/networkConfig";
@@ -54,7 +54,8 @@ export default function VotingDialog({proposal}) {
     const updateBalance = (id) => {
         if (keplr) {
             //@ts-ignore
-            getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+            // getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
+            dispatch(allActions.getAllBalance(address));
             dispatch(allActions.fetchVestingBalance(id));
             dispatch(allActions.fetchVoteDetails(id, address));
             dispatch(allActions.fetchProposalTally(id));

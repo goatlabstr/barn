@@ -101,17 +101,17 @@ function Index() {
 
     const ActiveProposalContent = ({proposals}) => {
         const data = proposals.filter(proposal => proposal.status === 2).reverse();
-        return <Content data={data} />;
+        return <Content data={data}/>;
     }
 
     const PassedProposalContent = ({proposals}) => {
         const data = proposals.filter(proposal => proposal.status === 3).reverse();
-        return <Content data={data} />;
+        return <Content data={data}/>;
     }
 
     const RejectedProposalContent = ({proposals}) => {
         const data = proposals.filter(proposal => proposal.status === 4).reverse();
-        return <Content data={data} />;
+        return <Content data={data}/>;
     }
 
     const Content = ({data}) => {
@@ -122,8 +122,8 @@ function Index() {
                     <Grid item xs={12} md={6} xl={4} key={proposal?.id}>
                         <ProposalCard
                             id={proposal?.id}
-                            title={proposal?.content?.value?.title}
-                            description={proposal?.content?.value?.description}
+                            title={proposal?.content?.value?.title || proposal?.content?.title}
+                            description={proposal?.content?.value?.description || proposal?.content?.description}
                             startTime={proposal?.voting_start_time}
                             endingTime={proposal?.voting_end_time}
                             proposal={proposal}
@@ -144,32 +144,30 @@ function Index() {
                 pt: 2
             }} className={classes.centerBox}>
                 <Box className={classes.centerInnerBox}>
-                    <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
-                        <StyledTabs value={value} onChange={handleChange}>
-                            <StyledTab label={t("governance.active")}/>
-                            <StyledTab label={t("governance.passed")}/>
-                            <StyledTab label={t("governance.rejected")}/>
-                            <StyledTab label={t("governance.all")}/>
-                        </StyledTabs>
-                    </Box>
+                    <StyledTabs value={value} onChange={handleChange}>
+                        <StyledTab label={t("governance.active")}/>
+                        <StyledTab label={t("governance.passed")}/>
+                        <StyledTab label={t("governance.rejected")}/>
+                        <StyledTab label={t("governance.all")}/>
+                    </StyledTabs>
                     <TabPanel value={value} index={0}>
-                        <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
-                            <ActiveProposalContent proposals={proposals} />
+                        <Grid container spacing={{xs: 1, md: 2}} sx={{flexGrow: 1}}>
+                            <ActiveProposalContent proposals={proposals}/>
                         </Grid>
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                        <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
-                            <PassedProposalContent proposals={proposals} />
+                        <Grid container spacing={{xs: 1, md: 2}} sx={{flexGrow: 1}}>
+                            <PassedProposalContent proposals={proposals}/>
                         </Grid>
                     </TabPanel>
                     <TabPanel value={value} index={2}>
-                        <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
-                            <RejectedProposalContent proposals={proposals} />
+                        <Grid container spacing={{xs: 1, md: 2}} sx={{flexGrow: 1}}>
+                            <RejectedProposalContent proposals={proposals}/>
                         </Grid>
                     </TabPanel>
                     <TabPanel value={value} index={3}>
-                        <Grid container spacing={{xs: 2, md: 3}} sx={{flexGrow: 1}}>
-                            <Content data={([...proposals].reverse())} />
+                        <Grid container spacing={{xs: 1, md: 2}} sx={{flexGrow: 1}}>
+                            <Content data={([...proposals].reverse())}/>
                         </Grid>
                     </TabPanel>
                 </Box>
