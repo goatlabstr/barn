@@ -125,9 +125,11 @@ const headCells: readonly HeadCell[] = [
 ];
 
 const EnhancedTableToolbar = (props) => {
-    const {onChangeSearchValue, searchActive, setDelegationDialogOpen, setSelectedValidator, stakeData} = props;
+    const {onChangeSearchValue, searchActive, stakeData} = props;
     const classes = useStyles();
     const [value, setValue] = useState("");
+    const {openDialog} = useDialog();
+    const {t} = useTranslation();
 
     const handleValueChange = (event) => {
         if (onChangeSearchValue && typeof onChangeSearchValue === 'function')
@@ -159,10 +161,9 @@ const EnhancedTableToolbar = (props) => {
                                 color="primary"
                                 startIcon={<StakeIcon/>}
                                 disabled={!localStorage.getItem('goat_wl_addr')}
-                                onClick={() => {
-                                    setSelectedValidator(stakeData);
-                                    setDelegationDialogOpen(true)
-                                }}>Stake</Button>
+                                onClick={() => openDialog(
+                                    <DelegateDialog initialValidator={stakeData}/>, t("delegateTitle"))}
+                                >Stake</Button>
                         {searchActive && <SearchTextField value={value} onChange={handleValueChange}
                                                           className={classes.tableSearch}/>}
                         {props.buttonTitle && <Button variant="outlined"
@@ -339,8 +340,6 @@ export default function EnhancedTable(props: TableProps) {
                                             onChangeSearchValue={setFilterValue}
                                             searchActive={search}
                                             stakeData={data && data.length > 0 && data[0]}
-                                            setDelegationDialogOpen={setDelegationDialogOpen}
-                                            setSelectedValidator={setSelectedValidator}
             />}
             <TableContainer>
                 <Table

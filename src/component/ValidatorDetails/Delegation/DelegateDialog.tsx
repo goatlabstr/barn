@@ -135,7 +135,7 @@ export default function DelegateDialog({initialValidator}) {
     return (
         <>
             <Divider/>
-            <DialogContent className={classes.content}>
+            <DialogContent sx={{bgcolor: 'background.paper', justifyContent: "center"}}>
                 <Stack direction="column">
                     <SelectValidator title={t("delegateSelectValidator")}
                                      validators={activeValidators.concat(inactiveValidators)}
@@ -148,7 +148,7 @@ export default function DelegateDialog({initialValidator}) {
                         value={delegateAmount}
                         onChange={(e) =>
                             setDelegateAmount(parseFloat(e.target.value))}
-                        InputProps={{ inputProps: { min: 1, max: handleBalance() } }}
+                        InputProps={{inputProps: {min: 1, max: handleBalance()}}}
                         InputLabelProps={{
                             shrink: true,
                         }}
@@ -164,7 +164,7 @@ export default function DelegateDialog({initialValidator}) {
                 </Stack>
             </DialogContent>
             <Divider/>
-            <DialogActions>
+            <DialogActions sx={{bgcolor: 'background.paper'}}>
                 <Button
                     className={classes.button}
                     variant="outlined"
@@ -176,7 +176,8 @@ export default function DelegateDialog({initialValidator}) {
                 <Button
                     className={classes.button}
                     variant="contained"
-                    color="primary"
+                    color="success"
+                    sx={{color: "white"}}
                     onClick={handleApplyButton}
                 >
                     {t("delegate")}
