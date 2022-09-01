@@ -87,9 +87,11 @@ function Index(props) {
 
         if (rewards?.rewards?.length) {
             rewards?.rewards?.map((item) => {
+                //@ts-ignore
                 updatedTx.msgs.push({
                     //@ts-ignore
                     typeUrl: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
+                    //@ts-ignore
                     value: {
                         //@ts-ignore
                         delegatorAddress: address,
