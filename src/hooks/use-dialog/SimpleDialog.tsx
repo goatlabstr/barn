@@ -22,7 +22,7 @@ const SimpleDialog: FunctionComponent<DialogPropTypes> = (props) => {
                 style: {borderRadius: 10}
             }}
         >
-            <DialogTitle id="simple-dialog-title">{title}</DialogTitle>
+            <DialogTitle id="simple-dialog-title" sx={{bgcolor: 'background.paper'}}>{title}</DialogTitle>
             {content}
         </Dialog>
     );

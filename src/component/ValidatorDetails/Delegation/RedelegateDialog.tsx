@@ -148,7 +148,7 @@ export default function RedelegateDialog({initialValidator}) {
     return (
         <>
             <Divider/>
-            <DialogContent className={classes.content}>
+            <DialogContent sx={{bgcolor: 'background.paper', justifyContent: "center"}}>
                 <Stack direction="column">
                     <Stack direction="column" spacing={2}>
                         <SelectValidator title={t("delegatedValidator")}
@@ -182,7 +182,7 @@ export default function RedelegateDialog({initialValidator}) {
                 </Stack>
             </DialogContent>
             <Divider/>
-            <DialogActions>
+            <DialogActions sx={{bgcolor: 'background.paper'}}>
                 <Button
                     className={classes.button}
                     variant="outlined"
@@ -194,7 +194,8 @@ export default function RedelegateDialog({initialValidator}) {
                 <Button
                     className={classes.button}
                     variant="contained"
-                    color="primary"
+                    color="warning"
+                    sx={{color: "white"}}
                     onClick={handleApplyButton}
                 >
                     {t("redelegate")}

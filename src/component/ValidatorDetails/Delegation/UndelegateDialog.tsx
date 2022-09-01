@@ -142,7 +142,7 @@ export default function UndelegateDialog({initialValidator}) {
     return (
         <>
             <Divider/>
-            <DialogContent className={classes.content}>
+            <DialogContent sx={{bgcolor: 'background.paper', justifyContent: "center"}}>
                 <Stack direction="column">
                     <SelectValidator title={t("undelegateSelectValidator")}
                                      validators={getDelegatedValidators()}
@@ -171,7 +171,7 @@ export default function UndelegateDialog({initialValidator}) {
                 </Stack>
             </DialogContent>
             <Divider/>
-            <DialogActions>
+            <DialogActions sx={{bgcolor: 'background.paper'}}>
                 <Button
                     className={classes.button}
                     variant="outlined"
@@ -183,7 +183,8 @@ export default function UndelegateDialog({initialValidator}) {
                 <Button
                     className={classes.button}
                     variant="contained"
-                    color="primary"
+                    color="error"
+                    sx={{color: "white"}}
                     onClick={handleApplyButton}
                 >
                     {t("undelegate")}
