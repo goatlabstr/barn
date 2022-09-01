@@ -19,7 +19,7 @@ import {
     AccessAlarms as InactiveIcon,
     Block as JailedIcon,
     Done as ActiveIcon,
-    HourglassEmpty as UnboundingIcon
+    HourglassEmpty as UnboundingIcon, AttachMoneyRounded as StakeIcon
 } from '@mui/icons-material';
 import SearchTextField from "./SearchTextField";
 import {useTranslation} from "react-i18next";
@@ -125,7 +125,7 @@ const headCells: readonly HeadCell[] = [
 ];
 
 const EnhancedTableToolbar = (props) => {
-    const {onChangeSearchValue, searchActive} = props;
+    const {onChangeSearchValue, searchActive, setDelegationDialogOpen, setSelectedValidator, stakeData} = props;
     const classes = useStyles();
     const [value, setValue] = useState("");
 
@@ -154,7 +154,15 @@ const EnhancedTableToolbar = (props) => {
                     </Typography>
                 </Grid>
                 <Grid item>
-                    <Stack direction={"row"} alignItems={"center"} justifyContent={"center"}>
+                    <Stack direction={"row"} alignItems={"center"} justifyContent={"center"} spacing={1}>
+                        <Button variant="outlined"
+                                color="primary"
+                                startIcon={<StakeIcon/>}
+                                disabled={!localStorage.getItem('goat_wl_addr')}
+                                onClick={() => {
+                                    setSelectedValidator(stakeData);
+                                    setDelegationDialogOpen(true)
+                                }}>Stake</Button>
                         {searchActive && <SearchTextField value={value} onChange={handleValueChange}
                                                           className={classes.tableSearch}/>}
                         {props.buttonTitle && <Button variant="outlined"
@@ -269,8 +277,8 @@ export default function EnhancedTable(props: TableProps) {
 
     useEffect(() => {
         const goatIndex = rows.findIndex(r => r?.description?.moniker?.toLowerCase().includes("goatlabs"));
-        if(goatIndex > 0){
-            const goatArray = rows.splice(goatIndex,1);
+        if (goatIndex > 0) {
+            const goatArray = rows.splice(goatIndex, 1);
             rows.unshift(goatArray[0]);
         }
         if (!filterValue || /^\s*$/.test(filterValue))
@@ -281,6 +289,11 @@ export default function EnhancedTable(props: TableProps) {
     }, [filterValue]);
 
     useEffect(() => {
+        const goatIndex = rows.findIndex(r => r?.description?.moniker?.toLowerCase().includes("goatlabs"));
+        if (goatIndex > 0) {
+            const goatArray = rows.splice(goatIndex, 1);
+            rows.unshift(goatArray[0]);
+        }
         setData(rows)
     }, [rows]);
 
@@ -325,6 +338,9 @@ export default function EnhancedTable(props: TableProps) {
                                             onClickToolbarButton={onClickToolbarButton}
                                             onChangeSearchValue={setFilterValue}
                                             searchActive={search}
+                                            stakeData={data && data.length > 0 && data[0]}
+                                            setDelegationDialogOpen={setDelegationDialogOpen}
+                                            setSelectedValidator={setSelectedValidator}
             />}
             <TableContainer>
                 <Table
@@ -394,6 +410,7 @@ export default function EnhancedTable(props: TableProps) {
                                         })}>{handleStakeAmount(row)}</TableCell>
                                         <TableCell align="center"
                                                    className={classes.tableCell}>{<Button variant={"outlined"}
+                                                                                          disabled={!localStorage.getItem('goat_wl_addr')}
                                                                                           onClick={() => {
                                                                                               setSelectedValidator(row)
                                                                                               setDelegationDialogOpen(true)
