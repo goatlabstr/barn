@@ -32,7 +32,8 @@ function Dashboard() {
     const [activeProposals, setActiveProposals] = useState<typeof proposals>([]);
     const {
         appState: {
-            activeValidators
+            activeValidators,
+            inactiveValidators
         },
     } = useAppState();
 
@@ -40,7 +41,7 @@ function Dashboard() {
     const proposals = useAppSelector(state => state.governance._.list);
 
     const getDelegatedValidators = () => {
-        return activeValidators.filter(valid =>
+        return activeValidators.concat(inactiveValidators).filter(valid =>
             delegatedValidatorList.some(delegated => valid?.moniker === delegated?.description?.moniker));
     }
 

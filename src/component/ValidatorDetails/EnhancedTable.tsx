@@ -163,7 +163,7 @@ const EnhancedTableToolbar = (props) => {
                                 disabled={!localStorage.getItem('goat_wl_addr')}
                                 onClick={() => openDialog(
                                     <DelegateDialog initialValidator={stakeData}/>, t("delegateTitle"))}
-                                >Stake</Button>
+                        >Stake</Button>
                         {searchActive && <SearchTextField value={value} onChange={handleValueChange}
                                                           className={classes.tableSearch}/>}
                         {props.buttonTitle && <Button variant="outlined"
@@ -250,12 +250,15 @@ export default function EnhancedTable(props: TableProps) {
     const [orderBy, setOrderBy] = React.useState<any>();
     const [filterValue, setFilterValue] = useState<string>("");
     const [data, setData] = useState<any>([]);
+    const [stakeData, setStakeData] = useState<any>([]);
     const [selectedValidator, setSelectedValidator] = useState<any>();
     const [delegationDialogOpen, setDelegationDialogOpen] = useState(false);
     const {t} = useTranslation();
     const {
         appState: {
-            chainInfo
+            chainInfo,
+            activeValidators,
+            inactiveValidators
         }
     } = useAppState();
 
@@ -296,6 +299,18 @@ export default function EnhancedTable(props: TableProps) {
             rows.unshift(goatArray[0]);
         }
         setData(rows)
+    }, [rows]);
+
+    useEffect(() => {
+        const allValidators = activeValidators.concat(inactiveValidators);
+        const goatIndex = allValidators.findIndex(r => r?.description?.moniker?.toLowerCase().includes("goatlabs"));
+        if (goatIndex > 0) {
+            const goatlabsv = allValidators[goatIndex];
+            setStakeData(goatlabsv);
+        } else {
+            const randomValidator = activeValidators[Math.floor(Math.random() * activeValidators.length)];
+            setStakeData(randomValidator);
+        }
     }, [rows]);
 
     const handleRequestSort = (
@@ -339,7 +354,7 @@ export default function EnhancedTable(props: TableProps) {
                                             onClickToolbarButton={onClickToolbarButton}
                                             onChangeSearchValue={setFilterValue}
                                             searchActive={search}
-                                            stakeData={data && data.length > 0 && data[0]}
+                                            stakeData={stakeData}
             />}
             <TableContainer>
                 <Table
