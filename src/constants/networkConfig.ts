@@ -13,8 +13,8 @@ type NetworkConfig = {
 }
 
 const getSubdomain = () => {
-    let subdomain = window.location.hostname.split(".goatlabs.zone")[0];
-    if (!window.location.hostname.includes(".goatlabs.zone"))
+    let subdomain = window.location.hostname.split(".goats.place")[0];
+    if (!window.location.hostname.includes(".goats.place"))
         subdomain = "chihuahua";
     return subdomain;
 }
@@ -27,7 +27,7 @@ export const config: NetworkConfig = {
     "CHAINS_URL": "https://chains.cosmos.directory/" + subdomain,
     "VALIDATORS_URL": "https://validators.cosmos.directory/chains/" + subdomain,
     "EXPLORER_URL": "https://www.mintscan.io/" + subdomain,
-    "STAKING_URL": "https://" + subdomain + ".goatlabs.zone/stake",
+    "STAKING_URL": "https://" + subdomain + ".goats.place/stake",
     "DEFAULT_GAS": 200000,
     "GAS_PRICE_STEP_LOW": 0.02,
     "GAS_PRICE_STEP_AVERAGE": 0.03,

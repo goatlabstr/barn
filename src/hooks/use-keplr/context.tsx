@@ -124,9 +124,9 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                     close: () => setWCUri(""),
                 },
                 clientMeta: {
-                    name: subdomain.charAt(0).toUpperCase() + subdomain.slice(1) + " | Goatlabs Barn",
-                    description: "Goatlabs Barn manages all delegation and governance process of a Cosmos SDK Networks",
-                    url: "https://" + subdomain + ".goatlabs.zone",
+                    name: subdomain.charAt(0).toUpperCase() + subdomain.slice(1) + " | GOATS Barn",
+                    description: "GOATS Barn manages all delegation and governance process of a Cosmos SDK Networks",
+                    url: "https://" + subdomain + ".goats.place",
                     icons: [
                         // Keplr mobile app can't show svg image.
                         window.location.origin + "/logo.png",
