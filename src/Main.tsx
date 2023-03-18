@@ -120,7 +120,7 @@ function Main() {
     }, [balanceInProgress, delegationsInProgress, governanceInProgress])
 
     useEffect(() => {
-        if(localStorage.getItem("auto_connect_active") === "true"){
+        if (localStorage.getItem("auto_connect_active") === "true") {
             activate();
             if (chainInfo && Object.keys(chainInfo).length > 0 && localStorage.getItem('goat_wl_addr'))
                 initializeKeplr();
@@ -311,7 +311,7 @@ function Main() {
                                                 startIcon={<AccountBalanceWalletRounded/>}
                                                 onClick={() => handleConnectButtonClick()}
                                         >{t("menu.connect")}</Button>}
-                                    <MobileMenu />
+                                    <MobileMenu/>
                                 </Stack>
                             </Toolbar>
                         </AppBar>
