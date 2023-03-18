@@ -7,7 +7,7 @@ import {KeplrWalletConnectV1} from "@keplr-wallet/wc-client";
 import {LocalKVStore,} from "@keplr-wallet/common";
 import {isMobile} from "@walletconnect/browser-utils";
 import {StdTx} from "@cosmjs/amino";
-import {config, subdomain} from "../../constants/networkConfig";
+import {config, networkName} from "../../constants/networkConfig";
 import {BroadcastMode, getKeplrFromWindow} from "../../services/cosmos";
 import {KeplrConnectionSelectDialog} from "../../component/KeplrDialog/KeplrConnectionSelectDialog";
 import {KeplrWalletConnectQRDialog} from "../../component/KeplrDialog/KeplrWalletConnectQRDialog";
@@ -124,9 +124,9 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                     close: () => setWCUri(""),
                 },
                 clientMeta: {
-                    name: subdomain.charAt(0).toUpperCase() + subdomain.slice(1) + " | GOATS Barn",
+                    name: networkName.charAt(0).toUpperCase() + networkName.slice(1) + " | GOATS Barn",
                     description: "GOATS Barn manages all delegation and governance process of a Cosmos SDK Networks",
-                    url: "https://" + subdomain + ".goats.place",
+                    url: "https://" + networkName + ".goats.place",
                     icons: [
                         // Keplr mobile app can't show svg image.
                         window.location.origin + "/logo.png",
