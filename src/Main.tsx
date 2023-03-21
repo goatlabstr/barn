@@ -5,7 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import {useTranslation} from "react-i18next";
 import {useAppState} from "./hooks/useAppState";
 
-import SideBar from "./component/Menu/SideBar/SideBar";
+import ResponsiveAppBar from "./component/Menu/AppBar/ResponsiveAppBar";
 import {AppBar, Box, Button, Slide, Stack, Toolbar, Typography, useScrollTrigger} from "@mui/material";
 import Stake from "./pages/Stake";
 import Governance from "./pages/Governance";
@@ -26,11 +26,9 @@ import CoinGecko from "./services/axios/coingecko";
 import VotingDetails from "./component/GovernanceDetails/VotingDetails";
 import Common from "./services/axios/common";
 import SupportedNetworks from "./pages/SupportedNetworks";
-import logo from "./logo.svg";
 import {useKeplr} from "./hooks/use-keplr/hook";
 import {kvStorePrefix, localStorageClearWithPrefix} from "./constants/general";
 import BottomBar from "./component/Menu/BottomBar/BottomBar";
-import MobileMenu from "./component/Menu/MobileMenu/MobileMenu";
 
 const menuItems = (t) => [
     {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
@@ -56,7 +54,6 @@ function Main() {
     const {activate, passivate} = useGlobalPreloader();
     const dispatch = useAppDispatch();
     const {enqueueSnackbar} = useSnackbar();
-    const {t} = useTranslation();
     const {
         appState: {
             chainInfo
@@ -279,44 +276,9 @@ function Main() {
 
     return (
         <Box sx={{display: 'flex'}}>
-            <SideBar menuItems={menuItems(i18n.t)}/>
+            {/*<SideBar menuItems={menuItems(i18n.t)}/>*/}
             <Box sx={{flexGrow: 1}}>
-                <Box sx={{
-                    flexGrow: 1,
-                    display: {md: 'none'}
-                }}>
-                    <HideOnScroll>
-                        <AppBar position="fixed" sx={{
-                            pt: 1,
-                            pb: 1,
-                            pl: 1,
-                            //@ts-ignore
-                            bgcolor: "transparent"
-                        }} enableColorOnDark>
-                            <Toolbar sx={{justifyContent: "space-between"}}>
-                                <Box sx={{display: "flex"}}>
-                                    <img style={{
-                                        width: 48,
-                                        filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
-                                    }} src={logo}/>
-                                    <Typography variant={"h4"} sx={{
-                                        ml: "7px",
-                                        mt: "11px",
-                                        filter: "drop-shadow(2px 3px 2px rgb(0 0 0 / 0.4))"
-                                    }}>GOATLABS</Typography>
-                                </Box>
-                                <Stack direction="row">
-                                    {!(localStorage.getItem('goat_wl_addr') || address) &&
-                                        <Button variant="outlined" color="secondary"
-                                                startIcon={<AccountBalanceWalletRounded/>}
-                                                onClick={() => handleConnectButtonClick()}
-                                        >{t("menu.connect")}</Button>}
-                                    <MobileMenu/>
-                                </Stack>
-                            </Toolbar>
-                        </AppBar>
-                    </HideOnScroll>
-                </Box>
+                <ResponsiveAppBar menuItems={menuItems(i18n.t)}/>
                 <BottomBar menuItems={menuItems(i18n.t)}/>
                 <Box
                     component="main"

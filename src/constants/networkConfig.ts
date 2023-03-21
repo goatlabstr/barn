@@ -18,8 +18,8 @@ const getNetworkName = () => {
         window.location.href = "https://wallet.goats.place/" + name;
     } else {
         name = window.location.pathname.split("\/").filter(Boolean)[0];
-        if (name === undefined)
-            window.location.href = window.location.origin + "/chihuahua";
+        /*if (name === undefined)
+            window.location.href = window.location.origin + "/chihuahua";*/
     }
     return name;
 }

@@ -72,9 +72,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     goatlabs: {
         marginLeft: "-10px",
-        marginTop: "2px",
-        fontSize: "24px",
-        filter: "drop-shadow(2px 3px 2px rgb(0 0 0 / 0.4))"
+        marginTop: "7px",
+        fontSize: "22px",
+        filter: "drop-shadow(3px 4px 3px rgb(0 0 0 / 0.4))",
+        fontFamily: "'metropolis-regular', sans-serif"
     },
     socialMediaIcon: {
         color: "rgb(131 157 170)"
