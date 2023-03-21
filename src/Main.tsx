@@ -33,8 +33,7 @@ import BottomBar from "./component/Menu/BottomBar/BottomBar";
 const menuItems = (t) => [
     {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
     {key: "stake", path: "/stake", title: t("menu.stake"), icon: <StakeIcon/>},
-    {key: "governance", path: "/governance", title: t("menu.governance"), icon: <GovernanceIcon/>},
-    {key: "networks", path: "/networks", title: t("menu.networks"), icon: <NetworksIcon/>}
+    {key: "governance", path: "/governance", title: t("menu.governance"), icon: <GovernanceIcon/>}
 ];
 
 function HideOnScroll(props) {
@@ -282,14 +281,13 @@ function Main() {
                 <BottomBar menuItems={menuItems(i18n.t)}/>
                 <Box
                     component="main"
-                    sx={{flexGrow: 1, p: 0, pt: {xs: 9, md: 0}, pb: {xs: 9, md: 0}}}
+                    sx={{flexGrow: 1, p: 0, pb: {xs: 9, md: 0}}}
                 >
                     <Routes>
                         <Route path="/" element={<Dashboard/>}/>
                         <Route path="/stake/*" element={<Stake/>}/>
                         <Route path="/governance" element={<Governance/>}/>
                         <Route path="/governance-:id" element={<VotingDetails/>}/>
-                        <Route path="/networks" element={<SupportedNetworks/>}/>
                         <Route path="*" element={<Dashboard/>}/>
                     </Routes>
                 </Box>

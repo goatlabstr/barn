@@ -18,7 +18,7 @@ import {useSnackbar} from "notistack";
 import {useAppState} from "../../../hooks/useAppState";
 import {useKeplr} from "../../../hooks/use-keplr/hook";
 import NetworkSelect from "./NetworkSelect";
-import {alpha, Divider, Grid, IconButton, Stack} from "@mui/material";
+import {alpha, Divider, Grid, IconButton, ListItemIcon, Stack} from "@mui/material";
 import {networkName} from "../../../constants/networkConfig";
 import clsx from "clsx";
 import {makeStyles} from "@mui/styles";
@@ -40,10 +40,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     iconNoneSelected: {
         color: "rgb(131 157 170)"
-    },
-    menuListItem: {
-        paddingLeft: 18,
-        flexWrap: "wrap"
     },
     menuListItemText: {
         [theme.breakpoints.down("md")]: {
@@ -127,33 +123,74 @@ function ResponsiveAppBar({menuItems = []}: { menuItems?: Array<any> }) {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <Box sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}>
-                        <img style={{
-                            width: 42,
-                            filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
-                        }} src={logo}/>
-                    </Box>
+                    <Stack direction="row" alignItems="center"
+                           sx={{display: {xs: 'none', md: 'flex'}, ml: networkName ? "auto" : "calc(50% - 165px)"}}>
+                        {!networkName && <Box
+                            component="a"
+                            href="/"
+                            sx={{
+                                mr: 2,
+                                display: {xs: 'none', md: 'flex'},
+                                fontFamily: "'Outfit', sans-serif",
+                                fontWeight: 700,
+                                fontSize: 15,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
+                        >
+                            GOATLABS
+                        </Box>}
+                        <Box sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}>
+                            <img style={{
+                                width: 42,
+                                filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
+                            }} src={logo}/>
+                        </Box>
+                        {!networkName && <Box
+                            component="a"
+                            href="/"
+                            sx={{
+                                ml: 2,
+                                display: {xs: 'none', md: 'flex'},
+                                fontFamily: "'Outfit', sans-serif",
+                                fontWeight: 700,
+                                fontSize: 15,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
+                        >
+                            VALIDATOR
+                        </Box>}
+                    </Stack>
 
                     <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
-                        <Divider orientation="vertical"
-                                 flexItem
-                                 sx={{my: 1.5,
-                                     pr: 1}}/>
-                        {menuItems.map((item) => (
-                            <>
-                                <Button
-                                    key={item?.key}
-                                    className={clsx(classes.menuListItem, {
-                                        [classes.menuSelected]: isActivePath(item?.path),
-                                        [classes.menuNoneSelected]: !isActivePath(item?.path)
-                                    })}
-                                    onClick={() => navigate(item?.path)}
-                                    sx={{my: 2, display: 'block', fontSize: 14}}
-                                >
-                                    {item?.title}
-                                </Button>
-                            </>
-                        ))}
+                        <Stack direction={"row"}>
+                            {menuItems.map((item) => (
+                                <Stack direction={"row"} alignItems={"center"}
+                                       spacing={0.8}
+                                       sx={{ml: 2, cursor: "pointer"}}>
+                                    <Box
+                                        className={clsx({
+                                            [classes.iconSelected]: isActivePath(item.path),
+                                            [classes.iconNoneSelected]: !isActivePath(item.path)
+                                        })}
+                                    >{item.icon}</Box>
+                                    <Box
+                                        key={item?.key}
+                                        className={clsx({
+                                            [classes.menuSelected]: isActivePath(item?.path),
+                                            [classes.menuNoneSelected]: !isActivePath(item?.path)
+                                        })}
+                                        onClick={() => navigate(item?.path)}
+                                        sx={{pr: 1, display: 'block', fontSize: 15}}
+                                    >
+                                        {item?.title}
+                                    </Box>
+                                </Stack>
+                            ))}
+                        </Stack>
                     </Box>
                     <Stack direction="row" sx={{display: {xs: 'none', md: 'flex'}}}>
                         <Box sx={{mr: 1}}>
