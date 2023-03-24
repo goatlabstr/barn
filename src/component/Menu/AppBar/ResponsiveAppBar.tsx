@@ -140,7 +140,9 @@ function ResponsiveAppBar({menuItems = []}: { menuItems?: Array<any> }) {
                         >
                             GOATLABS
                         </Box>}
-                        <Box sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}>
+                        <Box onClick={() => {
+                            window.location.href = window.location.origin;
+                        }} sx={{display: {xs: 'none', md: 'flex'}, mr: 1, cursor: "pointer"}}>
                             <img style={{
                                 width: 42,
                                 filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
@@ -218,7 +220,9 @@ function ResponsiveAppBar({menuItems = []}: { menuItems?: Array<any> }) {
                             </Box>
                         </Grid>
                         <Grid item xs={4} sx={{textAlign: "center"}}>
-                            <Box>
+                            <Box sx={{cursor: "pointer"}} onClick={() => {
+                                window.location.href = window.location.origin;
+                            }}>
                                 <img style={{
                                     width: 40,
                                     filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
