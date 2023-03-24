@@ -126,7 +126,7 @@ function ResponsiveAppBar({menuItems = []}: { menuItems?: Array<any> }) {
                            sx={{display: {xs: 'none', md: 'flex'}, ml: networkName ? "auto" : "calc(50% - 165px)"}}>
                         {!networkName && <Box
                             component="a"
-                            href="/"
+                            href={window.location.origin}
                             sx={{
                                 mr: 2,
                                 display: {xs: 'none', md: 'flex'},
@@ -150,7 +150,7 @@ function ResponsiveAppBar({menuItems = []}: { menuItems?: Array<any> }) {
                         </Box>
                         {!networkName && <Box
                             component="a"
-                            href="/"
+                            href={window.location.origin}
                             sx={{
                                 ml: 2,
                                 display: {xs: 'none', md: 'flex'},
@@ -214,23 +214,61 @@ function ResponsiveAppBar({menuItems = []}: { menuItems?: Array<any> }) {
                           justifyContent={"space-between"}
                           alignItems={"center"}
                           sx={{display: {xs: 'flex', md: 'none'}}}>
-                        <Grid item xs={4} sx={{textAlign: "start"}}>
+                        {networkName && <Grid item xs={4} sx={{textAlign: "start"}}>
                             <Box>
-                                {networkName ? <NetworkSelect type={"small"}/> : <></>}
+                                <NetworkSelect type={"small"}/>
                             </Box>
-                        </Grid>
-                        <Grid item xs={4} sx={{textAlign: "center"}}>
-                            <Box sx={{cursor: "pointer"}} onClick={() => {
-                                window.location.href = window.location.origin;
+                        </Grid>}
+                        <Grid item xs={networkName ? 4 : 12} sx={
+                            {
+                                display: {xs: 'flex', md: 'none'},
+                                justifyContent: "center"
                             }}>
-                                <img style={{
-                                    width: 40,
-                                    filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
-                                }} src={logo}/>
-                            </Box>
+                            <Stack direction={"row"} alignItems={"center"}>
+                                {!networkName && <Box
+                                    component="a"
+                                    href={window.location.origin}
+                                    sx={{
+                                        mr: 2,
+                                        display: {xs: 'flex', md: 'none'},
+                                        fontFamily: "'Outfit', sans-serif",
+                                        fontWeight: 700,
+                                        fontSize: {xs: 10, sm: 12, md: 15},
+                                        letterSpacing: '.3rem',
+                                        color: 'inherit',
+                                        textDecoration: 'none',
+                                    }}
+                                >
+                                    GOATLABS
+                                </Box>}
+                                <Box sx={{cursor: "pointer"}} onClick={() => {
+                                    window.location.href = window.location.origin;
+                                }}>
+                                    <img style={{
+                                        width: 40,
+                                        filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
+                                    }} src={logo}/>
+                                </Box>
+                                {!networkName && <Box
+                                    component="a"
+                                    href={window.location.origin}
+                                    sx={{
+                                        ml: 2,
+                                        display: {xs: 'flex', md: 'none'},
+                                        fontFamily: "'Outfit', sans-serif",
+                                        fontWeight: 700,
+                                        fontSize: {xs: 10, sm: 12, md: 15},
+                                        letterSpacing: '.3rem',
+                                        color: 'inherit',
+                                        textDecoration: 'none',
+                                    }}
+                                >
+                                    VALIDATOR
+                                </Box>}
+                            </Stack>
                         </Grid>
-                        <Grid item xs={4} sx={{textAlign: "end"}}>
-                            {networkName ? (!(localStorage.getItem('goat_wl_addr') || address) ?
+                        {networkName && <Grid item xs={4} sx={{textAlign: "end"}}>
+                            {!(localStorage.getItem('goat_wl_addr') || address) ?
                                 <Button color="secondary"
                                         startIcon={<AccountBalanceWalletRounded/>}
                                         onClick={() => handleConnectButtonClick()}
@@ -241,8 +279,8 @@ function ResponsiveAppBar({menuItems = []}: { menuItems?: Array<any> }) {
                                             onClick={() => handleDisconnectButtonClick()}
                                 >
                                     <LogoutRounded/>
-                                </IconButton>) : <></>}
-                        </Grid>
+                                </IconButton>}
+                        </Grid>}
                     </Grid>
                 </Toolbar>
             </Container>
