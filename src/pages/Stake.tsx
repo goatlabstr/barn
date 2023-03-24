@@ -27,7 +27,8 @@ function Index() {
     const {t} = useTranslation();
     const {
         appState: {
-            activeValidators
+            activeValidators,
+            inactiveValidators
         }
     } = useAppState();
 

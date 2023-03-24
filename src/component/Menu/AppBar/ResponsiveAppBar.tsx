@@ -2,7 +2,6 @@ import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import logo from "../../../logo.svg";
@@ -18,7 +17,7 @@ import {useSnackbar} from "notistack";
 import {useAppState} from "../../../hooks/useAppState";
 import {useKeplr} from "../../../hooks/use-keplr/hook";
 import NetworkSelect from "./NetworkSelect";
-import {alpha, Divider, Grid, IconButton, ListItemIcon, Stack} from "@mui/material";
+import {Grid, IconButton, Stack} from "@mui/material";
 import {networkName} from "../../../constants/networkConfig";
 import clsx from "clsx";
 import {makeStyles} from "@mui/styles";
@@ -228,11 +227,12 @@ function ResponsiveAppBar({menuItems = []}: { menuItems?: Array<any> }) {
                         </Grid>
                         <Grid item xs={4} sx={{textAlign: "end"}}>
                             {networkName ? (!(localStorage.getItem('goat_wl_addr') || address) ?
-                                <IconButton color="secondary"
-                                            onClick={() => handleConnectButtonClick()}
+                                <Button color="secondary"
+                                        startIcon={<AccountBalanceWalletRounded/>}
+                                        onClick={() => handleConnectButtonClick()}
                                 >
-                                    <AccountBalanceWalletRounded/>
-                                </IconButton> :
+                                    Connect
+                                </Button> :
                                 <IconButton sx={{"color": "rgb(131 157 170)", "borderColor": "rgb(131 157 170)"}}
                                             onClick={() => handleDisconnectButtonClick()}
                                 >

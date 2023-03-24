@@ -88,7 +88,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-function Index() {
+function Governance() {
     const classes = useStyles();
     const {t} = useTranslation();
     const [value, setValue] = React.useState(3);
@@ -176,4 +176,4 @@ function Index() {
     );
 }
 
-export default Index;
+export default Governance;

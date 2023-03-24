@@ -112,7 +112,6 @@ function Main() {
     useEffect(() => {
         if (!(balanceInProgress || delegationsInProgress || governanceInProgress))
             passivate();
-
     }, [balanceInProgress, delegationsInProgress, governanceInProgress])
 
     useEffect(() => {
@@ -120,26 +119,26 @@ function Main() {
             activate();
             if (chainInfo && Object.keys(chainInfo).length > 0 && localStorage.getItem('goat_wl_addr'))
                 initializeKeplr();
+        }
 
-            if (proposals && !proposals.length && !governanceInProgress) {
-                dispatch(allActions.getProposals((result) => {
-                    if (result && result.length) {
-                        const array = [];
-                        result.map((val) => {
-                            if (isActivePath("/") && val.status !== 2) {
-                                return null;
-                            }
-                            //@ts-ignore
-                            array.push(val.id);
-                            if (val.status === 2) {
-                                dispatch(allActions.fetchProposalTally(val.id));
-                            }
+        if (proposals && !proposals.length && !governanceInProgress) {
+            dispatch(allActions.getProposals((result) => {
+                if (result && result.length) {
+                    const array = [];
+                    result.map((val) => {
+                        if (isActivePath("/") && val.status !== 2) {
                             return null;
-                        });
-                        getProposalDetails(array && array.reverse());
-                    }
-                }));
-            }
+                        }
+                        //@ts-ignore
+                        array.push(val.id);
+                        if (val.status === 2) {
+                            dispatch(allActions.fetchProposalTally(val.id));
+                        }
+                        return null;
+                    });
+                    getProposalDetails(array && array.reverse());
+                }
+            }));
         }
     }, [chainInfo, keplr])
 
@@ -240,37 +239,6 @@ function Main() {
             !delegatedValidatorListInProgress) {
             dispatch(allActions.getDelegatedValidatorsDetails(address));
         }
-    }
-
-    const handleConnectButtonClick = () => {
-        if (!chainInfo || Object.keys(chainInfo).length === 0)
-            return;
-        activate();
-        localStorage.setItem("auto_connect_active", "true");
-        getKeplr().then(keplr => {
-            initializeChain(chainInfo, keplr, connectionType, (error, addressList) => {
-                passivate();
-                if (error) {
-                    localStorage.removeItem("auto_connect_active");
-                    localStorage.removeItem("connection_type");
-                    localStorage.removeItem("goat_wl_addr");
-                    localStorage.removeItem("walletconnect");
-                    localStorageClearWithPrefix(kvStorePrefix);
-                    enqueueSnackbar(error, {variant: "error"});
-                    return;
-                }
-                dispatch(allActions.setAccountAddress(addressList[0]?.address));
-                dispatch(allActions.getUnBondingDelegations(addressList[0] && addressList[0].address));
-                dispatch(allActions.fetchRewards(addressList[0] && addressList[0].address));
-                dispatch(allActions.getDelegations(addressList[0] && addressList[0].address));
-                //@ts-ignore
-                // getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
-                dispatch(allActions.getAllBalance(address));
-                dispatch(allActions.fetchVestingBalance(addressList[0] && addressList[0].address));
-                dispatch(allActions.getDelegatedValidatorsDetails(addressList[0] && addressList[0].address));
-                localStorage.setItem('goat_wl_addr', encode(addressList[0] && addressList[0].address));
-            });
-        })
     }
 
     return (
