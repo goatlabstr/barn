@@ -6,13 +6,11 @@ import {useTranslation} from "react-i18next";
 import {useAppState} from "./hooks/useAppState";
 
 import ResponsiveAppBar from "./component/Menu/AppBar/ResponsiveAppBar";
-import {AppBar, Box, Button, Slide, Stack, Toolbar, Typography, useScrollTrigger} from "@mui/material";
+import {Box, Slide, useScrollTrigger} from "@mui/material";
 import Stake from "./pages/Stake";
 import Governance from "./pages/Governance";
 import {
     AccountBalanceRounded as DashboardIcon,
-    AccountBalanceWalletRounded,
-    Flare as NetworksIcon,
     HowToVoteRounded as GovernanceIcon,
     MonetizationOnRounded as StakeIcon
 } from "@mui/icons-material";
@@ -25,7 +23,6 @@ import {decode, encode} from "js-base64";
 import CoinGecko from "./services/axios/coingecko";
 import VotingDetails from "./component/GovernanceDetails/VotingDetails";
 import Common from "./services/axios/common";
-import SupportedNetworks from "./pages/SupportedNetworks";
 import {useKeplr} from "./hooks/use-keplr/hook";
 import {kvStorePrefix, localStorageClearWithPrefix} from "./constants/general";
 import BottomBar from "./component/Menu/BottomBar/BottomBar";
@@ -146,7 +143,14 @@ function Main() {
         i18n.changeLanguage(localStorage.getItem("lang") || "en");
         //@ts-ignore
         const coingeckoId = chainInfo?.coingecko_id;
-        if (coingeckoId) {
+        //@ts-ignore
+        const prices = chainInfo?.prices;
+        //@ts-ignore
+        const symbol = chainInfo?.symbol;
+        if (prices && symbol && prices["coingecko"] && prices["coingecko"][symbol.toLowerCase()]["usd"]) {
+            //@ts-ignore
+            setCurrentPrice(prices["coingecko"][symbol.toLowerCase()]["usd"])
+        } else if (coingeckoId) {
             CoinGecko.getPrice(coingeckoId).then((res) => {
                 setCurrentPrice(res.data[coingeckoId]["usd"])
             })
