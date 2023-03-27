@@ -85,6 +85,7 @@
     "noTokens": "no tokens"
   },
   "supportedNetwork": {
+    "website": "Website",
     "keplrSupport": "Keplr Support",
     "keplrMobileSupport": "Keplr Mobile Support"
   }

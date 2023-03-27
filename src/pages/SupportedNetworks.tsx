@@ -33,7 +33,7 @@ function Index() {
                     <SearchTextField value={filterValue} onChange={(e) => setFilterValue(e.target.value)}/>
                 </Grid>
                 {supportedChainConfigs.map(config => (
-                    <Grid item xs={12} sm={6} md={4} lg={3} xl={2}
+                    <Grid item xs={12} sm={6} md={4} lg={3}
                         //@ts-ignore
                           key={config?.name}>
                         <SupportedNetworkCard

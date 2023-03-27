@@ -145,7 +145,7 @@ export default function NetworkSelect({type = "medium"}: { type?: "medium" | "sm
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>{t("cancel")}</Button>
-                    <Button onClick={handleSwitch}>{t("switch")}</Button>
+                    <Button disabled={!network} onClick={handleSwitch}>{t("switch")}</Button>
                 </DialogActions>
             </Dialog>
         </div>
