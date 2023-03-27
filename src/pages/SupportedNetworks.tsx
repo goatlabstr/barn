@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import Common from "../services/axios/common";
-import {Grid, Box} from "@mui/material";
+import {Grid, Box, Typography} from "@mui/material";
 import SupportedNetworkCard from "../component/SupportedNetworkCard/SupportedNetworkCard";
 import SearchTextField from "../component/ValidatorDetails/SearchTextField";
 
@@ -29,6 +29,19 @@ function Index() {
     return (
         <Box sx={{p: 5}}>
             <Grid container spacing={1}>
+                <Grid item xs={12} textAlign={"center"} sx={{mb: 2}}>
+                    <Typography variant={"subtitle2"}>Welcome to <span style={{
+                        fontFamily: "Lucida Handwriting",
+                        color: "#F8CB2E",
+                        display: "inline"
+                    }}>GOATS</span> Cosmos Ecosystem Wallet</Typography>
+                    <Typography variant={"h4"}>EARN <span style={{
+                        backgroundColor: "#F8CB2E",
+                        color: "#0d0d1e",
+                        display: "inline",
+                        lineHeight: 0
+                    }}>STAKING REWARDS</span> WITH CONFIDENCE</Typography>
+                </Grid>
                 <Grid item xs={12}>
                     <SearchTextField value={filterValue} onChange={(e) => setFilterValue(e.target.value)}/>
                 </Grid>

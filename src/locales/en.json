@@ -45,6 +45,7 @@
     "stakedAmount": "Staked Amount",
     "rewards": "Rewards",
     "unstakedAmount": "Unstaked Amount",
+    "unbondingPeriod": "Unbonding Period",
     "stakedValidators": "Staked Validators",
     "tokenPrice": "{{name}} Price"
   },
