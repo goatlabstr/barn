@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: "rgb(131 157 170)"
     },
     emptyCell: {
-        color: "rgb(131 157 170)"
+        // color: "rgb(131 157 170)"
     }
 }));
 

@@ -133,12 +133,22 @@ function Governance() {
             </>
         else
             return <Grid item xs={12}>
-                <Box textAlign={"center"} sx={{color: "rgb(131 157 170)"}}>{t("governance.noActiveProposal")}</Box>
+                <Box textAlign={"center"} >{t("governance.noActiveProposal")}</Box>
             </Grid>
     }
 
     return (
         <React.Fragment>
+            <Box sx={{
+                backgroundRepeat: "repeat-x",
+                backgroundPosition: "left center",
+                position: "fixed",
+                zIndex: -1,
+                backgroundImage: "url(/banner-move.png)",
+                width: "100%",
+                height: "100%",
+                opacity: 0.3
+            }}/>
             <Box sx={{
                 width: "100%",
                 pt: 2

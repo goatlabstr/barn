@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginRight: theme.spacing(2)
     },
     emptyCell: {
-        color: "rgb(131 157 170)"
+        // color: "rgb(131 157 170)"
     }
 }));
 

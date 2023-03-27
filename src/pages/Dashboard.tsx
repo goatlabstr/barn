@@ -52,18 +52,31 @@ function Dashboard() {
 
     return (
         <React.Fragment>
-            {/*<Box sx={{
-                backgroundImage: "none",
+            <Box sx={{
                 backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
+                // backgroundSize: "cover",
+                backgroundPosition: "right center",
+                position: "fixed",
+                right: "0%",
+                bottom: "-10%",
+                zIndex: -1,
+                backgroundImage: "url(/city-man.png)",
+                width: "100%",
+                height: "100%",
+                opacity: 0.3
+            }}/>
+            <Box sx={{
+                backgroundRepeat: "no-repeat",
                 backgroundPosition: "left center",
                 position: "fixed",
-                left: "5%",
-                bottom: "-10%",
-                zIndex: -1
-            }}>
-                <img style={{position: "relative", bottom: 0, opacity: 0.6}} src="/banner-move.png" alt=""/>
-            </Box>*/}
+                // right: "0%",
+                // bottom: "-20%",
+                zIndex: -1,
+                backgroundImage: "url(/banner-move.png)",
+                width: "100%",
+                height: "100%",
+                opacity: 0.3
+            }}/>
             <Grid container>
                 <Grid item xs={12} xl={12}>
                     <Box sx={{

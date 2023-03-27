@@ -41,6 +41,16 @@ function Index() {
 
     return (
         <React.Fragment>
+            <Box sx={{
+                backgroundRepeat: "repeat-x",
+                backgroundPosition: "left center",
+                position: "fixed",
+                zIndex: -1,
+                backgroundImage: "url(/banner-move.png)",
+                width: "100%",
+                height: "100%",
+                opacity: 0.3
+            }}/>
             <Grid container>
                 {delegatedValidatorList.length > 0 && <Grid item xs={12}>
                     <Box sx={{display: {xs: "none", md: 'block'}}}>
