@@ -67,7 +67,7 @@ export default function SupportedNetworkCard(props) {
                                       value={getCalculatedApr(data?.params?.base_inflation) + "%"}/>
                             <CardItem label={"APR :"} value={getCalculatedApr(data?.params?.calculated_apr) + "%"}/>
                             <CardItem label={"Unbonding Time :"}
-                                      value={getUnbondingTime(data?.params?.unbonding_time) + " day"}/>
+                                      value={getUnbondingTime(data?.params?.unbonding_time) + " days"}/>
                             <CardItem label={"Max Validators :"} value={data?.params?.max_validators}/>
                         </Stack>
                     </CardContent>

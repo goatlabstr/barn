@@ -183,7 +183,7 @@ export default function Index() {
             result = time / (24 * 60 * 60);
         result = Math.round(result);
         if (result)
-            return " (" + result + " day)"
+            return " (" + result + " days)"
         else
             return "";
     }
