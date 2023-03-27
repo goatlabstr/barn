@@ -45,6 +45,7 @@
     "stakedAmount": "Staked Amount",
     "rewards": "Rewards",
     "unstakedAmount": "Unstaked Amount",
+    "unbondingPeriod": "Unbonding Period",
     "stakedValidators": "Staked Validators",
     "tokenPrice": "{{name}} Price"
   },
@@ -85,6 +86,7 @@
     "noTokens": "no tokens"
   },
   "supportedNetwork": {
+    "website": "Website",
     "keplrSupport": "Keplr Support",
     "keplrMobileSupport": "Keplr Mobile Support"
   }

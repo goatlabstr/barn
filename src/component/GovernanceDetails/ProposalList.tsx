@@ -35,7 +35,7 @@ export default function ProposalList(props: ProposalProps) {
             </>
         else
             return <Grid item xs={12}>
-                <Box textAlign={"center"} sx={{color: "rgb(131 157 170)"}}>{t("governance.noActiveProposal")}</Box>
+                <Box textAlign={"center"} >{t("governance.noActiveProposal")}</Box>
             </Grid>
     }
 

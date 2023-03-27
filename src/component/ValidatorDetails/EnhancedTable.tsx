@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginRight: theme.spacing(2)
     },
     emptyCell: {
-        color: "rgb(131 157 170)"
+        // color: "rgb(131 157 170)"
     }
 }));
 
@@ -223,24 +223,6 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
             </TableRow>
         </TableHead>
     );
-}
-
-const DelegationButtonGroup = ({stakeAmount, rowData}) => {
-    const {openDialog} = useDialog();
-    const {t} = useTranslation();
-
-    if (typeof stakeAmount !== "number" || stakeAmount <= 0)
-        return <><ButtonGroup variant="text" size="small"><Button color="success" onClick={() => openDialog(
-            <DelegateDialog initialValidator={rowData}/>, t("delegateTitle"))}>Delegate</Button></ButtonGroup></>
-    else
-        return <><ButtonGroup variant="text" size="small">
-            <Button color="warning" onClick={() => openDialog(
-                <RedelegateDialog initialValidator={rowData}/>, t("redelegateTitle"))}>Redelegate</Button>
-            <Button color="success" onClick={() => openDialog(
-                <DelegateDialog initialValidator={rowData}/>, t("delegateTitle"))}>Delegate</Button>
-            <Button color="error" onClick={() => openDialog(
-                <UndelegateDialog initialValidator={rowData}/>, t("undelegateTitle"))}>Undelegate</Button>
-        </ButtonGroup></>
 }
 
 export default function EnhancedTable(props: TableProps) {

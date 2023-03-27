@@ -5,14 +5,12 @@ import Dashboard from "./pages/Dashboard";
 import {useTranslation} from "react-i18next";
 import {useAppState} from "./hooks/useAppState";
 
-import SideBar from "./component/Menu/SideBar/SideBar";
-import {AppBar, Box, Button, Slide, Stack, Toolbar, Typography, useScrollTrigger} from "@mui/material";
+import ResponsiveAppBar from "./component/Menu/AppBar/ResponsiveAppBar";
+import {Box, Slide, useScrollTrigger} from "@mui/material";
 import Stake from "./pages/Stake";
 import Governance from "./pages/Governance";
 import {
     AccountBalanceRounded as DashboardIcon,
-    AccountBalanceWalletRounded,
-    Flare as NetworksIcon,
     HowToVoteRounded as GovernanceIcon,
     MonetizationOnRounded as StakeIcon
 } from "@mui/icons-material";
@@ -25,18 +23,14 @@ import {decode, encode} from "js-base64";
 import CoinGecko from "./services/axios/coingecko";
 import VotingDetails from "./component/GovernanceDetails/VotingDetails";
 import Common from "./services/axios/common";
-import SupportedNetworks from "./pages/SupportedNetworks";
-import logo from "./logo.svg";
 import {useKeplr} from "./hooks/use-keplr/hook";
 import {kvStorePrefix, localStorageClearWithPrefix} from "./constants/general";
 import BottomBar from "./component/Menu/BottomBar/BottomBar";
-import MobileMenu from "./component/Menu/MobileMenu/MobileMenu";
 
 const menuItems = (t) => [
     {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
     {key: "stake", path: "/stake", title: t("menu.stake"), icon: <StakeIcon/>},
-    {key: "governance", path: "/governance", title: t("menu.governance"), icon: <GovernanceIcon/>},
-    {key: "networks", path: "/networks", title: t("menu.networks"), icon: <NetworksIcon/>}
+    {key: "governance", path: "/governance", title: t("menu.governance"), icon: <GovernanceIcon/>}
 ];
 
 function HideOnScroll(props) {
@@ -56,7 +50,6 @@ function Main() {
     const {activate, passivate} = useGlobalPreloader();
     const dispatch = useAppDispatch();
     const {enqueueSnackbar} = useSnackbar();
-    const {t} = useTranslation();
     const {
         appState: {
             chainInfo
@@ -116,7 +109,6 @@ function Main() {
     useEffect(() => {
         if (!(balanceInProgress || delegationsInProgress || governanceInProgress))
             passivate();
-
     }, [balanceInProgress, delegationsInProgress, governanceInProgress])
 
     useEffect(() => {
@@ -124,26 +116,26 @@ function Main() {
             activate();
             if (chainInfo && Object.keys(chainInfo).length > 0 && localStorage.getItem('goat_wl_addr'))
                 initializeKeplr();
+        }
 
-            if (proposals && !proposals.length && !governanceInProgress) {
-                dispatch(allActions.getProposals((result) => {
-                    if (result && result.length) {
-                        const array = [];
-                        result.map((val) => {
-                            if (isActivePath("/") && val.status !== 2) {
-                                return null;
-                            }
-                            //@ts-ignore
-                            array.push(val.id);
-                            if (val.status === 2) {
-                                dispatch(allActions.fetchProposalTally(val.id));
-                            }
+        if (proposals && !proposals.length && !governanceInProgress) {
+            dispatch(allActions.getProposals((result) => {
+                if (result && result.length) {
+                    const array = [];
+                    result.map((val) => {
+                        if (isActivePath("/") && val.status !== 2) {
                             return null;
-                        });
-                        getProposalDetails(array && array.reverse());
-                    }
-                }));
-            }
+                        }
+                        //@ts-ignore
+                        array.push(val.id);
+                        if (val.status === 2) {
+                            dispatch(allActions.fetchProposalTally(val.id));
+                        }
+                        return null;
+                    });
+                    getProposalDetails(array && array.reverse());
+                }
+            }));
         }
     }, [chainInfo, keplr])
 
@@ -151,7 +143,14 @@ function Main() {
         i18n.changeLanguage(localStorage.getItem("lang") || "en");
         //@ts-ignore
         const coingeckoId = chainInfo?.coingecko_id;
-        if (coingeckoId) {
+        //@ts-ignore
+        const prices = chainInfo?.prices;
+        //@ts-ignore
+        const symbol = chainInfo?.symbol;
+        if (prices && symbol && prices["coingecko"] && prices["coingecko"][symbol.toLowerCase()]["usd"]) {
+            //@ts-ignore
+            setCurrentPrice(prices["coingecko"][symbol.toLowerCase()]["usd"])
+        } else if (coingeckoId) {
             CoinGecko.getPrice(coingeckoId).then((res) => {
                 setCurrentPrice(res.data[coingeckoId]["usd"])
             })
@@ -246,88 +245,21 @@ function Main() {
         }
     }
 
-    const handleConnectButtonClick = () => {
-        if (!chainInfo || Object.keys(chainInfo).length === 0)
-            return;
-        activate();
-        localStorage.setItem("auto_connect_active", "true");
-        getKeplr().then(keplr => {
-            initializeChain(chainInfo, keplr, connectionType, (error, addressList) => {
-                passivate();
-                if (error) {
-                    localStorage.removeItem("auto_connect_active");
-                    localStorage.removeItem("connection_type");
-                    localStorage.removeItem("goat_wl_addr");
-                    localStorage.removeItem("walletconnect");
-                    localStorageClearWithPrefix(kvStorePrefix);
-                    enqueueSnackbar(error, {variant: "error"});
-                    return;
-                }
-                dispatch(allActions.setAccountAddress(addressList[0]?.address));
-                dispatch(allActions.getUnBondingDelegations(addressList[0] && addressList[0].address));
-                dispatch(allActions.fetchRewards(addressList[0] && addressList[0].address));
-                dispatch(allActions.getDelegations(addressList[0] && addressList[0].address));
-                //@ts-ignore
-                // getAllBalances(keplr, chainInfo?.chain_id, address, (err, data) => dispatch(allActions.getBalance(err, data)));
-                dispatch(allActions.getAllBalance(address));
-                dispatch(allActions.fetchVestingBalance(addressList[0] && addressList[0].address));
-                dispatch(allActions.getDelegatedValidatorsDetails(addressList[0] && addressList[0].address));
-                localStorage.setItem('goat_wl_addr', encode(addressList[0] && addressList[0].address));
-            });
-        })
-    }
-
     return (
         <Box sx={{display: 'flex'}}>
-            <SideBar menuItems={menuItems(i18n.t)}/>
+            {/*<SideBar menuItems={menuItems(i18n.t)}/>*/}
             <Box sx={{flexGrow: 1}}>
-                <Box sx={{
-                    flexGrow: 1,
-                    display: {md: 'none'}
-                }}>
-                    <HideOnScroll>
-                        <AppBar position="fixed" sx={{
-                            pt: 1,
-                            pb: 1,
-                            pl: 1,
-                            //@ts-ignore
-                            bgcolor: "transparent"
-                        }} enableColorOnDark>
-                            <Toolbar sx={{justifyContent: "space-between"}}>
-                                <Box sx={{display: "flex"}}>
-                                    <img style={{
-                                        width: 48,
-                                        filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
-                                    }} src={logo}/>
-                                    <Typography variant={"h4"} sx={{
-                                        ml: "7px",
-                                        mt: "11px",
-                                        filter: "drop-shadow(2px 3px 2px rgb(0 0 0 / 0.4))"
-                                    }}>GOATLABS</Typography>
-                                </Box>
-                                <Stack direction="row">
-                                    {!(localStorage.getItem('goat_wl_addr') || address) &&
-                                        <Button variant="outlined" color="secondary"
-                                                startIcon={<AccountBalanceWalletRounded/>}
-                                                onClick={() => handleConnectButtonClick()}
-                                        >{t("menu.connect")}</Button>}
-                                    <MobileMenu/>
-                                </Stack>
-                            </Toolbar>
-                        </AppBar>
-                    </HideOnScroll>
-                </Box>
+                <ResponsiveAppBar menuItems={menuItems(i18n.t)}/>
                 <BottomBar menuItems={menuItems(i18n.t)}/>
                 <Box
                     component="main"
-                    sx={{flexGrow: 1, p: 0, pt: {xs: 9, md: 0}, pb: {xs: 9, md: 0}}}
+                    sx={{flexGrow: 1, p: 0, pb: {xs: 9, md: 0}}}
                 >
                     <Routes>
                         <Route path="/" element={<Dashboard/>}/>
                         <Route path="/stake/*" element={<Stake/>}/>
                         <Route path="/governance" element={<Governance/>}/>
                         <Route path="/governance-:id" element={<VotingDetails/>}/>
-                        <Route path="/networks" element={<SupportedNetworks/>}/>
                         <Route path="*" element={<Dashboard/>}/>
                     </Routes>
                 </Box>

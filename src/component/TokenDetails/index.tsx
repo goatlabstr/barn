@@ -177,6 +177,17 @@ export default function Index() {
         });
     };
 
+    const getUnbondingPeriodText = (time) => {
+        let result = 0;
+        if (time !== undefined)
+            result = time / (24 * 60 * 60);
+        result = Math.round(result);
+        if (result)
+            return " (" + result + " days)"
+        else
+            return "";
+    }
+
     return (
         <React.Fragment>
             <Grid container rowSpacing={3}>
@@ -240,7 +251,9 @@ export default function Index() {
                                   icon={<StarsRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
                 <Grid item xs={6} md={2}>
-                    <DetailViewer title={t("dashboard.unstakedAmount")} amount={handleUnstakedAmount().toFixed(3)}
+                    <DetailViewer title={t("dashboard.unstakedAmount")}
+                        //@ts-ignore
+                                  amount={handleUnstakedAmount().toFixed(3) + getUnbondingPeriodText(chainInfo?.params?.unbonding_time)}
                                   icon={<HourglassTopRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
             </Grid>

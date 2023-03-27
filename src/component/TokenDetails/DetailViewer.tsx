@@ -36,7 +36,7 @@ function Index(props: DetailViewerProps) {
                 display: "flex"
             }}>
                 {icon}
-                <Typography variant={"h2"} className={classes.details}>{amountText}</Typography>
+                <Typography variant={"h5"} className={classes.details}>{amountText}</Typography>
             </Stack>
         </Stack>
     );

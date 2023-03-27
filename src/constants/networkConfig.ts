@@ -14,12 +14,12 @@ type NetworkConfig = {
 
 const getNetworkName = () => {
     let name = window.location.hostname.split(".goats.place")[0];
-    if (name !== "wallet" && name !== "localhost") {
+    if (name !== "wallet" && name !== "localhost" && !name.includes("barn.pages.dev")) {
         window.location.href = "https://wallet.goats.place/" + name;
     } else {
         name = window.location.pathname.split("\/").filter(Boolean)[0];
-        if (name === undefined)
-            window.location.href = window.location.origin + "/chihuahua";
+        /*if (name === undefined)
+            window.location.href = window.location.origin + "/chihuahua";*/
     }
     return name;
 }
