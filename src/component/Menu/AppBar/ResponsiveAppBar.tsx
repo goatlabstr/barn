@@ -119,7 +119,7 @@ function ResponsiveAppBar({menuItems = []}: { menuItems?: Array<any> }) {
     }
 
     return (
-        <AppBar position="static">
+        <AppBar position="sticky">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <Stack direction="row" alignItems="center"
