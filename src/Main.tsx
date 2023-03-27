@@ -259,7 +259,7 @@ function Main() {
                         <Route path="/" element={<Dashboard/>}/>
                         <Route path="/stake/*" element={<Stake/>}/>
                         <Route path="/governance" element={<Governance/>}/>
-                        <Route path="/governance-:id" element={<VotingDetails/>}/>
+                        <Route path="/governance/:id" element={<VotingDetails/>}/>
                         <Route path="*" element={<Dashboard/>}/>
                     </Routes>
                 </Box>
