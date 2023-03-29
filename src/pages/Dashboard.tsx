@@ -58,7 +58,7 @@ function Dashboard() {
                 backgroundPosition: "right center",
                 position: "fixed",
                 right: "0%",
-                bottom: "-10%",
+                top: "3%",
                 zIndex: -1,
                 backgroundImage: "url(/city-man.png)",
                 width: "100%",
