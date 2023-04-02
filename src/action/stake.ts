@@ -12,7 +12,7 @@ import {
     VALIDATOR_IMAGE_FETCH_SUCCESS,
 } from './types/stake';
 import Axios from 'axios';
-import { getDelegatedValidatorsURL, getValidatorURL, validatorImageURL, VALIDATORS_LIST_URL } from '../constants/endpoints';
+import { getDelegatedValidatorsURL, getValidatorURL, validatorImageURL } from '../constants/endpoints';
 
 export const setTokens = (value) => {
     return {
@@ -94,7 +94,7 @@ export const getDelegatedValidatorsDetails = (address) => (dispatch) => {
         },
     })
         .then((res) => {
-            dispatch(fetchDelegatedValidatorsSuccess(res.data && res.data.result));
+            dispatch(fetchDelegatedValidatorsSuccess(res?.data?.validators));
         })
         .catch((error) => {
             dispatch(fetchDelegatedValidatorsError(

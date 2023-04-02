@@ -100,17 +100,17 @@ function Governance() {
     };
 
     const ActiveProposalContent = ({proposals}) => {
-        const data = proposals.filter(proposal => proposal.status === 2).reverse();
+        const data = proposals.filter(proposal => proposal?.status === 2 || proposal?.status === "PROPOSAL_STATUS_VOTING_PERIOD").reverse();
         return <Content data={data}/>;
     }
 
     const PassedProposalContent = ({proposals}) => {
-        const data = proposals.filter(proposal => proposal.status === 3).reverse();
+        const data = proposals.filter(proposal => proposal?.status === 3 || proposal?.status === "PROPOSAL_STATUS_PASSED").reverse();
         return <Content data={data}/>;
     }
 
     const RejectedProposalContent = ({proposals}) => {
-        const data = proposals.filter(proposal => proposal.status === 4).reverse();
+        const data = proposals.filter(proposal => proposal?.status === 4 || proposal?.status === "PROPOSAL_STATUS_REJECTED").reverse();
         return <Content data={data}/>;
     }
 
@@ -119,15 +119,15 @@ function Governance() {
         if (data.length > 0)
             return <>
                 {data.map((proposal) =>
-                    <Grid item xs={12} md={6} xl={4} key={proposal?.id}>
+                    <Grid item xs={12} md={6} xl={4} key={proposal?.id ? proposal?.id : proposal?.proposal_id}>
                         <ProposalCard
-                            id={proposal?.id}
+                            id={proposal?.id ? proposal?.id : proposal?.proposal_id}
                             title={proposal?.content?.value?.title || proposal?.content?.title}
                             description={proposal?.content?.value?.description || proposal?.content?.description}
                             startTime={proposal?.voting_start_time}
                             endingTime={proposal?.voting_end_time}
                             proposal={proposal}
-                            onClick={() => navigate("/governance/" + proposal?.id)}
+                            onClick={() => navigate("/governance/" + (proposal?.id ? proposal?.id : proposal?.proposal_id))}
                         />
                     </Grid>)}
             </>

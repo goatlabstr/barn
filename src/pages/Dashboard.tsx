@@ -42,12 +42,12 @@ function Dashboard() {
 
     const getDelegatedValidators = () => {
         return activeValidators.concat(inactiveValidators).filter(valid =>
-            delegatedValidatorList.some(delegated => valid?.moniker === delegated?.description?.moniker));
+            delegatedValidatorList.some(delegated => valid?.address === delegated?.operator_address));
     }
 
     useEffect(() => {
         if (proposals)
-            setActiveProposals(proposals.filter((proposal) => proposal.status === 2).reverse());
+            setActiveProposals(proposals.filter((proposal) => proposal?.status === 2 || proposal?.status === "PROPOSAL_STATUS_VOTING_PERIOD").reverse());
     }, [proposals]);
 
     return (
@@ -58,7 +58,7 @@ function Dashboard() {
                 backgroundPosition: "right center",
                 position: "fixed",
                 right: "0%",
-                bottom: "-10%",
+                top: "3%",
                 zIndex: -1,
                 backgroundImage: "url(/city-man.png)",
                 width: "100%",

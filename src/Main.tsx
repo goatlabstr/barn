@@ -123,13 +123,14 @@ function Main() {
                 if (result && result.length) {
                     const array = [];
                     result.map((val) => {
-                        if (isActivePath("/") && val.status !== 2) {
+                        const proposalId = val?.id ? val?.id : val?.proposal_id;
+                        if (isActivePath("/") && (val.status !== 2 && val?.status !== "PROPOSAL_STATUS_VOTING_PERIOD")) {
                             return null;
                         }
                         //@ts-ignore
-                        array.push(val.id);
-                        if (val.status === 2) {
-                            dispatch(allActions.fetchProposalTally(val.id));
+                        array.push(proposalId);
+                        if (val?.status === 2 || val?.status === "PROPOSAL_STATUS_VOTING_PERIOD") {
+                            dispatch(allActions.fetchProposalTally(proposalId));
                         }
                         return null;
                     });
@@ -147,7 +148,8 @@ function Main() {
         const prices = chainInfo?.prices;
         //@ts-ignore
         const symbol = chainInfo?.symbol;
-        if (prices && symbol && prices["coingecko"] && prices["coingecko"][symbol.toLowerCase()]["usd"]) {
+        if (prices && symbol && prices["coingecko"] && prices["coingecko"][symbol.toLowerCase()]
+            && prices["coingecko"][symbol.toLowerCase()]["usd"]) {
             //@ts-ignore
             setCurrentPrice(prices["coingecko"][symbol.toLowerCase()]["usd"])
         } else if (coingeckoId) {

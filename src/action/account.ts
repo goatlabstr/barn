@@ -63,7 +63,7 @@ export const getDelegations = (address) => (dispatch) => {
         },
     })
         .then((res) => {
-            dispatch(fetchDelegationsSuccess(res.data && res.data.result));
+            dispatch(fetchDelegationsSuccess(res?.data?.delegation_responses));
         })
         .catch((error) => {
             dispatch(fetchDelegationsError(
@@ -106,7 +106,7 @@ export const getAllBalance = (address) => (dispatch) => {
         },
     })
         .then((res) => {
-            dispatch(fetchBalanceSuccess(res.data && res.data.result));
+            dispatch(fetchBalanceSuccess(res?.data?.balances));
         })
         .catch((error) => {
             dispatch(fetchBalanceError(
@@ -157,7 +157,7 @@ export const fetchVestingBalance = (address) => (dispatch) => {
         },
     })
         .then((res) => {
-            dispatch(fetchVestingBalanceSuccess(res.data && res.data.result));
+            dispatch(fetchVestingBalanceSuccess(res?.data?.result));
         })
         .catch((error) => {
             dispatch(fetchVestingBalanceError(
@@ -199,7 +199,7 @@ export const getUnBondingDelegations = (address) => (dispatch) => {
         },
     })
         .then((res) => {
-            dispatch(fetchUnBondingDelegationsSuccess(res.data && res.data.result));
+            dispatch(fetchUnBondingDelegationsSuccess(res?.data?.unbonding_responses));
         })
         .catch((error) => {
             dispatch(fetchUnBondingDelegationsError(
@@ -248,7 +248,7 @@ export const fetchRewards = (address) => (dispatch) => {
         },
     })
         .then((res) => {
-            dispatch(fetchRewardsSuccess(res.data && res.data.result));
+            dispatch(fetchRewardsSuccess(res?.data));
         })
         .catch((error) => {
             dispatch(fetchRewardsError(

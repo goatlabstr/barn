@@ -1,12 +1,13 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {Avatar, Box, Button, CircularProgress, Grid, Stack, TextField, Typography} from "@mui/material";
+import {Avatar, Box, Button, CircularProgress, Grid, Stack, Typography} from "@mui/material";
 import DetailViewer from "./DetailViewer";
 import {
     AccountBalanceWalletRounded,
     AssuredWorkloadRounded,
     CurrencyExchangeRounded,
-    HourglassTopRounded, MonetizationOnRounded,
+    HourglassTopRounded,
+    MonetizationOnRounded,
     StarsRounded
 } from '@mui/icons-material';
 import {useTranslation} from "react-i18next";
@@ -15,12 +16,12 @@ import {useAppState} from "../../hooks/useAppState";
 import {makeStyles} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
 import {gas} from "../../constants/defaultGasFees";
-import {signTxAndBroadcast} from "../../services/cosmos";
+import {getChainFees, signTxAndBroadcast} from "../../services/cosmos";
 import {useSnackbar} from "notistack";
 import allActions from "../../action";
 import {snackbarTxAction} from "../Snackbar/action";
-import {config} from "../../constants/networkConfig";
 import {useKeplr} from "../../hooks/use-keplr/hook";
+import {CopyAddressSummaryButton} from "../Menu/AppBar/CopyAddressSummaryButton";
 
 const useStyles = makeStyles((theme: Theme) => ({
     icon: {
@@ -127,12 +128,14 @@ export default function Index() {
         if (rewards && rewards.rewards && rewards.rewards.length > 1) {
             gasValue = (rewards.rewards.length - 1) / 2 * gas.claim_reward + gas.claim_reward;
         }
+        //@ts-ignore
+        const fee = getChainFees(chainInfo?.fees, chainInfo?.denom);
 
         const updatedTx = {
             msgs: [],
             fee: {
                 amount: [{
-                    amount: String(gasValue * config.GAS_PRICE_STEP_AVERAGE),
+                    amount: String(gasValue * fee.average_gas_price),
                     //@ts-ignore
                     denom: chainInfo?.denom,
                 }],
@@ -202,8 +205,9 @@ export default function Index() {
                                     //@ts-ignore
                                     variant={"h6"}>{t("dashboard.networkBalances", {"name": chainInfo?.pretty_name})}</Typography>
                                 <Stack direction="row" spacing={0.5} alignItems={"center"} sx={{mt: -0.5}}>
-                                    <img src={"/keplr-logo.png"} style={{height: 14}}/>
+                                    {walletName && <img src={"/keplr-logo.png"} style={{height: 14}}/>}
                                     <Typography variant={"body1"} color={"secondary"}>{walletName}</Typography>
+                                    {walletName && address && <CopyAddressSummaryButton address={address}/>}
                                 </Stack>
                             </Stack>
                         </Stack>
@@ -215,11 +219,7 @@ export default function Index() {
                                 sx={{height: "fit-content"}}>
                             {inTxProgress && <CircularProgress color="inherit" size={20} sx={{mr: 1}}/>}
                             <Box sx={{display: {xs: "none", md: 'block'}}}>
-                                {t("claimReward", {
-                                    "value": handleRewards().toFixed(3),
-                                    //@ts-ignore
-                                    "name": chainInfo?.symbol
-                                })}
+                                {t("claimReward")}
                             </Box>
                             <Box sx={{display: {xs: "block", md: 'none'}}}>
                                 {t("claimAll")}

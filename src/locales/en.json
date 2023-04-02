@@ -34,7 +34,7 @@
     "networks": "Networks",
     "coingecko": "Price Data by Coingecko"
   },
-  "claimReward": "Claim Reward: {{value}} {{name}}",
+  "claimReward": "Claim Reward",
   "claimAll": "Claim All",
   "dashboard": {
     "viewAll": "View All",

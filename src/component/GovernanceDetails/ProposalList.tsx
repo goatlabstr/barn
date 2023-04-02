@@ -21,15 +21,15 @@ export default function ProposalList(props: ProposalProps) {
         if (data.length > 0)
             return <>
                 {data.map((proposal) =>
-                    <Grid item xs={12} md={6} lg={12} key={proposal?.id}>
+                    <Grid item xs={12} md={6} lg={12} key={proposal?.id ? proposal?.id : proposal?.proposal_id}>
                         <ProposalCard
-                            id={proposal?.id}
+                            id={proposal?.id ? proposal?.id : proposal?.proposal_id}
                             title={proposal?.content?.value?.title || proposal?.content?.title}
                             description={proposal?.content?.value?.description || proposal?.content?.description}
                             startTime={proposal?.voting_start_time}
                             endingTime={proposal?.voting_end_time}
                             proposal={proposal}
-                            onClick={() => navigate("/governance/" + proposal?.id)}
+                            onClick={() => navigate("/governance/" + (proposal?.id ? proposal?.id : proposal?.proposal_id))}
                         />
                     </Grid>)}
             </>
