@@ -42,7 +42,7 @@ function Dashboard() {
 
     const getDelegatedValidators = () => {
         return activeValidators.concat(inactiveValidators).filter(valid =>
-            delegatedValidatorList.some(delegated => valid?.moniker === delegated?.description?.moniker));
+            delegatedValidatorList.some(delegated => valid?.address === delegated?.operator_address));
     }
 
     useEffect(() => {

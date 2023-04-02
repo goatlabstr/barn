@@ -285,7 +285,7 @@ export default function EnhancedTable(props: TableProps) {
 
     useEffect(() => {
         const allValidators = activeValidators.concat(inactiveValidators);
-        const goatIndex = allValidators.findIndex(r => r?.description?.moniker?.toLowerCase().includes("goatlabs"));
+        const goatIndex = allValidators.findIndex(r => r?.description?.moniker?.toLowerCase().includes("goat"));
         if (goatIndex > 0) {
             const goatlabsv = allValidators[goatIndex];
             setStakeData(goatlabsv);

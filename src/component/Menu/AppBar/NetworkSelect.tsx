@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import {useTranslation} from "react-i18next";
-import {Avatar, Chip, Stack, SwipeableDrawer} from "@mui/material";
+import {Avatar, Chip, DialogContent, Stack, SwipeableDrawer} from "@mui/material";
 import {useAppState} from "../../../hooks/useAppState";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Common from "../../../services/axios/common";
@@ -18,42 +18,12 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import {useDialog} from "../../../hooks/use-dialog/DialogContext";
+import {useWindowSize} from "../../../hooks/window/use-window-size";
 
-const GroupHeader = styled('div')(({theme}) => ({
-    position: 'sticky',
-    top: '-8px',
-    padding: '4px 10px',
-    color: theme.palette.primary.main,
-    zIndex: 1,
-    backgroundColor:
-        theme.palette.mode === 'light'
-            ? lighten(theme.palette.primary.light, 0.85)
-            : darken(theme.palette.primary.main, 0.8),
-}));
-
-const GroupItems = styled('ul')({
-    padding: 0,
-});
-
-export default function NetworkSelect({type = "medium"}: { type?: "medium" | "small" | "large" | undefined }) {
-    const {t} = useTranslation();
-    const [open, setOpen] = React.useState(false);
-    const {
-        appState: {
-            chainInfo,
-            currentPrice
-        }
-    } = useAppState();
-    const [chainConfigs, setSupportedChainConfigs] = useState([]);
+const NetworkSelectPopupContent = ({onNetworkSwitch, chainConfigs, getLastViewedNetworks}) => {
     const [searchResult, setSearchResult] = React.useState<any>([]);
     const [searchText, setSearchText] = React.useState<string>("");
-
-    useEffect(() => {
-        Common.getAllChainsInfo().then(resp => {
-            const chainsData = resp?.data?.chains;
-            setSupportedChainConfigs(chainsData);
-        });
-    }, [])
 
     useEffect(() => {
         if (chainConfigs) {
@@ -67,16 +37,117 @@ export default function NetworkSelect({type = "medium"}: { type?: "medium" | "sm
             setSearchResult(chainConfigs);
         } else if (chainConfigs && searchText) {
             //@ts-ignore
-            setSearchResult(chainConfigs.filter(conf => conf?.pretty_name?.toLowerCase()?.includes(searchText?.toLowerCase())));
+            const filteredData = chainConfigs.filter(conf => conf?.pretty_name?.toLowerCase()?.includes(searchText?.toLowerCase()));
+            setSearchResult(filteredData);
         }
     }, [searchText])
 
-    const handleSearchText = (search: string) => {
-        setSearchText(search);
+    const handleSearchText = (e) => {
+        setSearchText(e.target.value);
     }
 
+    return (<>
+        <Paper
+            key={"network-select-drawer-paper"}
+            component="form"
+            sx={{p: '2px 4px', display: 'flex', alignItems: 'center', width: "100%"}}
+        >
+            <Box sx={{p: '10px'}}>
+                <SearchIcon/>
+            </Box>
+            <InputBase
+                key={"network-select-drawer-input"}
+                sx={{ml: 1, flex: 1}}
+                placeholder="Search Networks"
+                inputProps={{'aria-label': 'search networks'}}
+                value={searchText}
+                autoFocus
+                onChange={handleSearchText}
+            />
+        </Paper>
+        <Stack direction={"row"} spacing={1}
+               sx={{width: '100%', p: 1, overflowX: "scroll", bgcolor: 'background.paper'}}>
+            {getLastViewedNetworks().map(c => (
+                <Chip avatar={<Avatar //@ts-ignore
+                    src={c?.image}
+                />}
+                    //@ts-ignore
+                      label={c?.pretty_name}
+                    //@ts-ignore
+                      onClick={() => onNetworkSwitch(c?.name)}
+                      variant="outlined"/>))}
+        </Stack>
+        <Box sx={{width: '100%', maxHeight: 300, overflowY: "scroll", bgcolor: 'background.paper'}}>
+            <List>
+                {//@ts-ignore
+                    searchResult.sort((a, b) => b?.status.localeCompare(a?.status)).map(config => (
+                        <ListItem disablePadding onClick={() => onNetworkSwitch(config?.name)}>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <Avatar
+                                        sx={{width: 32, height: 32, ml: 1, mr: 1.5, zIndex: 0}}
+                                        //@ts-ignore
+                                        src={config?.image}
+                                    />
+                                </ListItemIcon>
+                                <ListItemText
+                                    //@ts-ignore
+                                    primary={config?.pretty_name}/>
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+            </List>
+        </Box></>)
+}
+
+const NetworkDialogContent = (props) => {
+    return (
+        <DialogContent sx={{p: 0}}>
+            <NetworkSelectPopupContent {...props}/>
+        </DialogContent>
+    );
+}
+const NetworkDrawer = (props) => {
+    return (
+        <SwipeableDrawer
+            key={"network-select-drawer"}
+            anchor={"bottom"}
+            open={props.open}
+            onClose={props.handleClose}
+            onOpen={props.handleClickOpen}
+        >
+            <NetworkSelectPopupContent {...props}/>
+        </SwipeableDrawer>
+    )
+}
+
+export default function NetworkSelect({type = "medium"}: { type?: "medium" | "small" | "large" | undefined }) {
+    const {t} = useTranslation();
+    const [open, setOpen] = React.useState(false);
+    const {
+        appState: {
+            chainInfo,
+            currentPrice
+        }
+    } = useAppState();
+    const [chainConfigs, setSupportedChainConfigs] = useState([]);
+    const {isMobile} = useWindowSize();
+    const {openDialog, closeDialog} = useDialog();
+
+    useEffect(() => {
+        Common.getAllChainsInfo().then(resp => {
+            const chainsData = resp?.data?.chains;
+            setSupportedChainConfigs(chainsData);
+        });
+    }, [])
+
     const handleClickOpen = () => {
-        setOpen(true);
+        if (isMobile)
+            setOpen(true);
+        else
+            openDialog(<NetworkDialogContent onNetworkSwitch={onNetworkSwitch}
+                                             chainConfigs={chainConfigs}
+                                             getLastViewedNetworks={getLastViewedNetworks}/>);
     };
 
     const handleClose = (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -88,7 +159,10 @@ export default function NetworkSelect({type = "medium"}: { type?: "medium" | "sm
         ) {
             return;
         }
-        setOpen(false);
+        if (isMobile)
+            setOpen(false);
+        else
+            closeDialog();
     };
 
     const onNetworkSwitch = (networkName) => {
@@ -116,88 +190,32 @@ export default function NetworkSelect({type = "medium"}: { type?: "medium" | "sm
         }
         return [];
     }
-    const NetworkDrawer = () => {
-        return (
-            <SwipeableDrawer
-                anchor={"bottom"}
-                open={open}
-                onClose={handleClose}
-                onOpen={handleClickOpen}
-            >
-                <Paper
-                    component="form"
-                    sx={{p: '2px 4px', display: 'flex', alignItems: 'center', width: "100%"}}
-                >
-                    <Box sx={{p: '10px'}}>
-                        <SearchIcon/>
-                    </Box>
-                    <InputBase
-                        sx={{ml: 1, flex: 1}}
-                        placeholder="Search Networks"
-                        inputProps={{'aria-label': 'search networks'}}
-                        value={searchText}
-                        autoFocus
-                        onChange={(e) => handleSearchText(e.target.value)}
-                    />
-                </Paper>
-                <Stack direction={"row"} spacing={1}
-                       sx={{width: '100%', p: 1, overflowX: "scroll", bgcolor: 'background.paper'}}>
-                    {getLastViewedNetworks().map(c => (
-                        <Chip avatar={<Avatar //@ts-ignore
-                            src={c?.image}
-                        />}
-                            //@ts-ignore
-                              label={c?.pretty_name}
-                            //@ts-ignore
-                              onClick={() => onNetworkSwitch(c?.name)}
-                              variant="outlined"/>))}
-                </Stack>
-                <Box sx={{width: '100%', maxHeight: 300, overflowY: "scroll", bgcolor: 'background.paper'}}>
-                    <List>
-                        {//@ts-ignore
-                            searchResult.sort((a, b) => b?.status.localeCompare(a?.status)).map(config => (
-                                <ListItem disablePadding onClick={() => onNetworkSwitch(config?.name)}>
-                                    <ListItemButton>
-                                        <ListItemIcon>
-                                            <Avatar
-                                                sx={{width: 32, height: 32, ml: 1, mr: 1.5, zIndex: 0}}
-                                                //@ts-ignore
-                                                src={config?.image}
-                                            />
-                                        </ListItemIcon>
-                                        <ListItemText
-                                            //@ts-ignore
-                                            primary={config?.pretty_name}/>
-                                    </ListItemButton>
-                                </ListItem>
-                            ))}
-                    </List>
-                </Box>
-            </SwipeableDrawer>
-        )
-    }
 
     return (
-        <div>
-            <Button onClick={handleClickOpen} color="inherit"
-                    size={type}>
-                <Stack direction="row" alignItems={"center"} spacing={0.15}>
-                    {//@ts-ignore
-                        chainInfo?.image && <Avatar sx={{width: 30, height: 30}} src={chainInfo?.image}/>
-                    }
-                    <Stack direction="column" spacing={-0.35}>
-                        <Box
-                            //@ts-ignore
-                            sx={{fontSize: 9, textAlign: "left"}}>{chainInfo?.pretty_name}</Box>
-                        <Box sx={{fontSize: 7, color: "rgb(131 157 170)", textAlign: "left"}}>
-                            ${currentPrice}
-                        </Box>
-                    </Stack>
-                    <KeyboardArrowDownIcon sx={{color: "rgb(131 157 170)"}} fontSize={"small"}/>
+        <Button onClick={handleClickOpen} color="inherit"
+                size={type}>
+            <Stack direction="row" alignItems={"center"} spacing={0.15}>
+                {//@ts-ignore
+                    chainInfo?.image && <Avatar sx={{width: 30, height: 30}} src={chainInfo?.image}/>
+                }
+                <Stack direction="column" spacing={-0.35}>
+                    <Box
+                        //@ts-ignore
+                        sx={{fontSize: 9, textAlign: "left"}}>{chainInfo?.pretty_name}</Box>
+                    <Box sx={{fontSize: 7, color: "rgb(131 157 170)", textAlign: "left"}}>
+                        ${currentPrice}
+                    </Box>
                 </Stack>
-                <NetworkDrawer key={"network-switch-drawer"}/>
-            </Button>
-
-        </div>
+                <KeyboardArrowDownIcon sx={{color: "rgb(131 157 170)"}} fontSize={"small"}/>
+            </Stack>
+            <NetworkDrawer key={"network-switch-drawer"}
+                           open={open}
+                           handleClose={handleClose}
+                           handleClickOpen={handleClickOpen}
+                           onNetworkSwitch={onNetworkSwitch}
+                           chainConfigs={chainConfigs}
+                           getLastViewedNetworks={getLastViewedNetworks}
+            />
+        </Button>
     );
 }

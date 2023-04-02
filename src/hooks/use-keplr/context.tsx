@@ -124,9 +124,9 @@ export const GetKeplrProvider: FunctionComponent = ({children}) => {
                     close: () => setWCUri(""),
                 },
                 clientMeta: {
-                    name: networkName.charAt(0).toUpperCase() + networkName.slice(1) + " | GOATS Barn",
+                    name: "GOAT Wallet",
                     description: "GOATS Barn manages all delegation and governance process of a Cosmos SDK Networks",
-                    url: "https://" + networkName + ".goats.place",
+                    url: "https://wallet.goats.place",
                     icons: [
                         // Keplr mobile app can't show svg image.
                         window.location.origin + "/logo.png",
