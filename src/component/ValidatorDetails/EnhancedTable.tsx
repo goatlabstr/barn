@@ -250,8 +250,8 @@ export default function EnhancedTable(props: TableProps) {
         //@ts-ignore
         const decimals = chainInfo?.decimals || 6;
         let value = delegations.find((val) =>
-            (val.delegation && val.delegation.validator_address) === row.operator_address);
-        return value ? value.balance && value.balance.amount && value.balance.amount / 10 ** decimals : 0;
+            (val?.delegation && val?.delegation?.validator_address) === row?.operator_address);
+        return value ? value?.balance?.amount && value.balance.amount / 10 ** decimals : 0;
     }
 
     const handleStakeAmount = (row) => {
@@ -287,13 +287,13 @@ export default function EnhancedTable(props: TableProps) {
         const allValidators = activeValidators.concat(inactiveValidators);
         const goatIndex = allValidators.findIndex(r => r?.description?.moniker?.toLowerCase().includes("goat"));
         if (goatIndex > 0) {
-            const goatlabsv = allValidators[goatIndex];
-            setStakeData(goatlabsv);
+            const GOAT = allValidators[goatIndex];
+            setStakeData(GOAT);
         } else {
             const randomValidator = activeValidators[Math.floor(Math.random() * activeValidators.length)];
             setStakeData(randomValidator);
         }
-    }, [rows]);
+    }, [rows, activeValidators, inactiveValidators]);
 
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,

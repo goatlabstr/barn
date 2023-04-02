@@ -23,7 +23,8 @@ const chainConfig = (chainId,
                      coinDecimals,
                      coinType,
                      prefix,
-                     coinGeckoId) => ({
+                     coinGeckoId,
+                     fee) => ({
     chainId: chainId,
     chainName,
     rpc: rpcUrl,
@@ -63,9 +64,9 @@ const chainConfig = (chainId,
     ],
     coinType: coinType,
     gasPriceStep: {
-        low: config.GAS_PRICE_STEP_LOW,
-        average: config.GAS_PRICE_STEP_AVERAGE,
-        high: config.GAS_PRICE_STEP_HIGH,
+        low: fee.low_gas_price,
+        average: fee.average_gas_price,
+        high: fee.high_gas_price,
     },
     features: features,
     walletUrlForStaking: stakingUrl,
@@ -92,8 +93,22 @@ export const initializeChain = (chain, keplr, connectionType, cb) => {
                 decimals,
                 slip44,
                 bech32_prefix,
-                coingecko_id
+                coingecko_id,
+                fees
             } = chain;
+
+            const filteredFee = fees?.fee_tokens?.filter(ft => ft?.denom === denom);
+            let fee;
+            if(filteredFee.length === 1)
+                fee = filteredFee[0];
+            else
+                fee = {
+                    "denom": denom,
+                    "fixed_min_gas_price": config.DEFAULT_GAS,
+                    "low_gas_price": config.GAS_PRICE_STEP_LOW,
+                    "average_gas_price": config.GAS_PRICE_STEP_AVERAGE,
+                    "high_gas_price": config.GAS_PRICE_STEP_HIGH
+                }
 
             //@ts-ignore
             if (!keplr) {
@@ -112,7 +127,8 @@ export const initializeChain = (chain, keplr, connectionType, cb) => {
                             decimals,
                             slip44,
                             bech32_prefix,
-                            coingecko_id));
+                            coingecko_id,
+                            fee));
                     } catch (error) {
                         const chainError = 'Failed to suggest the chain';
                         cb(chainError);

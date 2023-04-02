@@ -248,7 +248,7 @@ export const fetchRewards = (address) => (dispatch) => {
         },
     })
         .then((res) => {
-            dispatch(fetchRewardsSuccess(res?.data?.rewards));
+            dispatch(fetchRewardsSuccess(res?.data));
         })
         .catch((error) => {
             dispatch(fetchRewardsError(
