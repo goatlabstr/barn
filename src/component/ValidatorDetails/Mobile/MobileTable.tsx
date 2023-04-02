@@ -96,8 +96,8 @@ function MobileTable(props: TableProps) {
 
     useEffect(() => {
         rows.sort((a, b) => a?.rank - b?.rank)
-        const goatIndex = rows.findIndex(r => r?.description?.moniker?.toLowerCase().includes("goatlabs"));
-        if(goatIndex > 0){
+        const goatIndex = rows.findIndex(r => r?.description?.moniker?.toLowerCase().includes("goat"));
+        if(goatIndex >= 0){
             const goatArray = rows.splice(goatIndex,1);
             rows.unshift(goatArray[0]);
         }

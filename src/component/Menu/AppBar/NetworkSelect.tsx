@@ -66,7 +66,7 @@ const NetworkSelectPopupContent = ({onNetworkSwitch, chainConfigs, getLastViewed
             />
         </Paper>
         <Stack direction={"row"} spacing={1}
-               sx={{width: '100%', p: 1, overflowX: "scroll", bgcolor: 'background.paper'}}>
+               sx={{width: '100%', p: 1, overflowX: "auto", bgcolor: 'background.paper'}}>
             {getLastViewedNetworks().map(c => (
                 <Chip avatar={<Avatar //@ts-ignore
                     src={c?.image}
@@ -77,7 +77,7 @@ const NetworkSelectPopupContent = ({onNetworkSwitch, chainConfigs, getLastViewed
                       onClick={() => onNetworkSwitch(c?.name)}
                       variant="outlined"/>))}
         </Stack>
-        <Box sx={{width: '100%', maxHeight: 300, overflowY: "scroll", bgcolor: 'background.paper'}}>
+        <Box sx={{width: '100%', maxHeight: 300, overflowY: "auto", bgcolor: 'background.paper'}}>
             <List>
                 {//@ts-ignore
                     searchResult.sort((a, b) => b?.status.localeCompare(a?.status)).map(config => (

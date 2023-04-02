@@ -262,7 +262,7 @@ export default function EnhancedTable(props: TableProps) {
     }
 
     useEffect(() => {
-        const goatIndex = rows.findIndex(r => r?.description?.moniker?.toLowerCase().includes("goatlabs"));
+        const goatIndex = rows.findIndex(r => r?.description?.moniker?.toLowerCase().includes("goat"));
         if (goatIndex > 0) {
             const goatArray = rows.splice(goatIndex, 1);
             rows.unshift(goatArray[0]);
@@ -275,7 +275,7 @@ export default function EnhancedTable(props: TableProps) {
     }, [filterValue]);
 
     useEffect(() => {
-        const goatIndex = rows.findIndex(r => r?.description?.moniker?.toLowerCase().includes("goatlabs"));
+        const goatIndex = rows.findIndex(r => r?.description?.moniker?.toLowerCase().includes("goat"));
         if (goatIndex > 0) {
             const goatArray = rows.splice(goatIndex, 1);
             rows.unshift(goatArray[0]);
@@ -286,7 +286,7 @@ export default function EnhancedTable(props: TableProps) {
     useEffect(() => {
         const allValidators = activeValidators.concat(inactiveValidators);
         const goatIndex = allValidators.findIndex(r => r?.description?.moniker?.toLowerCase().includes("goat"));
-        if (goatIndex > 0) {
+        if (goatIndex >= 0) {
             const GOAT = allValidators[goatIndex];
             setStakeData(GOAT);
         } else {
