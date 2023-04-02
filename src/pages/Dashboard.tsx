@@ -47,7 +47,7 @@ function Dashboard() {
 
     useEffect(() => {
         if (proposals)
-            setActiveProposals(proposals.filter((proposal) => proposal.status === 2).reverse());
+            setActiveProposals(proposals.filter((proposal) => proposal?.status === 2 || proposal?.status === "PROPOSAL_STATUS_VOTING_PERIOD").reverse());
     }, [proposals]);
 
     return (

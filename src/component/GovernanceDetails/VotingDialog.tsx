@@ -79,7 +79,7 @@ export default function VotingDialog({proposal}) {
                 typeUrl: '/cosmos.gov.v1beta1.MsgVote',
                 value: {
                     option: option,
-                    proposalId: proposal?.id,
+                    proposalId: proposal?.id ? proposal?.id : proposal?.proposal_id,
                     voter: address,
                 },
             }],
@@ -103,7 +103,7 @@ export default function VotingDialog({proposal}) {
             }
             if (result) {
                 enqueueSnackbar(result?.transactionHash, {variant: "success"});
-                updateBalance(proposal?.id);
+                updateBalance((proposal?.id ? proposal?.id : proposal?.proposal_id));
             }
         });
         closeDialog();

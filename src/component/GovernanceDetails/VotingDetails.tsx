@@ -63,6 +63,7 @@ const StatusIcon = ({status}) => {
     const {t} = useTranslation();
     switch (status) {
         case 2:
+        case "PROPOSAL_STATUS_VOTING_PERIOD" :
             return <MTooltip title={t("governance.votingMessage")}><Chip label={t("governance.active")}
                                                                          sx={{
                                                                              backgroundColor: "rgba(255, 255, 255, 0.3)",
@@ -70,6 +71,7 @@ const StatusIcon = ({status}) => {
                                                                              marginTop: 2
                                                                          }}/></MTooltip>
         case 3:
+        case "PROPOSAL_STATUS_PASSED":
             return <MTooltip title={t("governance.passedMessage")}><Chip label={t("governance.passed")}
                                                                          sx={{
                                                                              backgroundColor: "#66bb6a",
@@ -77,6 +79,7 @@ const StatusIcon = ({status}) => {
                                                                              marginTop: 2
                                                                          }}/></MTooltip>
         case 4:
+        case "PROPOSAL_STATUS_REJECTED":
             return <MTooltip title={t("governance.rejectedMessage")}><Chip label={t("governance.rejected")}
                                                                            sx={{
                                                                                backgroundColor: "#f44336",
@@ -97,6 +100,7 @@ const VoteStatus = ({status}) => {
     const {t} = useTranslation();
     switch (status) {
         case 1:
+        case "VOTE_OPTION_YES":
             return <Chip label={t("governance.voted.yes")}
                          sx={{
                              backgroundColor: "transparent",
@@ -104,6 +108,7 @@ const VoteStatus = ({status}) => {
                              marginTop: 2
                          }}/>
         case 2:
+        case "VOTE_OPTION_ABSTAIN":
             return <Chip label={t("governance.voted.abstain")}
                          sx={{
                              backgroundColor: "transparent",
@@ -111,6 +116,7 @@ const VoteStatus = ({status}) => {
                              marginTop: 2
                          }}/>
         case 3:
+        case "VOTE_OPTION_NO":
             return <Chip label={t("governance.voted.no")}
                          sx={{
                              backgroundColor: "transparent",
@@ -118,6 +124,7 @@ const VoteStatus = ({status}) => {
                              marginTop: 2
                          }}/>
         case 4:
+        case "VOTE_OPTION_NO_WITH_VETO":
             return <Chip label={t("governance.voted.noWithVeto")}
                          sx={{
                              backgroundColor: "transparent",
@@ -146,24 +153,26 @@ export default function VotingDetails() {
     const [proposal, setProposal] = useState<typeof proposals>(null);
 
     useEffect(() => {
-        const prop = proposals.filter(item => item.id == id).pop();
+        const prop = proposals.filter(item => item?.proposal_id == id).pop();
         if (prop)
             setProposal(prop);
     }, [proposals])
 
     const getVoteStatus = (proposal) => {
+        const proposalId = proposal?.id ? proposal?.id : proposal?.proposal_id;
         //@ts-ignore
-        return voteDetails?.find(vote => vote?.proposal_id == proposal?.id)?.option;
+        return voteDetails?.find(vote => vote?.proposal_id == proposalId)?.option;
     }
 
     const voteCalculation = (proposal, vote) => {
-        if (proposal?.status === 2) {
-            const value = tallyDetails && tallyDetails[proposal?.id];
+        if (proposal?.status === 2 || proposal?.status === "PROPOSAL_STATUS_VOTING_PERIOD") {
+            const proposalId = proposal?.id ? proposal?.id : proposal?.proposal_id;
+            const value = tallyDetails && tallyDetails[proposalId];
             // @ts-ignore
             const sum = (parseInt(value?.yes) + parseInt(value?.no) + parseInt(value?.no_with_veto) + parseInt(value?.abstain));
 
-            return (tallyDetails && tallyDetails[proposal?.id] && tallyDetails[proposal?.id][vote]
-                ? tally(tallyDetails[proposal?.id][vote], sum) : 0);
+            return (tallyDetails && tallyDetails[proposalId] && tallyDetails[proposalId][vote]
+                ? tally(tallyDetails[proposalId][vote], sum) : 0);
         } else {
             const sum = parseInt(proposal?.final_tally_result.yes) + parseInt(proposal?.final_tally_result.no) +
                 parseInt(proposal?.final_tally_result.no_with_veto) + parseInt(proposal?.final_tally_result.abstain);
@@ -202,8 +211,10 @@ export default function VotingDetails() {
     };
 
     useEffect(() => {
-        if (proposal)
-            dispatch(allActions.fetchVoteDetails(proposal?.id, address))
+        if (proposal) {
+            const proposalId = proposal?.id ? proposal?.id : proposal?.proposal_id;
+            dispatch(allActions.fetchVoteDetails(proposalId, address))
+        }
     }, [proposal, address]);
 
     return (
@@ -215,7 +226,7 @@ export default function VotingDetails() {
                             onClick={() => navigate(-1)}
                             className={classes.backButton}><ArrowBackIcon/></IconButton>
                         <Typography variant="h6" className={classes.title}>
-                            {proposal ? ("#" + proposal?.id + " " + proposal?.content?.value?.title) : "#Proposal"}
+                            {proposal ? ("#" + (proposal?.id ? proposal?.id : proposal?.proposal_id) + " " + proposal?.content?.title) : "#Proposal"}
                         </Typography>
                     </Stack>
                 </Grid>
@@ -231,12 +242,12 @@ export default function VotingDetails() {
                                 <StatusIcon status={proposal?.status}/>
                                 <VoteStatus status={getVoteStatus(proposal)}/>
                             </Box>
-                            {proposal?.status === 2 &&
+                            {(proposal?.status === 2 || proposal?.status === "PROPOSAL_STATUS_VOTING_PERIOD") &&
                                 <Button variant={"contained"}
                                         color="secondary"
                                         onClick={() => openDialog(
                                             <VotingDialog proposal={proposal}/>,
-                                            "#" + proposal?.id + " " + proposal?.content?.value?.title)}
+                                            "#" + (proposal?.id ? proposal?.id : proposal?.proposal_id) + " " + proposal?.content?.title)}
                                 >{t("vote")}</Button>}
                         </Stack>
                         <Stack direction="row" sx={{marginTop: 2}} spacing={4}>
@@ -252,7 +263,7 @@ export default function VotingDetails() {
                 <Grid item xs={12} sx={{padding: 3}}>
                     <Typography variant={"h6"}>Description</Typography>
                     <Typography paragraph
-                                sx={{whiteSpace: "pre-wrap"}}>{proposal?.content?.value?.description}</Typography>
+                                sx={{whiteSpace: "pre-wrap"}}>{proposal?.content?.description}</Typography>
                 </Grid>
             </Grid>
         </>

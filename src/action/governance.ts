@@ -53,8 +53,8 @@ export const getProposals = (cb) => (dispatch) => {
         },
     })
         .then((res) => {
-            dispatch(fetchProposalsSuccess(res.data && res.data.result));
-            cb(res.data && res.data.result);
+            dispatch(fetchProposalsSuccess(res?.data?.proposals));
+            cb(res?.data?.proposals);
         })
         .catch((error) => {
             dispatch(fetchProposalsError(
@@ -141,7 +141,7 @@ export const fetchVoteDetails = (id, address) => (dispatch) => {
         },
     })
         .then((res) => {
-            dispatch(fetchVoteDetailsSuccess(res.data && res.data.result));
+            dispatch(fetchVoteDetailsSuccess(res?.data?.vote));
         })
         .catch((error) => {
             dispatch(fetchVoteDetailsError(
@@ -185,7 +185,7 @@ export const fetchProposalTally = (id) => (dispatch) => {
         },
     })
         .then((res) => {
-            dispatch(fetchProposalTallySuccess(res.data && res.data.result, id));
+            dispatch(fetchProposalTallySuccess(res?.data?.tally, id));
         })
         .catch((error) => {
             dispatch(fetchProposalTallyError(

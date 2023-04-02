@@ -51,7 +51,7 @@ export default function ProposalCard(props: ProposalCardType) {
     const tallyDetails = useAppSelector(state => state.governance.voteDetails.value);
 
     const voteCalculation = (proposal, val) => {
-        if (proposal.status === 2) {
+        if (proposal?.status === 2 || proposal?.status === "PROPOSAL_STATUS_VOTING_PERIOD") {
             const value = tallyDetails && tallyDetails[proposal.id];
             // @ts-ignore
             const sum = (parseInt(value?.yes) + parseInt(value?.no) + parseInt(value?.no_with_veto) + parseInt(value?.abstain));
@@ -91,11 +91,14 @@ export default function ProposalCard(props: ProposalCardType) {
 
     const getStatusIcon = (status) => {
         switch (status) {
-            case 2:
+            case 2 :
+            case "PROPOSAL_STATUS_VOTING_PERIOD" :
                 return <Tooltip title={t("governance.votingMessage")}><WaitingStatusIcon color="action"/></Tooltip>
             case 3:
+            case "PROPOSAL_STATUS_PASSED":
                 return <Tooltip title={t("governance.passedMessage")}><ApprovedStatusIcon color="success"/></Tooltip>
             case 4:
+            case "PROPOSAL_STATUS_REJECTED":
                 return <Tooltip title={t("governance.rejectedMessage")}><RejectedStatusIcon color="error"/></Tooltip>
             default:
                 return <Tooltip title={t("governance.unknownMessage")}><UnknownStatusIcon color="disabled"/></Tooltip>
