@@ -7,7 +7,7 @@ import {KeplrWalletConnectV1} from "@keplr-wallet/wc-client";
 import {LocalKVStore,} from "@keplr-wallet/common";
 import {isMobile} from "@walletconnect/browser-utils";
 import {StdTx} from "@cosmjs/amino";
-import {config, networkName} from "../../constants/networkConfig";
+import {config} from "../../constants/networkConfig";
 import {BroadcastMode, getKeplrFromWindow} from "../../services/cosmos";
 import {KeplrConnectionSelectDialog} from "../../component/KeplrDialog/KeplrConnectionSelectDialog";
 import {KeplrWalletConnectQRDialog} from "../../component/KeplrDialog/KeplrWalletConnectQRDialog";
