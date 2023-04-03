@@ -7,7 +7,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Grid from '@mui/material/Grid';
-import {Avatar, Button, ButtonGroup, Chip, Stack, Toolbar, Typography} from "@mui/material";
+import {Avatar, Button, Chip, Stack, Toolbar, Typography} from "@mui/material";
 import {makeStyles} from "@mui/styles";
 import {Theme} from "@mui/material/styles";
 import clsx from "clsx";
@@ -17,17 +17,16 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import {visuallyHidden} from "@mui/utils";
 import {
     AccessAlarms as InactiveIcon,
+    AttachMoneyRounded as StakeIcon,
     Block as JailedIcon,
     Done as ActiveIcon,
-    HourglassEmpty as UnboundingIcon, AttachMoneyRounded as StakeIcon
+    HourglassEmpty as UnboundingIcon
 } from '@mui/icons-material';
 import SearchTextField from "./SearchTextField";
 import {useTranslation} from "react-i18next";
 import {useAppSelector} from "../../hooks/hook";
 import {useDialog} from "../../hooks/use-dialog/DialogContext";
 import DelegateDialog from "./Delegation/DelegateDialog";
-import RedelegateDialog from "./Delegation/RedelegateDialog";
-import UndelegateDialog from "./Delegation/UndelegateDialog";
 import {useAppState} from "../../hooks/useAppState";
 import {MainDelegationDialog} from "./Delegation/MainDelegationDialog";
 
@@ -124,12 +123,21 @@ const headCells: readonly HeadCell[] = [
     },
 ];
 
+const StakeButton = (props) => {
+    const {openDialog} = useDialog();
+    const {t} = useTranslation();
+    return (<Button variant="outlined"
+                    color="primary"
+                    startIcon={props.startIcon || <></>}
+                    disabled={!localStorage.getItem('goat_wl_addr')}
+                    onClick={() => openDialog(
+                        <DelegateDialog initialValidator={props.stakeData}/>, t("delegateTitle"))}
+    >{t("Stake")}</Button>)
+}
 const EnhancedTableToolbar = (props) => {
     const {onChangeSearchValue, searchActive, stakeData} = props;
     const classes = useStyles();
     const [value, setValue] = useState("");
-    const {openDialog} = useDialog();
-    const {t} = useTranslation();
 
     const handleValueChange = (event) => {
         if (onChangeSearchValue && typeof onChangeSearchValue === 'function')
@@ -157,13 +165,7 @@ const EnhancedTableToolbar = (props) => {
                 </Grid>
                 <Grid item>
                     <Stack direction={"row"} alignItems={"center"} justifyContent={"center"} spacing={1}>
-                        <Button variant="outlined"
-                                color="primary"
-                                startIcon={<StakeIcon/>}
-                                disabled={!localStorage.getItem('goat_wl_addr')}
-                                onClick={() => openDialog(
-                                    <DelegateDialog initialValidator={stakeData}/>, t("delegateTitle"))}
-                        >Stake</Button>
+                        <StakeButton stakeData={stakeData} startIcon={<StakeIcon/>}/>
                         {searchActive && <SearchTextField value={value} onChange={handleValueChange}
                                                           className={classes.tableSearch}/>}
                         {props.buttonTitle && <Button variant="outlined"
@@ -417,7 +419,7 @@ export default function EnhancedTable(props: TableProps) {
                         {data.length <= 0 && (
                             <TableRow>
                                 <TableCell colSpan={7} align="center"
-                                           className={classes.emptyCell}>No Data Found</TableCell>
+                                           className={classes.emptyCell}><StakeButton stakeData={stakeData} /></TableCell>
                             </TableRow>
                         )}
                     </TableBody>

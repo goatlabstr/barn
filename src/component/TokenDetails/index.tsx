@@ -253,7 +253,9 @@ export default function Index() {
                 <Grid item xs={6} md={2}>
                     <DetailViewer title={t("dashboard.unstakedAmount")}
                         //@ts-ignore
-                                  amount={handleUnstakedAmount().toFixed(3) + getUnbondingPeriodText(chainInfo?.params?.unbonding_time)}
+                                  amount={handleUnstakedAmount().toFixed(3)}
+                        //@ts-ignore
+                                  secondaryText={getUnbondingPeriodText(chainInfo?.params?.unbonding_time)}
                                   icon={<HourglassTopRounded className={classes.icon} color={"secondary"}/>}/>
                 </Grid>
             </Grid>
