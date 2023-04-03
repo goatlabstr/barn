@@ -20,11 +20,12 @@ type DetailViewerProps = {
     title: String,
     amount: number | String,
     prefix?: String,
-    icon?: ReactElement
+    icon?: ReactElement,
+    secondaryText?: String
 }
 
 function Index(props: DetailViewerProps) {
-    const {title, amount, prefix, icon} = props;
+    const {title, amount, prefix, icon, secondaryText} = props;
     const classes = useStyles();
     const amountText = prefix ? prefix + "" + amount : amount;
 
@@ -37,6 +38,7 @@ function Index(props: DetailViewerProps) {
             }}>
                 {icon}
                 <Typography variant={"h5"} className={classes.details}>{amountText}</Typography>
+                {secondaryText && <Typography variant={"body2"} color={"secondary"}>{secondaryText}</Typography>}
             </Stack>
         </Stack>
     );

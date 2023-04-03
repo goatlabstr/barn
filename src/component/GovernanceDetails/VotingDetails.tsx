@@ -3,7 +3,20 @@ import {Doughnut} from "react-chartjs-2";
 import {Theme} from "@mui/material/styles";
 
 import {
-    Tooltip as MTooltip, Stack, Typography, Paper, Grid, Box, Chip, Toolbar, IconButton, AppBar, Button, Avatar
+    Tooltip as MTooltip,
+    Stack,
+    Typography,
+    Paper,
+    Grid,
+    Box,
+    Chip,
+    Toolbar,
+    IconButton,
+    AppBar,
+    Button,
+    Avatar,
+    Card,
+    CardContent
 }
     from "@mui/material";
 import {useSnackbar} from "notistack";
@@ -210,6 +223,13 @@ export default function VotingDetails() {
         return data;
     };
 
+    const urlify = (text) => {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        return text?.replace(urlRegex, function(url) {
+            return '<a style="color:#fdd62e" href="' + url + '">(' + url.slice(0, 30) + '...)</a>';
+        })
+    }
+
     useEffect(() => {
         if (proposal) {
             const proposalId = proposal?.id ? proposal?.id : proposal?.proposal_id;
@@ -219,7 +239,17 @@ export default function VotingDetails() {
 
     return (
         <>
-            <Grid container sx={{p: 3}}>
+            <Box sx={{
+                backgroundRepeat: "repeat-x",
+                backgroundPosition: "left center",
+                position: "fixed",
+                zIndex: -1,
+                backgroundImage: "url(/banner-move.png)",
+                width: "100%",
+                height: "100%",
+                opacity: 0.3
+            }}/>
+            <Grid container sx={{p: 2}}>
                 <Grid item>
                     <Stack direction="row">
                         <IconButton
@@ -260,10 +290,17 @@ export default function VotingDetails() {
                         </Stack>
                     </Stack>
                 </Grid>
-                <Grid item xs={12} sx={{padding: 3}}>
-                    <Typography variant={"h6"}>Description</Typography>
-                    <Typography paragraph
-                                sx={{whiteSpace: "pre-wrap"}}>{proposal?.content?.description}</Typography>
+                <Grid item xs={12} sx={{pt: 2}}>
+                    <Card sx={{ maxWidth: "100%" }}>
+                        <CardContent>
+                            <Typography variant="h6" component="div" color="text.secondary" gutterBottom>
+                                Description
+                            </Typography>
+                            <Typography variant={"body1"}>
+                                <p style={{color: "#efefef"}} dangerouslySetInnerHTML={{__html: urlify(proposal?.content?.description)?.replace(/\\n/g, " <br /><br /> ")}} />
+                            </Typography>
+                        </CardContent>
+                    </Card>
                 </Grid>
             </Grid>
         </>
