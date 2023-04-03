@@ -5,7 +5,7 @@ import {useTranslation} from "react-i18next";
 import {useAppDispatch, useAppSelector} from "../../hooks/hook";
 import allActions from "../../action";
 import {gas} from "../../constants/defaultGasFees";
-import {signTxAndBroadcast} from "../../services/cosmos";
+import {getChainFees, signTxAndBroadcast} from "../../services/cosmos";
 import {useState} from "react";
 import {useSnackbar} from "notistack";
 import {snackbarTxAction} from "../Snackbar/action";
@@ -71,12 +71,14 @@ function Index(props) {
         if (rewards && rewards.rewards && rewards.rewards.length > 1) {
             gasValue = (rewards.rewards.length - 1) / 2 * gas.claim_reward + gas.claim_reward;
         }
+        //@ts-ignore
+        const fee = getChainFees(chainInfo?.fees, chainInfo?.denom);
 
         const updatedTx = {
             msgs: [],
             fee: {
                 amount: [{
-                    amount: String(gasValue * config.GAS_PRICE_STEP_AVERAGE),
+                    amount: String(gasValue * fee.average_gas_price),
                     //@ts-ignore
                     denom: chainInfo?.denom,
                 }],
@@ -144,11 +146,7 @@ function Index(props) {
                                 sx={{height: "fit-content"}}>
                             {inTxProgress && <CircularProgress color="inherit" size={20} sx={{mr: 1}}/>}
                             <Box sx={{display: {xs: "none", md: 'block'}}}>
-                                {t("claimReward", {
-                                    "value": handleRewards().toFixed(3),
-                                    //@ts-ignore
-                                    "name": chainInfo?.denom
-                                })}
+                                {t("claimReward")}
                             </Box>
                             <Box sx={{display: {xs: "block", md: 'none'}}}>
                                 {t("claimAll")}

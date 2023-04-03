@@ -97,18 +97,7 @@ export const initializeChain = (chain, keplr, connectionType, cb) => {
                 fees
             } = chain;
 
-            const filteredFee = fees?.fee_tokens?.filter(ft => ft?.denom === denom);
-            let fee;
-            if(filteredFee.length === 1)
-                fee = filteredFee[0];
-            else
-                fee = {
-                    "denom": denom,
-                    "fixed_min_gas_price": config.DEFAULT_GAS,
-                    "low_gas_price": config.GAS_PRICE_STEP_LOW,
-                    "average_gas_price": config.GAS_PRICE_STEP_AVERAGE,
-                    "high_gas_price": config.GAS_PRICE_STEP_HIGH
-                }
+            const fee = getChainFees(fees, denom);
 
             //@ts-ignore
             if (!keplr) {
@@ -186,7 +175,7 @@ export const getStakedBalance = (keplr, chainId, address, cb) => {
 }
 
 export const getAllBalances = (keplr, chainId, address, cb) => {
-    if(localStorage.getItem("auto_connect_active") === "true" && keplr && chainId)
+    if (localStorage.getItem("auto_connect_active") === "true" && keplr && chainId)
         (async () => {
             const client = await getSignStargateClient(chainId, keplr);
             client.getAllBalances(address).then((result) => {
@@ -273,3 +262,18 @@ export const aminoSignTx = (keplr, chainId, tx, address, cb) => {
         });
     })();
 };
+
+export const getChainFees = (fees, denom) => {
+    const filteredFee = fees?.fee_tokens?.filter(ft => ft?.denom === denom);
+    let fee;
+    if (filteredFee.length === 1)
+        fee = filteredFee[0];
+    else
+        fee = {
+            "fixed_min_gas_price": config.DEFAULT_GAS,
+            "low_gas_price": config.GAS_PRICE_STEP_LOW,
+            "average_gas_price": config.GAS_PRICE_STEP_AVERAGE,
+            "high_gas_price": config.GAS_PRICE_STEP_HIGH
+        }
+    return fee;
+}

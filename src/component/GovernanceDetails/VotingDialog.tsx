@@ -15,7 +15,7 @@ import {makeStyles} from "@mui/styles";
 import {useDialog} from "../../hooks/use-dialog/DialogContext";
 import {useAppDispatch, useAppSelector} from "../../hooks/hook";
 import {useGlobalPreloader} from "../../hooks/useGlobalPreloader";
-import {signTxAndBroadcast} from "../../services/cosmos";
+import {getChainFees, signTxAndBroadcast} from "../../services/cosmos";
 import {gas} from "../../constants/defaultGasFees";
 import allActions from "../../action";
 import {config} from "../../constants/networkConfig";
@@ -68,6 +68,8 @@ export default function VotingDialog({proposal}) {
 
     const handleApplyButton = async () => {
         activate();
+        //@ts-ignore
+        const fee = getChainFees(chainInfo?.fees, chainInfo?.denom);
 
         const option = voteValue === 'Yes' ? 1
             : voteValue === 'Abstain' ? 2
@@ -85,7 +87,7 @@ export default function VotingDialog({proposal}) {
             }],
             fee: {
                 amount: [{
-                    amount: String(gas.vote * config.GAS_PRICE_STEP_AVERAGE),
+                    amount: String(gas.vote * fee.average_gas_price),
                     //@ts-ignore
                     denom: chainInfo?.denom,
                 }],

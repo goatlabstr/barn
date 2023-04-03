@@ -16,7 +16,7 @@ import {useDialog} from "../../../hooks/use-dialog/DialogContext";
 import SelectValidator from "./SelectValidator";
 import {useAppDispatch, useAppSelector} from "../../../hooks/hook";
 import {gas} from "../../../constants/defaultGasFees";
-import {signTxAndBroadcast} from "../../../services/cosmos";
+import {getChainFees, signTxAndBroadcast} from "../../../services/cosmos";
 import allActions from "../../../action";
 import {useGlobalPreloader} from "../../../hooks/useGlobalPreloader";
 import {snackbarTxAction} from "../../Snackbar/action";
@@ -96,7 +96,8 @@ export default function DelegateDialog({initialValidator}) {
     const handleApplyButton = async () => {
         activate();
         let gasValue = gas.delegate;
-
+        //@ts-ignore
+        const fee = getChainFees(chainInfo?.fees, chainInfo?.denom);
         const updatedTx = {
             msg: {
                 typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
@@ -104,7 +105,7 @@ export default function DelegateDialog({initialValidator}) {
             },
             fee: {
                 amount: [{
-                    amount: String(gasValue * config.GAS_PRICE_STEP_AVERAGE),
+                    amount: String(gasValue * fee.average_gas_price),
                     //@ts-ignore
                     denom: chainInfo?.denom,
                 }],
