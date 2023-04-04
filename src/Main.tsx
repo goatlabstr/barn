@@ -12,7 +12,8 @@ import Governance from "./pages/Governance";
 import {
     AccountBalanceRounded as DashboardIcon,
     HowToVoteRounded as GovernanceIcon,
-    MonetizationOnRounded as StakeIcon
+    MonetizationOnRounded as StakeIcon,
+    StarsRounded as ContactPageIcon
 } from "@mui/icons-material";
 import {useGlobalPreloader} from "./hooks/useGlobalPreloader";
 import {useAppDispatch, useAppSelector} from "./hooks/hook";
@@ -26,11 +27,13 @@ import Common from "./services/axios/common";
 import {useKeplr} from "./hooks/use-keplr/hook";
 import {kvStorePrefix, localStorageClearWithPrefix} from "./constants/general";
 import BottomBar from "./component/Menu/BottomBar/BottomBar";
+import SocialMediaPage from "./pages/SocialMediaPage";
 
 const menuItems = (t) => [
     {key: "dashboard", path: "/", title: t("menu.dashboard"), icon: <DashboardIcon/>},
     {key: "stake", path: "/stake", title: t("menu.stake"), icon: <StakeIcon/>},
-    {key: "governance", path: "/governance", title: t("menu.governance"), icon: <GovernanceIcon/>}
+    {key: "governance", path: "/governance", title: t("menu.governance"), icon: <GovernanceIcon/>},
+    {key: "social", path: "/social", title: t("menu.contact"), icon: <ContactPageIcon/>}
 ];
 
 function HideOnScroll(props) {
@@ -262,6 +265,7 @@ function Main() {
                         <Route path="/stake/*" element={<Stake/>}/>
                         <Route path="/governance" element={<Governance/>}/>
                         <Route path="/governance/:id" element={<VotingDetails/>}/>
+                        <Route path="/social" element={<SocialMediaPage/>}/>
                         <Route path="*" element={<Dashboard/>}/>
                     </Routes>
                 </Box>
