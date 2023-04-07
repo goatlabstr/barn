@@ -158,7 +158,7 @@ export default function SideBar(props: SideBarProps) {
                             marginRight: 17,
                             filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"
                         }} src={logo}/>
-                        <Typography variant={"h6"} className={classes.goatlabs}>GOATLABS</Typography>
+                        <Typography variant={"h6"} className={classes.goatlabs}>GOAT</Typography>
                     </Stack>
                 </Toolbar>
                 <List>
@@ -209,7 +209,7 @@ export default function SideBar(props: SideBarProps) {
                     <Stack direction="row" sx={{justifyContent: "center"}}>
                         <IconButton className={classes.socialMediaIcon}
                             //@ts-ignore
-                                    onClick={() => window.open("https://twitter.com/GoatlabsV", '_blank').focus()}
+                                    onClick={() => window.open("https://twitter.com/GOATValidator", '_blank').focus()}
                                     disableRipple><Twitter/></IconButton>
                         <IconButton className={classes.socialMediaIcon}
                             //@ts-ignore

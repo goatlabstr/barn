@@ -99,7 +99,7 @@ export default function MobileMenu() {
                 </Box>}
                 <MenuItem
                     //@ts-ignore
-                    onClick={() => window.open("https://twitter.com/GoatlabsV", '_blank').focus()}>
+                    onClick={() => window.open("https://twitter.com/GOATValidator", '_blank').focus()}>
                     <ListItemIcon>
                         <Twitter fontSize="small"/>
                     </ListItemIcon>
