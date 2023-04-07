@@ -34,7 +34,7 @@ function Index() {
                         fontFamily: "Lucida Handwriting",
                         color: "#F8CB2E",
                         display: "inline"
-                    }}>GOATS</span> Cosmos Ecosystem Wallet</Typography>
+                    }}>GOAT </span> Validator Cosmos Wallet</Typography>
                     <Typography variant={"h4"}>EARN <span style={{
                         backgroundColor: "#F8CB2E",
                         color: "#0d0d1e",

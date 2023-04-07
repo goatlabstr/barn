@@ -123,7 +123,7 @@ function ResponsiveAppBar({menuItems = []}: { menuItems?: Array<any> }) {
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <Stack direction="row" alignItems="center"
-                           sx={{display: {xs: 'none', md: 'flex'}, ml: networkName ? "auto" : "calc(50% - 165px)"}}>
+                           sx={{display: {xs: 'none', md: 'flex'}, ml: networkName ? "auto" : "calc(50% - 105px)"}}>
                         {!networkName && <Box
                             component="a"
                             href={window.location.origin}
@@ -138,7 +138,7 @@ function ResponsiveAppBar({menuItems = []}: { menuItems?: Array<any> }) {
                                 textDecoration: 'none',
                             }}
                         >
-                            GOATLABS
+                            GOAT
                         </Box>}
                         <Box onClick={() => {
                             window.location.href = window.location.origin;
@@ -162,7 +162,7 @@ function ResponsiveAppBar({menuItems = []}: { menuItems?: Array<any> }) {
                                 textDecoration: 'none',
                             }}
                         >
-                            VALIDATOR
+                            PLACE
                         </Box>}
                     </Stack>
 
@@ -239,7 +239,7 @@ function ResponsiveAppBar({menuItems = []}: { menuItems?: Array<any> }) {
                                         textDecoration: 'none',
                                     }}
                                 >
-                                    GOATLABS
+                                    GOAT
                                 </Box>}
                                 <Box sx={{cursor: "pointer"}} onClick={() => {
                                     window.location.href = window.location.origin;
@@ -263,7 +263,7 @@ function ResponsiveAppBar({menuItems = []}: { menuItems?: Array<any> }) {
                                         textDecoration: 'none',
                                     }}
                                 >
-                                    VALIDATOR
+                                    PLACE
                                 </Box>}
                             </Stack>
                         </Grid>

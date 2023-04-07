@@ -65,7 +65,7 @@ function SocialMediaPage() {
                     <Stack direction="row" sx={{justifyContent: "center"}} spacing={4}>
                         <IconButton sx={{color: "#1DA1F2"}} size={"large"}
                             //@ts-ignore
-                                    onClick={() => window.open("https://twitter.com/GoatlabsV", '_blank').focus()}
+                                    onClick={() => window.open("https://twitter.com/GOATValidator", '_blank').focus()}
                         ><Twitter fontSize="inherit"/></IconButton>
                         <IconButton sx={{color: "rgb(131 157 170)"}} size={"large"}
                             //@ts-ignore
