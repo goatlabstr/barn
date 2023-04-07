@@ -373,7 +373,7 @@ export default function EnhancedTable(props: TableProps) {
                                         >
                                             <Stack direction="row" spacing={1}>
                                                 {   //@ts-ignore
-                                                    <Avatar src={row?.keybase_image}/>
+                                                    <Avatar src={row?.keybase_image} sx={{filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.5))"}}/>
                                                 }
                                                 <Typography style={{
                                                     justifyContent: "center",
