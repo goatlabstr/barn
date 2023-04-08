@@ -83,7 +83,8 @@ function Dashboard() {
                         width: "100%",
                         height: "auto",
                         //@ts-ignore
-                        backgroundColor: theme.palette.background.dark,
+                        // backgroundColor: theme.palette.background.dark,
+                        background: "linear-gradient(135deg, rgb(6 15 35) 65%, rgba(35,47,108,1) 100%)",
                         p: 3
                     }} className={classes.centerBox}>
                         <Box className={classes.centerInnerBox}>
